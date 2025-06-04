@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: next_launch_kit_postgres
+    restart: always
+    environment:
+      POSTGRES_DB: next_launch_kit
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password123
+    ports:
+      - "127.0.0.1:5433:5432"
+    volumes:
+      - next_launch_kit_postgres_data:/var/lib/postgresql/data
+    networks:
+      - next_launch_kit_network
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: next_launch_kit_pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@nextlaunchkit.com
+      PGADMIN_DEFAULT_PASSWORD: nextlaunchkit123
+    ports:
+      - "127.0.0.1:5051:80"
+    depends_on:
+      - postgres
+    networks:
+      - next_launch_kit_network
+
+  app:
+    build: .
+    container_name: next_launch_kit_app
+    restart: always
+    ports:
+      - "127.0.0.1:3001:3000"
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=postgresql://postgres:password123@postgres:5432/next_launch_kit
+    depends_on:
+      - postgres
+    networks:
+      - next_launch_kit_network
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: npm run dev
+
+volumes:
+  next_launch_kit_postgres_data:
+
+networks:
+  next_launch_kit_network:
+    external: false
