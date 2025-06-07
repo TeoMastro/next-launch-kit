@@ -1,16 +1,27 @@
 # Next.js Launch Kit
 
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app) and enhanced with PostgreSQL, Prisma, and Docker support.
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app) and enhanced with PostgreSQL, Prisma, NextAuth.js authentication, and Docker support.
 
 ## Tech Stack
 
 - **Framework**: Next.js 15.3.2 with App Router
-- **Styling**: TailwindCSS 4 with custom theme
+- **Authentication**: NextAuth.js with credentials provider
+- **Styling**: TailwindCSS with shadcn/ui components
 - **Database**: PostgreSQL (latest)
 - **ORM**: Prisma
 - **Runtime**: Node.js 22.16
 - **Container**: Docker & Docker Compose
 - **TypeScript**: Full type safety
+
+## Features
+
+- 🔐 **Authentication System**: Email/password login with NextAuth.js
+- 👥 **User Management**: Role-based access control (USER/ADMIN)
+- 🎨 **Modern UI**: shadcn/ui components with TailwindCSS
+- 🗄️ **Database**: PostgreSQL with Prisma ORM
+- 🔒 **Security**: Password hashing with bcrypt, JWT sessions
+- 🛡️ **Route Protection**: Middleware-based authentication
+- 📱 **Responsive**: Mobile-first design
 
 ## Prerequisites
 
@@ -86,6 +97,33 @@ Before you begin, ensure you have the following installed:
 5. **Open your browser**
    Navigate to [http://localhost:3000](http://localhost:3000)
 
+## Authentication
+
+The application includes a complete authentication system:
+
+### Demo Accounts
+
+After running the seed script, you can log in with these demo accounts:
+
+- **Admin User**: 
+  - Email: `admin@nextlaunchkit.com`
+  - Password: `demoadmin!1`
+  - Role: ADMIN
+
+- **Regular User**:
+  - Email: `user@nextlaunchkit.com` 
+  - Password: `demouser!1`
+  - Role: USER
+
+### Features
+
+- **Sign Up**: Create new accounts with email/password
+- **Sign In**: Authenticate with existing credentials
+- **Dashboard**: Protected route showing user information
+- **Role-based Access**: Different permissions for USER/ADMIN roles
+- **Middleware Protection**: Automatic route protection
+- **Session Management**: Secure JWT-based sessions
+
 ## Database Management
 
 ### Prisma Commands
@@ -135,58 +173,38 @@ The project includes a `User` model with the following structure:
 
 ```prisma
 model User {
-  id         String   @id @default(cuid())
-  firstName  String
-  lastName   String
+  id         Int      @id @default(autoincrement())
+  first_name String
+  last_name  String
   email      String   @unique
+  password   String
   role       Role     @default(USER)
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("users")
 }
 
 enum Role {
   USER
   ADMIN
-  MODERATOR
 }
 ```
 
 ## Environment Variables
 
-Create a `.env` file in the root directory with the following variables:
+Create a `.env.local` file in the root directory with the following variables:
 
 ```env
 # Database
 DATABASE_URL="postgresql://postgres:password123@localhost:5433/next_launch_kit"
 
-# Next.js
+# NextAuth.js
 NEXTAUTH_URL="http://localhost:3000"
-NEXTAUTH_SECRET="your-secret-key-here"
+NEXTAUTH_SECRET="your-secret-key-here-make-it-long-and-random"
 
 # Development
 NODE_ENV="development"
-```
-
-## Project Structure
-
-```
-next-launch-kit/
-├── prisma/
-│   ├── schema.prisma      # Database schema
-│   └── seed.ts           # Database seeding script
-├── src/
-│   ├── app/              # Next.js app directory
-│   │   ├── globals.css   # Global styles
-│   │   ├── layout.tsx    # Root layout
-│   │   └── page.tsx      # Home page
-│   └── lib/
-│       ├── prisma.ts     # Prisma client instance
-│       └── utils.ts      # Utility functions
-├── public/               # Static assets
-├── docker-compose.yml    # Docker services configuration
-├── Dockerfile           # Docker image configuration
-├── .env.example         # Environment variables template
-└── package.json         # Dependencies and scripts
 ```
 
 ## Development Workflow
@@ -197,13 +215,20 @@ next-launch-kit/
    - Run `npm run db:generate` to update Prisma client
 
 2. **Adding new features**:
-   - Create your React components in `src/app/`
+   - Create your React components in `src/components/`
+   - Add new pages in `src/app/`
    - Use the Prisma client from `src/lib/prisma.ts`
-   - Style with TailwindCSS classes
+   - Style with TailwindCSS and shadcn/ui components
 
-3. **Testing database changes**:
-   - Use `npm run db:studio` to open Prisma Studio
-   - View and edit data directly in the browser
+3. **Testing authentication**:
+   - Use the demo accounts to test login functionality
+   - Test route protection by accessing `/dashboard`
+   - Use `npm run db:studio` to view user data
+
+4. **Adding protected routes**:
+   - Update `middleware.ts` to include new protected paths
+   - Use `getAuthSession()` in server components
+   - Use `useSession()` in client components
 
 ## Production Deployment
 
@@ -221,16 +246,20 @@ The application is containerized and ready for production deployment:
 
 3. **Environment considerations**:
    - Update `DATABASE_URL` for your production database
-   - Set strong passwords and secrets
+   - Set a strong `NEXTAUTH_SECRET` (minimum 32 characters)
+   - Update `NEXTAUTH_URL` to your production domain
    - Configure proper network security
+   - Set strong database passwords
 
 ## Learn More
 
 To learn more about the technologies used:
 
 - [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API
+- [NextAuth.js Documentation](https://next-auth.js.org/) - learn about authentication
 - [Prisma Documentation](https://www.prisma.io/docs) - learn about Prisma ORM
 - [TailwindCSS Documentation](https://tailwindcss.com/docs) - learn about utility-first CSS
+- [shadcn/ui Documentation](https://ui.shadcn.com/) - learn about the component library
 - [Docker Documentation](https://docs.docker.com/) - learn about containerization
 
 ## Contributing

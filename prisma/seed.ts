@@ -1,40 +1,35 @@
 import { PrismaClient, Role } from '@prisma/client'
+import bcrypt from 'bcryptjs'
 
 const prisma = new PrismaClient()
 
 async function main() {
   console.log('Seeding database...')
 
-  // Create some sample users
+  const userPassword = await bcrypt.hash('demouser!1', 12)
+  const adminPassword = await bcrypt.hash('demoadmin!1', 12)
+
   const users = await Promise.all([
     prisma.user.upsert({
-      where: { email: 'admin@example.com' },
+      where: { email: 'admin@nextlaunchkit.com' },
       update: {},
       create: {
-        firstName: 'Admin',
-        lastName: 'User',
-        email: 'admin@example.com',
+        first_name: 'Demo',
+        last_name: 'Admin',
+        email: 'admin@nextlaunchkit.com',
+        password: adminPassword,
         role: Role.ADMIN,
       },
     }),
     prisma.user.upsert({
-      where: { email: 'john@example.com' },
+      where: { email: 'user@nextlaunchkit.com' },
       update: {},
       create: {
-        firstName: 'John',
-        lastName: 'Doe',
-        email: 'john@example.com',
+        first_name: 'Demo',
+        last_name: 'User',
+        email: 'user@nextlaunchkit.com',
+        password: userPassword,
         role: Role.USER,
-      },
-    }),
-    prisma.user.upsert({
-      where: { email: 'jane@example.com' },
-      update: {},
-      create: {
-        firstName: 'Jane',
-        lastName: 'Smith',
-        email: 'jane@example.com',
-        role: Role.MODERATOR,
       },
     }),
   ])
@@ -42,8 +37,12 @@ async function main() {
   console.log('Database seeded successfully!')
   console.log(`Created ${users.length} users:`)
   users.forEach((user) => {
-    console.log(`  - ${user.firstName} ${user.lastName} (${user.email}) - ${user.role}`)
+    console.log(`  - ${user.first_name} ${user.last_name} (${user.email}) - ${user.role}`)
   })
+  
+  console.log('\nLogin credentials:')
+  console.log('Admin: admin@nextlaunchkit.com / demoadmin!1')
+  console.log('User:  user@nextlaunchkit.com / demouser!1')
 }
 
 main()
