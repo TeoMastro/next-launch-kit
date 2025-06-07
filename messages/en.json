@@ -1,0 +1,56 @@
+{
+	"SignIn": {
+		"signIn": "Sign In",
+		"signOut": "Sign Out",
+		"welcomeBack": "Welcome back",
+		"signInToAccount": "Sign in to your account",
+		"signInTitle": "Sign In",
+		"password": "Password",
+		"enterEmail": "Enter your email",
+		"enterPassword": "Enter your password",
+		"signingIn": "Signing in...",
+		"dontHaveAccount": "Don't have an account?",
+		"signUp": "Sign up",
+		"invalidCredentials": "Invalid email or password",
+		"somethingWentWrong": "Something went wrong"
+	},
+	"SignUp": {
+		"pageTitle": "Create your account",
+		"pageSubtitle": "Join us today",
+		"title": "Create Account",
+		"description": "Enter your information to create a new account",
+		"firstName": "First Name",
+		"lastName": "Last Name",
+		"password": "Password",
+		"confirmPassword": "Confirm Password",
+		"passwordPlaceholder": "At least 8 characters",
+		"confirmPasswordPlaceholder": "Confirm your password",
+		"createAccount": "Create Account",
+		"alreadyHaveAccount": "Already have an account?"
+	},
+	"Dashboard": {
+		"title": "Dashboard",
+		"welcomeBack": "Welcome back, {name}",
+		"userInformation": "User information",
+		"accountDetails": "Account details",
+		"id": "ID",
+		"name": "Name",
+		"role": "Role",
+		"accountType": "Account type",
+		"status": "Status",
+		"active": "Active"
+	},
+	"Validation": {
+		"allFieldsRequired": "All fields are required",
+		"firstNameTooShort": "First name must be at least 2 characters long",
+		"lastNameTooShort": "Last name must be at least 2 characters long",
+		"invalidEmail": "Please enter a valid email address",
+		"passwordTooShort": "Password must be at least 8 characters long",
+		"passwordsDontMatch": "Passwords don't match",
+		"passwordNeedsLowercase": "Password must contain at least one lowercase letter",
+		"passwordNeedsNumber": "Password must contain at least one number",
+		"passwordNeedsSpecialChar": "Password must contain at least one special character",
+		"userAlreadyExists": "User already exists with this email",
+		"accountCreatedSuccess": "Account created successfully"
+	}
+}

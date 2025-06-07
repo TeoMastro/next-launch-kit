@@ -3,6 +3,7 @@
 import { prisma } from "@/lib/prisma"
 import bcrypt from "bcryptjs"
 import { redirect } from "next/navigation"
+import { getValidationTranslation, getAuthTranslation } from "@/lib/server-translations"
 
 export async function signUpAction(formData: FormData) {
   const first_name = formData.get("first_name") as string
@@ -13,7 +14,8 @@ export async function signUpAction(formData: FormData) {
 
   // Validation
   if (!first_name || !last_name || !email || !password || !confirmPassword) {
-    redirect("/auth/signup?error=" + encodeURIComponent("All fields are required"))
+    const message = await getValidationTranslation("allFieldsRequired");
+    redirect("/auth/signup?error=" + encodeURIComponent(message))
   }
 
   // Trim whitespace
@@ -23,41 +25,49 @@ export async function signUpAction(formData: FormData) {
 
   // Name validation
   if (trimmedFirstName.length < 2) {
-    redirect("/auth/signup?error=" + encodeURIComponent("First name must be at least 2 characters long"))
+    const message = await getValidationTranslation("firstNameTooShort");
+    redirect("/auth/signup?error=" + encodeURIComponent(message))
   }
 
   if (trimmedLastName.length < 2) {
-    redirect("/auth/signup?error=" + encodeURIComponent("Last name must be at least 2 characters long"))
+    const message = await getValidationTranslation("lastNameTooShort");
+    redirect("/auth/signup?error=" + encodeURIComponent(message))
   }
 
   // Email validation
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
   if (!emailRegex.test(trimmedEmail)) {
-    redirect("/auth/signup?error=" + encodeURIComponent("Please enter a valid email address"))
+    const message = await getValidationTranslation("invalidEmail");
+    redirect("/auth/signup?error=" + encodeURIComponent(message))
   }
 
   // Enhanced password validation
   if (password.length < 8) {
-    redirect("/auth/signup?error=" + encodeURIComponent("Password must be at least 8 characters long"))
+    const message = await getValidationTranslation("passwordTooShort");
+    redirect("/auth/signup?error=" + encodeURIComponent(message))
   }
 
   if (password !== confirmPassword) {
-    redirect("/auth/signup?error=" + encodeURIComponent("Passwords don't match"))
+    const message = await getValidationTranslation("passwordsDontMatch");
+    redirect("/auth/signup?error=" + encodeURIComponent(message))
   }
 
   // Check for at least one lowercase letter
   if (!/[a-z]/.test(password)) {
-    redirect("/auth/signup?error=" + encodeURIComponent("Password must contain at least one lowercase letter"))
+    const message = await getValidationTranslation("passwordNeedsLowercase");
+    redirect("/auth/signup?error=" + encodeURIComponent(message))
   }
 
   // Check for at least one number
   if (!/\d/.test(password)) {
-    redirect("/auth/signup?error=" + encodeURIComponent("Password must contain at least one number"))
+    const message = await getValidationTranslation("passwordNeedsNumber");
+    redirect("/auth/signup?error=" + encodeURIComponent(message))
   }
 
   // Check for at least one special character
   if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~`]/.test(password)) {
-    redirect("/auth/signup?error=" + encodeURIComponent("Password must contain at least one special character"))
+    const message = await getValidationTranslation("passwordNeedsSpecialChar");
+    redirect("/auth/signup?error=" + encodeURIComponent(message))
   }
 
   try {
@@ -67,7 +77,8 @@ export async function signUpAction(formData: FormData) {
     })
 
     if (existingUser) {
-      redirect("/auth/signup?error=" + encodeURIComponent("User already exists with this email"))
+      const message = await getValidationTranslation("userAlreadyExists");
+      redirect("/auth/signup?error=" + encodeURIComponent(message))
     }
 
     // Hash password
@@ -86,8 +97,10 @@ export async function signUpAction(formData: FormData) {
     console.log(`New user created: ${trimmedEmail}`)
   } catch (error) {
     console.error("Signup error:", error)
-    redirect("/auth/signup?error=" + encodeURIComponent("Something went wrong"))
+    const message = await getAuthTranslation("somethingWentWrong");
+    redirect("/auth/signup?error=" + encodeURIComponent(message))
   }
 
-  redirect("/auth/signin?message=" + encodeURIComponent("Account created successfully"))
+  const successMessage = await getValidationTranslation("accountCreatedSuccess");
+  redirect("/auth/signin?message=" + encodeURIComponent(successMessage))
 }

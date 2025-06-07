@@ -2,14 +2,21 @@
 
 import { Button } from "@/components/ui/button"
 import { signOut } from "next-auth/react"
+import { useTranslations } from 'next-intl';
 
 export default function LogoutButton() {
+  const t = useTranslations('SignIn');
+
+  const handleLogout = async () => {
+    await signOut({ callbackUrl: '/auth/signin' });
+  };
+
   return (
     <Button 
-      variant="outline" 
-      onClick={() => signOut({ callbackUrl: "/" })}
+      onClick={handleLogout}
+      variant="outline"
     >
-      Sign Out
+      {t('signOut')}
     </Button>
-  )
+  );
 }

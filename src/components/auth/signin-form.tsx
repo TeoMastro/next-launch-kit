@@ -8,6 +8,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { signIn } from "next-auth/react"
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
+import { useTranslations } from 'next-intl';
 
 interface LoginFormProps {
   error?: string
@@ -19,6 +20,7 @@ export function SigninForm({ error, message }: LoginFormProps) {
   const [formError, setFormError] = useState("")
   const [showMessage, setShowMessage] = useState(!!message)
   const router = useRouter()
+  const t = useTranslations('SignIn');
 
   useEffect(() => {
     if (message) {
@@ -48,13 +50,13 @@ export function SigninForm({ error, message }: LoginFormProps) {
       })
 
       if (result?.error) {
-        setFormError("Invalid email or password")
+        setFormError(t('invalidCredentials'))
       } else if (result?.ok) {
         router.push("/dashboard")
         router.refresh()
       }
     } catch (error) {
-      setFormError("Something went wrong")
+      setFormError(t('somethingWentWrong'))
     } finally {
       setIsLoading(false)
     }
@@ -63,7 +65,7 @@ export function SigninForm({ error, message }: LoginFormProps) {
   return (
     <Card className="w-full max-w-md mx-auto">
       <CardHeader>
-        <CardTitle>Sign In</CardTitle>
+        <CardTitle>{t('signInTitle')}</CardTitle>
       </CardHeader>
       
       <form onSubmit={handleSubmit}>
@@ -88,19 +90,19 @@ export function SigninForm({ error, message }: LoginFormProps) {
               id="email"
               name="email"
               type="email"
-              placeholder="Enter your email"
+              placeholder={t('enterEmail')}
               required
               disabled={isLoading}
             />
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="password">{t('password')}</Label>
             <Input
               id="password"
               name="password"
               type="password"
-              placeholder="Enter your password"
+              placeholder={t('enterPassword')}
               required
               disabled={isLoading}
             />
@@ -109,13 +111,13 @@ export function SigninForm({ error, message }: LoginFormProps) {
         
         <CardFooter className="flex flex-col space-y-4">
           <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading ? "Signing in..." : "Sign In"}
+            {isLoading ? t('signingIn') : t('signIn')}
           </Button>
           
           <p className="text-center text-sm text-muted-foreground">
-            Don't have an account?{" "}
+            {t('dontHaveAccount')}{" "}
             <a href="/auth/signup" className="font-medium text-primary hover:underline">
-              Sign up
+              {t('signUp')}
             </a>
           </p>
         </CardFooter>

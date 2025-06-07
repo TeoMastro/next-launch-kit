@@ -1,0 +1,56 @@
+{
+	"SignIn": {
+		"signIn": "Σύνδεση",
+		"signOut": "Αποσύνδεση",
+		"welcomeBack": "Καλώς ήρθατε πίσω",
+		"signInToAccount": "Συνδεθείτε στον λογαριασμό σας",
+		"signInTitle": "Σύνδεση",
+		"password": "Κωδικός",
+		"enterEmail": "Εισάγετε το email σας",
+		"enterPassword": "Εισάγετε τον κωδικό σας",
+		"signingIn": "Σύνδεση...",
+		"dontHaveAccount": "Δεν έχετε λογαριασμό;",
+		"signUp": "Εγγραφή",
+		"invalidCredentials": "Λάθος email ή κωδικός",
+		"somethingWentWrong": "Κάτι πήγε στραβά"
+	},
+	"SignUp": {
+		"pageTitle": "Δημιουργήστε τον λογαριασμό σας",
+		"pageSubtitle": "Γίνετε μέλος σήμερα",
+		"title": "Δημιουργία Λογαριασμού",
+		"description": "Εισάγετε τα στοιχεία σας για να δημιουργήσετε νέο λογαριασμό",
+		"firstName": "Όνομα",
+		"lastName": "Επώνυμο",
+		"password": "Κωδικός",
+		"confirmPassword": "Επιβεβαίωση Κωδικού",
+		"passwordPlaceholder": "Τουλάχιστον 8 χαρακτήρες",
+		"confirmPasswordPlaceholder": "Επιβεβαιώστε τον κωδικό σας",
+		"createAccount": "Δημιουργία Λογαριασμού",
+		"alreadyHaveAccount": "Έχετε ήδη λογαριασμό;"
+	},
+	"Dashboard": {
+		"title": "Ταμπλό",
+		"welcomeBack": "Καλώς ήρθατε πίσω, {name}",
+		"userInformation": "Στοιχεία χρήστη",
+		"accountDetails": "Λεπτομέρειες λογαριασμού",
+		"id": "ID",
+		"name": "Όνομα",
+		"role": "Ρόλος",
+		"accountType": "Τύπος λογαριασμού",
+		"status": "Κατάσταση",
+		"active": "Ενεργός"
+	},
+	"Validation": {
+		"allFieldsRequired": "Όλα τα πεδία είναι υποχρεωτικά",
+		"firstNameTooShort": "Το όνομα πρέπει να έχει τουλάχιστον 2 χαρακτήρες",
+		"lastNameTooShort": "Το επώνυμο πρέπει να έχει τουλάχιστον 2 χαρακτήρες",
+		"invalidEmail": "Παρακαλώ εισάγετε μια έγκυρη διεύθυνση email",
+		"passwordTooShort": "Ο κωδικός πρέπει να έχει τουλάχιστον 8 χαρακτήρες",
+		"passwordsDontMatch": "Οι κωδικοί δεν ταιριάζουν",
+		"passwordNeedsLowercase": "Ο κωδικός πρέπει να περιέχει τουλάχιστον ένα μικρό γράμμα",
+		"passwordNeedsNumber": "Ο κωδικός πρέπει να περιέχει τουλάχιστον έναν αριθμό",
+		"passwordNeedsSpecialChar": "Ο κωδικός πρέπει να περιέχει τουλάχιστον έναν ειδικό χαρακτήρα",
+		"userAlreadyExists": "Υπάρχει ήδη χρήστης με αυτό το email",
+		"accountCreatedSuccess": "Ο λογαριασμός δημιουργήθηκε επιτυχώς"
+	}
+}
