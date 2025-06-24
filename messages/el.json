@@ -29,16 +29,7 @@
 		"alreadyHaveAccount": "Έχετε ήδη λογαριασμό;"
 	},
 	"Dashboard": {
-		"title": "Ταμπλό",
-		"welcomeBack": "Καλώς ήρθατε πίσω, {name}",
-		"userInformation": "Στοιχεία χρήστη",
-		"accountDetails": "Λεπτομέρειες λογαριασμού",
-		"id": "ID",
-		"name": "Όνομα",
-		"role": "Ρόλος",
-		"accountType": "Τύπος λογαριασμού",
-		"status": "Κατάσταση",
-		"active": "Ενεργός"
+		"welcomeBack": "Καλώς ήρθατε πίσω, {name}"
 	},
 	"Validation": {
 		"allFieldsRequired": "Όλα τα πεδία είναι υποχρεωτικά",
@@ -52,5 +43,23 @@
 		"passwordNeedsSpecialChar": "Ο κωδικός πρέπει να περιέχει τουλάχιστον έναν ειδικό χαρακτήρα",
 		"userAlreadyExists": "Υπάρχει ήδη χρήστης με αυτό το email",
 		"accountCreatedSuccess": "Ο λογαριασμός δημιουργήθηκε επιτυχώς"
+	},
+	"Settings": {
+		"selectLanguage": "Επιλογή γλώσσας"
+	},
+	"Menu": {
+		"home": "Αρχική",
+		"profile": "Προφίλ",
+		"settings": "Ρυθμίσεις"
+	},
+	"Profile": {
+		"userInformation": "Στοιχεία χρήστη",
+		"accountDetails": "Λεπτομέρειες λογαριασμού",
+		"id": "ID",
+		"name": "Όνομα",
+		"role": "Ρόλος",
+		"accountType": "Τύπος λογαριασμού",
+		"status": "Κατάσταση",
+		"active": "Ενεργός"
 	}
 }

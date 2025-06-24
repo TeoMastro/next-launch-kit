@@ -1,6 +1,5 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
 import { signOut } from "next-auth/react"
 import { useTranslations } from 'next-intl';
 
@@ -12,11 +11,10 @@ export default function LogoutButton() {
   };
 
   return (
-    <Button 
+    <a 
       onClick={handleLogout}
-      variant="outline"
     >
       {t('signOut')}
-    </Button>
+    </a>
   );
 }

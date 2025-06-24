@@ -251,6 +251,52 @@ The application is containerized and ready for production deployment:
    - Configure proper network security
    - Set strong database passwords
 
+## ⚙️ Environment Considerations
+
+- ✅ Update `DATABASE_URL` for your production database
+- ✅ Set a strong `NEXTAUTH_SECRET` (minimum 32 characters)
+- ✅ Update `NEXTAUTH_URL` to your production domain
+- ✅ Configure proper network security
+- ✅ Set strong database passwords
+- ✅ Enable SSL/TLS for database connections
+- ✅ Set up proper backup strategies
+
+
+## 🛠️ Troubleshooting
+
+### Common Issues
+
+**ESLint errors during build:**
+
+```bash
+# Check your eslint.config.mjs for proper configuration
+# Disable problematic rules or fix unused variables
+```
+
+**Missing dependencies:**
+
+```bash
+# Always rebuild after adding packages
+docker-compose up -d --build
+```
+
+**Database connection issues:**
+
+```bash
+# Check if PostgreSQL container is running
+docker-compose ps
+
+# Restart database container
+docker-compose restart postgres
+```
+
+**Port conflicts:**
+
+```bash
+# Check if ports are already in use
+# Modify ports in docker-compose.yml if needed
+```
+
 ## Learn More
 
 To learn more about the technologies used:

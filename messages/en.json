@@ -29,16 +29,7 @@
 		"alreadyHaveAccount": "Already have an account?"
 	},
 	"Dashboard": {
-		"title": "Dashboard",
-		"welcomeBack": "Welcome back, {name}",
-		"userInformation": "User information",
-		"accountDetails": "Account details",
-		"id": "ID",
-		"name": "Name",
-		"role": "Role",
-		"accountType": "Account type",
-		"status": "Status",
-		"active": "Active"
+		"welcomeBack": "Welcome back, {name}"
 	},
 	"Validation": {
 		"allFieldsRequired": "All fields are required",
@@ -52,5 +43,23 @@
 		"passwordNeedsSpecialChar": "Password must contain at least one special character",
 		"userAlreadyExists": "User already exists with this email",
 		"accountCreatedSuccess": "Account created successfully"
+	},
+	"Settings": {
+		"selectLanguage": "Select language"
+	},
+	"Menu": {
+		"home": "Home",
+		"profile": "Profile",
+		"settings": "Settings"
+	},
+	"Profile": {
+		"userInformation": "User information",
+		"accountDetails": "Account details",
+		"id": "ID",
+		"name": "Name",
+		"role": "Role",
+		"accountType": "Account type",
+		"status": "Status",
+		"active": "Active"
 	}
 }
