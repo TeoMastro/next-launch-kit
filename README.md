@@ -65,37 +65,36 @@ Before you begin, ensure you have the following installed:
    - Email: `admin@nextlaunchkit.com`
    - Password: `nextlaunchkit123`
 
-### Option 2: Local Development
+## pgAdmin Server Registration
 
-1. **Install dependencies**
-   ```bash
-   npm install
-   ```
+After starting the containers with `docker-compose up -d`, pgAdmin won't automatically discover your PostgreSQL database. You need to manually register the server connection.
 
-2. **Start PostgreSQL with Docker**
-   ```bash
-   docker-compose up postgres -d
-   ```
+### Accessing pgAdmin
 
-3. **Set up the database**
-   ```bash
-   # Generate Prisma client
-   npm run db:generate
-   
-   # Run migrations
-   npm run db:migrate
-   
-   # Seed the database (optional)
-   npm run db:seed
-   ```
+1. **Open pgAdmin** in your browser at [http://localhost:5051](http://localhost:5051)
+2. **Log in** with the credentials:
+   - Email: `admin@nextlaunchkit.com`
+   - Password: `nextlaunchkit123`
 
-4. **Start the development server**
-   ```bash
-   npm run dev
-   ```
+### Registering the PostgreSQL Server
 
-5. **Open your browser**
-   Navigate to [http://localhost:3000](http://localhost:3000)
+Once logged into pgAdmin, follow these steps to connect to your PostgreSQL database:
+
+1. **Right-click on "Servers"** in the left sidebar
+2. **Select "Register" > "Server..."** from the context menu
+3. **Fill in the General tab:**
+   - **Name**: `Next Launch Kit DB` (or any name you prefer)
+   - **Server group**: Leave as "Servers"
+   - **Comments**: Optional description
+
+4. **Switch to the Connection tab** and enter:
+   - **Host name/address**: `postgres` (use the container name, not `localhost`)
+   - **Port**: `5432`
+   - **Maintenance database**: `next_launch_kit`
+   - **Username**: `postgres`
+   - **Password**: `password123`
+
+5. **Click "Save"** to register the server
 
 ## Authentication
 
