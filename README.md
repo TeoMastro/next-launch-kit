@@ -114,6 +114,27 @@ After running the seed script, you can log in with these demo accounts:
   - Password: `demouser!1`
   - Role: USER
 
+## 🎭 Testing with Playwright
+
+This project includes end-to-end testing with Playwright for comprehensive authentication and user flow testing.
+
+### Prerequisites for Testing
+
+Before running any tests, you need to create the authentication directory:
+```bash
+mkdir -p playwright/.auth
+```
+
+**Important**: The `playwright/.auth` directory stores sensitive authentication state (cookies, sessions) and should never be committed to version control.
+
+### Available Test Commands
+```bash
+# Run all tests across all browsers
+npx playwright test
+```
+
+Create test credentials in your `.env` file:
+
 ### Features
 
 - **Sign Up**: Create new accounts with email/password
@@ -122,6 +143,7 @@ After running the seed script, you can log in with these demo accounts:
 - **Role-based Access**: Different permissions for USER/ADMIN roles
 - **Middleware Protection**: Automatic route protection
 - **Session Management**: Secure JWT-based sessions
+- **End2end Testing**: Using the playwright suite
 
 ## Database Management
 
