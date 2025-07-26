@@ -1,106 +1,94 @@
-"use server"
+"use server";
 
-import { prisma } from "@/lib/prisma"
-import bcrypt from "bcryptjs"
-import { redirect } from "next/navigation"
-import { getValidationTranslation, getAuthTranslation } from "@/lib/server-translations"
+import { prisma } from "@/lib/prisma";
+import bcrypt from "bcryptjs";
+import { redirect } from "next/navigation";
+import { getValidationTranslation } from "@/lib/server-translations";
+import { ValidationState } from "@/types/auth";
+import { SignupFormState } from "@/types/auth";
+import { signinSchema, formatZodErrors, signupSchema } from "@/lib/validation-schemas";
 
-export async function signUpAction(formData: FormData) {
-  const first_name = formData.get("first_name") as string
-  const last_name = formData.get("last_name") as string
-  const email = formData.get("email") as string
-  const password = formData.get("password") as string
-  const confirmPassword = formData.get("confirmPassword") as string
+export async function validateSigninData(
+	prevState: ValidationState,
+	formData: FormData
+): Promise<ValidationState> {
+	const email = formData.get("email") as string;
+	const password = formData.get("password") as string;
 
-  // Validation
-  if (!first_name || !last_name || !email || !password || !confirmPassword) {
-    const message = await getValidationTranslation("allFieldsRequired");
-    redirect("/auth/signup?error=" + encodeURIComponent(message))
-  }
+	const validatedFields = signinSchema.safeParse({
+		email,
+		password,
+	});
 
-  // Trim whitespace
-  const trimmedFirstName = first_name.trim()
-  const trimmedLastName = last_name.trim()
-  const trimmedEmail = email.trim().toLowerCase()
+	if (!validatedFields.success) {
+		return {
+			errors: formatZodErrors(validatedFields.error),
+			data: null,
+			success: false,
+			formData: { email, password: "" },
+		};
+	}
 
-  // Name validation
-  if (trimmedFirstName.length < 2) {
-    const message = await getValidationTranslation("firstNameTooShort");
-    redirect("/auth/signup?error=" + encodeURIComponent(message))
-  }
+	return {
+		errors: {},
+		data: validatedFields.data,
+		success: true,
+		formData: { email, password: "" },
+	};
+}
 
-  if (trimmedLastName.length < 2) {
-    const message = await getValidationTranslation("lastNameTooShort");
-    redirect("/auth/signup?error=" + encodeURIComponent(message))
-  }
+export async function signUpAction(
+	prevState: SignupFormState,
+	formData: FormData
+): Promise<SignupFormState> {
+	const data = {
+		first_name: formData.get("first_name")?.toString() ?? "",
+		last_name: formData.get("last_name")?.toString() ?? "",
+		email: formData.get("email")?.toString() ?? "",
+		password: formData.get("password")?.toString() ?? "",
+		confirmPassword: formData.get("confirmPassword")?.toString() ?? "",
+	};
 
-  // Email validation
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-  if (!emailRegex.test(trimmedEmail)) {
-    const message = await getValidationTranslation("invalidEmail");
-    redirect("/auth/signup?error=" + encodeURIComponent(message))
-  }
+	const parsed = signupSchema.safeParse(data);
 
-  // Enhanced password validation
-  if (password.length < 8) {
-    const message = await getValidationTranslation("passwordTooShort");
-    redirect("/auth/signup?error=" + encodeURIComponent(message))
-  }
+	if (!parsed.success) {
+		return {
+			success: false,
+			errors: formatZodErrors(parsed.error),
+			formData: { ...data, password: "", confirmPassword: "" },
+			globalError: null,
+		};
+	}
 
-  if (password !== confirmPassword) {
-    const message = await getValidationTranslation("passwordsDontMatch");
-    redirect("/auth/signup?error=" + encodeURIComponent(message))
-  }
+	const trimmedEmail = parsed.data.email.trim().toLowerCase();
 
-  // Check for at least one lowercase letter
-  if (!/[a-z]/.test(password)) {
-    const message = await getValidationTranslation("passwordNeedsLowercase");
-    redirect("/auth/signup?error=" + encodeURIComponent(message))
-  }
+	const existingUser = await prisma.user.findUnique({
+		where: { email: trimmedEmail },
+	});
 
-  // Check for at least one number
-  if (!/\d/.test(password)) {
-    const message = await getValidationTranslation("passwordNeedsNumber");
-    redirect("/auth/signup?error=" + encodeURIComponent(message))
-  }
+	if (existingUser) {
+		return {
+			success: false,
+			errors: {},
+			formData: { ...parsed.data, password: "", confirmPassword: "" },
+			globalError: "userAlreadyExists",
+		};
+	}
 
-  // Check for at least one special character
-  if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~`]/.test(password)) {
-    const message = await getValidationTranslation("passwordNeedsSpecialChar");
-    redirect("/auth/signup?error=" + encodeURIComponent(message))
-  }
+	const hashedPassword = await bcrypt.hash(parsed.data.password, 12);
 
-  try {
-    // Check if user already exists
-    const existingUser = await prisma.user.findUnique({
-      where: { email: trimmedEmail }
-    })
+	await prisma.user.create({
+		data: {
+			first_name: parsed.data.first_name.trim(),
+			last_name: parsed.data.last_name.trim(),
+			email: trimmedEmail,
+			password: hashedPassword,
+		},
+	});
 
-    if (existingUser) {
-      const message = await getValidationTranslation("userAlreadyExists");
-      redirect("/auth/signup?error=" + encodeURIComponent(message))
-    }
+	const successMessage = await getValidationTranslation(
+		"accountCreatedSuccess"
+	);
 
-    // Hash password
-    const hashedPassword = await bcrypt.hash(password, 12)
-
-    // Create user
-    await prisma.user.create({
-      data: {
-        first_name: trimmedFirstName,
-        last_name: trimmedLastName,
-        email: trimmedEmail,
-        password: hashedPassword,
-      }
-    })
-
-    console.log(`New user created: ${trimmedEmail}`)
-  } catch (error) {
-    console.error("Signup error:", error)
-    const message = await getAuthTranslation("somethingWentWrong");
-    redirect("/auth/signup?error=" + encodeURIComponent(message))
-  }
-
-  const successMessage = await getValidationTranslation("accountCreatedSuccess");
-  redirect("/auth/signin?message=" + encodeURIComponent(successMessage))
+	redirect("/auth/signin?message=" + encodeURIComponent(successMessage));
 }

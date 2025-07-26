@@ -8,7 +8,10 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { signIn } from "next-auth/react"
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { useTranslations } from 'next-intl';
+import { useTranslations } from 'next-intl'
+import { useActionState } from "react"
+import { validateSigninData } from "@/server-actions/auth"
+import { ValidationState } from "@/types/auth"
 
 interface LoginFormProps {
   error?: string
@@ -16,49 +19,50 @@ interface LoginFormProps {
 }
 
 export function SigninForm({ error, message }: LoginFormProps) {
-  const [isLoading, setIsLoading] = useState(false)
-  const [formError, setFormError] = useState("")
+  const [isSigningIn, setIsSigningIn] = useState(false)
+  const [authError, setAuthError] = useState("")
   const [showMessage, setShowMessage] = useState(!!message)
   const router = useRouter()
-  const t = useTranslations('SignIn');
+  const t = useTranslations('SignIn')
+  const tValidation = useTranslations("Validation");
+
+  const initialState: ValidationState = {
+    errors: {},
+    data: null,
+    success: false,
+    formData: { email: "", password: "" },
+  }
+
+  const [state, formAction] = useActionState(validateSigninData, initialState)
 
   useEffect(() => {
-    if (message) {
-      setShowMessage(true)
-      const timer = setTimeout(() => {
-        setShowMessage(false)
-      }, 5000)
-      return () => clearTimeout(timer)
+    if (state.success && state.data) {
+      handleAuthentication(state.data)
     }
-  }, [message])
+  }, [state])
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    setIsLoading(true)
-    setFormError("")
+  const handleAuthentication = async (data: { email: string; password: string }) => {
+    setIsSigningIn(true)
+    setAuthError("")
     setShowMessage(false)
-
-    const formData = new FormData(e.currentTarget)
-    const email = formData.get("email") as string
-    const password = formData.get("password") as string
 
     try {
       const result = await signIn("credentials", {
-        email,
-        password,
+        email: data.email,
+        password: data.password,
         redirect: false,
       })
 
       if (result?.error) {
-        setFormError(t('invalidCredentials'))
+        setAuthError(t('invalidCredentials'))
       } else if (result?.ok) {
         router.push("/dashboard")
         router.refresh()
       }
     } catch (error) {
-      setFormError(t('somethingWentWrong'))
+      setAuthError(t('somethingWentWrong'))
     } finally {
-      setIsLoading(false)
+      setIsSigningIn(false)
     }
   }
 
@@ -68,14 +72,15 @@ export function SigninForm({ error, message }: LoginFormProps) {
         <CardTitle>{t('signInTitle')}</CardTitle>
       </CardHeader>
       
-      <form onSubmit={handleSubmit}>
+      <form action={formAction} noValidate>
         <CardContent className="space-y-4 mb-5">
-          {(error || formError) && (
-            <Alert variant="destructive">
-              <AlertDescription>{error || formError}</AlertDescription>
+          {/* Display errors */}
+          {(error || authError) && (
+            <Alert className="border-red-200 bg-red-50 text-red-800">
+              <AlertDescription className="text-red-800">{error || authError}</AlertDescription>
             </Alert>
           )}
-          
+
           {message && showMessage && (
             <Alert className="border-green-200 bg-green-50 text-green-800">
               <AlertDescription className="text-green-800">
@@ -91,9 +96,15 @@ export function SigninForm({ error, message }: LoginFormProps) {
               name="email"
               type="email"
               placeholder={t('enterEmail')}
-              required
-              disabled={isLoading}
+              disabled={isSigningIn}
+              defaultValue={state.formData?.email || ""}
+              className={state.errors.email ? "border-red-500" : ""}
             />
+            {state.errors.email && (
+              <p className="text-sm text-red-500">
+                {tValidation(state.errors.email[0])}
+              </p>
+            )}
           </div>
           
           <div className="space-y-2">
@@ -103,15 +114,21 @@ export function SigninForm({ error, message }: LoginFormProps) {
               name="password"
               type="password"
               placeholder={t('enterPassword')}
-              required
-              disabled={isLoading}
+              disabled={isSigningIn}
+              defaultValue={state.formData?.password || ""}
+              className={state.errors.password ? "border-red-500" : ""}
             />
+            {state.errors.password && (
+              <p className="text-sm text-red-500">
+                {tValidation(state.errors.password[0])}
+              </p>
+            )}
           </div>
         </CardContent>
         
         <CardFooter className="flex flex-col space-y-4">
-          <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading ? t('signingIn') : t('signIn')}
+          <Button type="submit" className="w-full" disabled={isSigningIn}>
+            {t('signIn')}
           </Button>
           
           <p className="text-center text-sm text-muted-foreground">

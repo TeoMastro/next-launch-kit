@@ -1,12 +1,7 @@
 import { SignupForm } from "@/components/auth/signup-form"
 import { getTranslations } from 'next-intl/server';
 
-interface SignUpPageProps {
-  searchParams: Promise<{ error?: string }>
-}
-
-export default async function SignUpPage({ searchParams }: SignUpPageProps) {
-  const params = await searchParams
+export default async function SignUpPage() {
   const t = await getTranslations('SignUp');
 
   return (
@@ -20,7 +15,7 @@ export default async function SignUpPage({ searchParams }: SignUpPageProps) {
             {t('pageSubtitle')}
           </p>
         </div>
-        <SignupForm error={params.error} />
+        <SignupForm />
       </div>
     </div>
   )
