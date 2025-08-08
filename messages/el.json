@@ -42,7 +42,17 @@
 		"passwordNeedsNumber": "Ο κωδικός πρέπει να περιέχει τουλάχιστον έναν αριθμό",
 		"passwordNeedsSpecialChar": "Ο κωδικός πρέπει να περιέχει τουλάχιστον έναν ειδικό χαρακτήρα",
 		"userAlreadyExists": "Υπάρχει ήδη χρήστης με αυτό το email",
-		"accountCreatedSuccess": "Ο λογαριασμός δημιουργήθηκε επιτυχώς"
+		"accountCreatedSuccess": "Ο λογαριασμός δημιουργήθηκε επιτυχώς",
+		"firstNameRequired": "Το όνομα είναι υποχρεωτικό",
+		"lastNameRequired": "Το επώνυμο είναι υποχρεωτικό",
+		"passwordMinLength": "Ο κωδικός πρέπει να έχει τουλάχιστον 6 χαρακτήρες",
+		"userNotFound": "Ο χρήστης δεν βρέθηκε",
+		"emailAlreadyTaken": "Το email χρησιμοποιείται ήδη από άλλον χρήστη",
+		"unexpectedError": "Παρουσιάστηκε απροσδόκητο σφάλμα",
+		"userCreatedSuccess": "Ο χρήστης δημιουργήθηκε επιτυχώς",
+		"userUpdatedSuccess": "Ο χρήστης ενημερώθηκε επιτυχώς",
+		"userDeletedSuccess": "Ο χρήστης διαγράφηκε επιτυχώς",
+		"cannotDeleteOwnAccount": "Δεν μπορείτε να διαγράψετε τον δικό σας λογαριασμό"
 	},
 	"Settings": {
 		"selectLanguage": "Επιλογή γλώσσας"
@@ -50,7 +60,8 @@
 	"Menu": {
 		"home": "Αρχική",
 		"profile": "Προφίλ",
-		"settings": "Ρυθμίσεις"
+		"settings": "Ρυθμίσεις",
+		"users": "Χρήστες"
 	},
 	"Profile": {
 		"userInformation": "Στοιχεία χρήστη",
@@ -61,5 +72,51 @@
 		"accountType": "Τύπος λογαριασμού",
 		"status": "Κατάσταση",
 		"active": "Ενεργός"
+	},
+	"User": {
+		"userManagement": "Διαχείριση Χρηστών",
+		"createUser": "Δημιουργία Χρήστη",
+		"updateUser": "Ενημέρωση Χρήστη",
+		"firstName": "Όνομα",
+		"lastName": "Επώνυμο",
+		"email": "Email",
+		"password": "Κωδικός",
+		"role": "Ρόλος",
+		"selectRole": "Επιλέξτε ρόλο",
+		"userRole": "Χρήστης",
+		"adminRole": "Διαχειριστής",
+		"cancel": "Ακύρωση",
+		"searchUsers": "Αναζήτηση χρηστών...",
+		"filterByRole": "Φιλτράρισμα κατά ρόλο",
+		"allRoles": "Όλοι οι Ρόλοι",
+		"name": "Όνομα",
+		"created": "Δημιουργήθηκε",
+		"actions": "Ενέργειες",
+		"confirmDelete": "Είστε σίγουροι;",
+		"deleteUserConfirmation": "Αυτή η ενέργεια δεν μπορεί να αναιρεθεί. Θα διαγράψει οριστικά τον λογαριασμό του χρήστη {name}.",
+		"delete": "Διαγραφή",
+		"noUsersFound": "Δεν βρέθηκαν χρήστες.",
+		"leaveEmptyToKeepCurrent": "αφήστε κενό για να διατηρήσετε τον τρέχοντα",
+		"viewUser": "Προβολή Χρήστη",
+		"userId": "ID Χρήστη",
+		"fullName": "Πλήρες Όνομα",
+		"status": "Κατάσταση",
+		"active": "Ενεργός",
+		"createdAt": "Δημιουργήθηκε στις",
+		"updatedAt": "Ενημερώθηκε στις",
+		"user": "χρήστης",
+		"users": "χρήστες"
+	},
+	"Layout": {
+		"showing": "Εμφανίζονται",
+		"to": "έως",
+		"of": "από",
+		"results": "αποτελέσματα",
+		"previous": "Προηγούμενο",
+		"next": "Επόμενο",
+		"page": "Σελίδα",
+		"resetFilters": "Επαναφορά φίλτρων",
+		"create": "Δημιουργία",
+		"update": "Ενημέρωση"
 	}
 }

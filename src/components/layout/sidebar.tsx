@@ -1,4 +1,4 @@
-import { Home } from "lucide-react";
+import { Home, Users } from "lucide-react";
 
 import {
 	Sidebar,
@@ -32,6 +32,15 @@ export async function AppSidebar() {
 			url: "/dashboard",
 			icon: Home,
 		},
+		...(session?.user.role === "ADMIN"
+			? [
+					{
+						title: t("users"),
+						url: "/admin/user",
+						icon: Users,
+					},
+			  ]
+			: []),
 	];
 
 	return (

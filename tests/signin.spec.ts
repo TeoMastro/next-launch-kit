@@ -1,8 +1,5 @@
 import { test, expect } from "@playwright/test";
 
-// Test without authentication to verify sign-in flow
-test.use({ storageState: { cookies: [], origins: [] } });
-
 test('should sign in successfully', async ({ page }) => {
   // Navigate to a protected page that should redirect to sign-in
   await page.goto('/dashboard');

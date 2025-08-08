@@ -42,7 +42,17 @@
 		"passwordNeedsNumber": "Password must contain at least one number",
 		"passwordNeedsSpecialChar": "Password must contain at least one special character",
 		"userAlreadyExists": "User already exists with this email",
-		"accountCreatedSuccess": "Account created successfully"
+		"accountCreatedSuccess": "Account created successfully",
+		"firstNameRequired": "First name is required",
+		"lastNameRequired": "Last name is required",
+		"passwordMinLength": "Password must be at least 6 characters",
+		"userNotFound": "User not found",
+		"emailAlreadyTaken": "Email is already taken by another user",
+		"unexpectedError": "An unexpected error occurred",
+		"userCreatedSuccess": "User created successfully",
+		"userUpdatedSuccess": "User updated successfully",
+		"userDeletedSuccess": "User deleted successfully",
+		"cannotDeleteOwnAccount": "You cannot delete your own account"
 	},
 	"Settings": {
 		"selectLanguage": "Select language"
@@ -50,7 +60,8 @@
 	"Menu": {
 		"home": "Home",
 		"profile": "Profile",
-		"settings": "Settings"
+		"settings": "Settings",
+		"users": "Users"
 	},
 	"Profile": {
 		"userInformation": "User information",
@@ -61,5 +72,51 @@
 		"accountType": "Account type",
 		"status": "Status",
 		"active": "Active"
+	},
+	"User": {
+		"userManagement": "User Management",
+		"createUser": "Create User",
+		"updateUser": "Update User",
+		"firstName": "First Name",
+		"lastName": "Last Name",
+		"email": "Email",
+		"password": "Password",
+		"role": "Role",
+		"selectRole": "Select a role",
+		"userRole": "User",
+		"adminRole": "Admin",
+		"cancel": "Cancel",
+		"searchUsers": "Search users...",
+		"filterByRole": "Filter by role",
+		"allRoles": "All Roles",
+		"name": "Name",
+		"created": "Created",
+		"actions": "Actions",
+		"confirmDelete": "Are you sure?",
+		"deleteUserConfirmation": "This action cannot be undone. This will permanently delete the user account for {name}.",
+		"delete": "Delete",
+		"noUsersFound": "No users found.",
+		"leaveEmptyToKeepCurrent": "leave empty to keep current",
+		"viewUser": "View User",
+		"userId": "User ID",
+		"fullName": "Full Name",
+		"status": "Status",
+		"active": "Active",
+		"createdAt": "Created At",
+		"updatedAt": "Updated At",
+		"user": "user",
+		"users": "users"
+	},
+	"Layout": {
+		"showing": "Showing",
+		"to": "to",
+		"of": "of",
+		"results": "results",
+		"previous": "Previous",
+		"next": "Next",
+		"page": "Page",
+		"resetFilters": "Reset filters",
+		"create": "Create",
+		"update": "Update"
 	}
 }
