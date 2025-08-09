@@ -1,5 +1,5 @@
 import { getServerSession } from "next-auth";
-import { redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import { authOptions } from "@/lib/auth";
 import { UsersTable } from "@/components/admin/user-table";
 import { getUsersWithPagination } from "@/server-actions/user";
@@ -9,7 +9,7 @@ export default async function AdminUsersPage({ searchParams }: AdminUsersPagePro
     const session = await getServerSession(authOptions);
 
     if (!session || session.user.role !== "ADMIN") {
-        redirect("/dashboard");
+        notFound();
     }
 
     const params = await searchParams;

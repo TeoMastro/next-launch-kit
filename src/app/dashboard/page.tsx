@@ -1,5 +1,5 @@
 import { getAuthSession } from "@/lib/auth";
-import { redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 
 export default async function DashboardPage() {
@@ -7,7 +7,7 @@ export default async function DashboardPage() {
 	const t = await getTranslations("Dashboard");
 
 	if (!session) {
-		redirect("/auth/signin");
+		notFound();
 	}
 
 	return (
