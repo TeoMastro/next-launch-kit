@@ -69,7 +69,7 @@ export function SigninForm({ error, message }: LoginFormProps) {
   return (
     <Card className="w-full max-w-md mx-auto">
       <CardHeader>
-        <CardTitle>{t('signInTitle')}</CardTitle>
+        <CardTitle>{t('signIn')}</CardTitle>
       </CardHeader>
       
       <form action={formAction} noValidate>

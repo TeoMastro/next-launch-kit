@@ -4,7 +4,6 @@
 		"signOut": "Αποσύνδεση",
 		"welcomeBack": "Καλώς ήρθατε πίσω",
 		"signInToAccount": "Συνδεθείτε στον λογαριασμό σας",
-		"signInTitle": "Σύνδεση",
 		"password": "Κωδικός",
 		"enterEmail": "Εισάγετε το email σας",
 		"enterPassword": "Εισάγετε τον κωδικό σας",
@@ -103,9 +102,7 @@
 		"status": "Κατάσταση",
 		"active": "Ενεργός",
 		"createdAt": "Δημιουργήθηκε στις",
-		"updatedAt": "Ενημερώθηκε στις",
-		"user": "χρήστης",
-		"users": "χρήστες"
+		"updatedAt": "Ενημερώθηκε στις"
 	},
 	"Layout": {
 		"showing": "Εμφανίζονται",
@@ -116,6 +113,13 @@
 		"next": "Επόμενο",
 		"page": "Σελίδα",
 		"resetFilters": "Επαναφορά φίλτρων",
+		"create": "Δημιουργία",
+		"update": "Ενημέρωση"
+	},
+	"Breadcrumbs": {
+		"user": "Χρήστες",
+		"profile": "Προφίλ",
+		"settings": "Ρυθμίσεις",
 		"create": "Δημιουργία",
 		"update": "Ενημέρωση"
 	}

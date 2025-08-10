@@ -4,7 +4,6 @@
 		"signOut": "Sign Out",
 		"welcomeBack": "Welcome back",
 		"signInToAccount": "Sign in to your account",
-		"signInTitle": "Sign In",
 		"password": "Password",
 		"enterEmail": "Enter your email",
 		"enterPassword": "Enter your password",
@@ -103,9 +102,7 @@
 		"status": "Status",
 		"active": "Active",
 		"createdAt": "Created At",
-		"updatedAt": "Updated At",
-		"user": "user",
-		"users": "users"
+		"updatedAt": "Updated At"
 	},
 	"Layout": {
 		"showing": "Showing",
@@ -116,6 +113,13 @@
 		"next": "Next",
 		"page": "Page",
 		"resetFilters": "Reset filters",
+		"create": "Create",
+		"update": "Update"
+	},
+	"Breadcrumbs": {
+		"user": "Users",
+		"profile": "Profile",
+		"settings": "Settings",
 		"create": "Create",
 		"update": "Update"
 	}

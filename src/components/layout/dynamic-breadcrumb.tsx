@@ -1,104 +1,128 @@
-"use client"
+"use client";
 
-import { usePathname } from "next/navigation"
-import Link from "next/link"
-import { useEffect, useState } from "react"
+import { usePathname } from "next/navigation";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb"
-import { useTranslations } from "next-intl"
-import { Fragment } from "react"
+	Breadcrumb,
+	BreadcrumbItem,
+	BreadcrumbLink,
+	BreadcrumbList,
+	BreadcrumbPage,
+	BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import { useTranslations } from "next-intl";
+import { Fragment } from "react";
 
 export function DynamicBreadcrumb() {
-  const [isHydrated, setIsHydrated] = useState(false)
-  const pathname = usePathname()
-  const t = useTranslations("Menu")
-  
-  useEffect(() => {
-    setIsHydrated(true)
-  }, [])
+	const [isHydrated, setIsHydrated] = useState(false);
+	const pathname = usePathname();
+	const tMenu = useTranslations("Menu");
+	const tBreadcrumbs = useTranslations("Breadcrumbs");
 
-  // Split pathname and filter out empty strings
-  const pathSegments = pathname.split("/").filter(Boolean)
-  
-  // Function to format segment names and translate them
-  const formatSegmentName = (segment: string) => {
-    const formatted = segment
-      .split("-")
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(" ")
-    
-    if (!isHydrated) return formatted
-    
-    // Try to translate the segment, fallback to formatted name if no translation
-    try {
-      return t(segment) || formatted
-    } catch {
-      return formatted
-    }
-  }
+	useEffect(() => {
+		setIsHydrated(true);
+	}, [pathname]);
 
-  // Show loading state during hydration
-  if (!isHydrated) {
-    return (
-      <Breadcrumb>
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <div className="h-4 w-16 bg-muted animate-pulse rounded" />
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
-    )
-  }
+	const pathSegments = pathname
+		.split("/")
+		.filter(Boolean)
+		.filter((segment) => segment !== "admin");
 
-  // If we're on /dashboard, show only Dashboard as current page
-  if (pathname === "/dashboard") {
-    return (
-      <Breadcrumb>
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbPage>{t("home")}</BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
-    )
-  }
+	const isIdSegment = (segment: string) => {
+		if (/^\d+$/.test(segment)) return true;
+		return false;
+	};
 
-  return (
-    <Breadcrumb>
-      <BreadcrumbList>
-        <BreadcrumbItem>
-          <BreadcrumbLink asChild>
-            <Link href="/dashboard">{t("home")}</Link>
-          </BreadcrumbLink>
-        </BreadcrumbItem>
-        
-        {pathSegments.map((segment, index) => {
-          const href = "/" + pathSegments.slice(0, index + 1).join("/")
-          const isLast = index === pathSegments.length - 1
-          const displayName = formatSegmentName(segment)
-          
-          return (
-            <Fragment key={`breadcrumb-${segment}-${index}`}>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                {isLast ? (
-                  <BreadcrumbPage>{displayName}</BreadcrumbPage>
-                ) : (
-                  <BreadcrumbLink asChild>
-                    <Link href={href}>{displayName}</Link>
-                  </BreadcrumbLink>
-                )}
-              </BreadcrumbItem>
-            </Fragment>
-          )
-        })}
-      </BreadcrumbList>
-    </Breadcrumb>
-  )
+	const formatSegmentName = (segment: string) => {
+		if (isIdSegment(segment)) {
+			return segment;
+		}
+
+		const formatted = segment
+			.split("-")
+			.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+			.join(" ");
+
+		if (!isHydrated) return formatted;
+
+		try {
+			return tBreadcrumbs(segment) || formatted;
+		} catch {
+			return formatted;
+		}
+	};
+
+	if (!isHydrated) {
+		return (
+			<Breadcrumb>
+				<BreadcrumbList>
+					<BreadcrumbItem>
+						<div className="h-4 w-16 bg-muted animate-pulse rounded" />
+					</BreadcrumbItem>
+				</BreadcrumbList>
+			</Breadcrumb>
+		);
+	}
+
+	if (pathname === "/dashboard") {
+		return (
+			<Breadcrumb>
+				<BreadcrumbList>
+					<BreadcrumbItem>
+						<BreadcrumbPage>{tMenu("home")}</BreadcrumbPage>
+					</BreadcrumbItem>
+				</BreadcrumbList>
+			</Breadcrumb>
+		);
+	}
+
+	return (
+		<Breadcrumb>
+			<BreadcrumbList>
+				<BreadcrumbItem>
+					<BreadcrumbLink asChild>
+						<Link href="/dashboard">{tMenu("home")}</Link>
+					</BreadcrumbLink>
+				</BreadcrumbItem>
+
+				{pathSegments.map((segment, index) => {
+					const allSegments = pathname.split("/").filter(Boolean);
+					const adminIndex = allSegments.indexOf("admin");
+					let href = "/";
+
+          // If admin is in the first segment of our pathname, use it in the actual url.
+					if (adminIndex !== -1) {
+						const segmentsForHref = allSegments.slice(
+							0,
+							allSegments.indexOf(segment) + 1
+						);
+						href = "/" + segmentsForHref.join("/");
+					} else {
+						href = "/" + pathSegments.slice(0, index + 1).join("/");
+					}
+
+					const isLast = index === pathSegments.length - 1;
+					const displayName = formatSegmentName(segment);
+
+					return (
+						<Fragment key={`breadcrumb-${segment}-${index}`}>
+							<BreadcrumbSeparator />
+							<BreadcrumbItem>
+								{isLast ? (
+									<BreadcrumbPage>
+										{displayName}
+									</BreadcrumbPage>
+								) : (
+									<BreadcrumbLink asChild>
+										<Link href={href}>{displayName}</Link>
+									</BreadcrumbLink>
+								)}
+							</BreadcrumbItem>
+						</Fragment>
+					);
+				})}
+			</BreadcrumbList>
+		</Breadcrumb>
+	);
 }
