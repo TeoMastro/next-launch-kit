@@ -8,33 +8,22 @@ export default defineConfig({
 	workers: process.env.CI ? 1 : undefined,
 	reporter: "html",
 
+	globalSetup: require.resolve("./tests/global-setup.ts"),
+
 	use: {
 		baseURL: "http://localhost:3000",
 		trace: "on-first-retry",
 	},
 
 	projects: [
-		// Setup project for authentication
 		{ name: "setup", testMatch: /.*\.setup\.ts/ },
 
 		{
-			name: "chromium-auth",
-			testMatch: ["**/user-create.spec.ts", "**/user-update.spec.ts", "**/user-view.spec.ts"],
+			name: "chromium",
 			use: {
 				...devices["Desktop Chrome"],
-				storageState: "playwright/.auth/user.json",
 			},
 			dependencies: ["setup"],
-		},
-
-		{
-			name: "chromium-unauth",
-			testMatch: ["**/signin.spec.ts", "**/signup.spec.ts", "**/user-unauthorized-access.spec.ts"],
-			use: {
-				...devices["Desktop Chrome"],
-				// No storageState - starts fresh
-			},
-			dependencies: ["setup"], // Still depends on setup to ensure auth file exists
 		},
 	],
 
@@ -42,5 +31,10 @@ export default defineConfig({
 		command: "npm run dev",
 		url: "http://localhost:3000",
 		reuseExistingServer: !process.env.CI,
+		env: {
+			DATABASE_URL:
+				"postgresql://postgres:password123@localhost:5433/next_launch_kit_test",
+			NODE_ENV: "test",
+		},
 	},
 });

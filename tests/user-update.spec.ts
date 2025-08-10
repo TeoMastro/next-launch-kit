@@ -1,16 +1,40 @@
 import { test, expect } from "@playwright/test";
+import { PrismaClient } from '@prisma/client';
 
-// Use the authenticated state for admin tests
-test.use({ storageState: "playwright/.auth/user.json" });
+test.use({ storageState: "playwright/.auth/admin.json" });
+
+async function getUserId(email: string): Promise<number> {
+    const prisma = new PrismaClient({
+        datasources: {
+            db: {
+                url: "postgresql://postgres:password123@localhost:5433/next_launch_kit_test"
+            }
+        }
+    });
+    
+    const user = await prisma.user.findUnique({
+        where: { email }
+    });
+    
+    await prisma.$disconnect();
+    
+    if (!user) {
+        throw new Error(`User with email ${email} not found`);
+    }
+    
+    return user.id;
+}
 
 test.describe("Admin User Update Form", () => {
-	// Using a test user ID - you might need to adjust this based on your test data
-	const testUserId = 20;
+	let testUserId: number;
+    test.beforeAll(async () => {
+        testUserId = await getUserId("user@nextlaunchkit.com");
+    });
 
-	test.beforeEach(async ({ page }) => {
-		await page.goto(`/admin/user/${testUserId}/update`);
-		await page.waitForLoadState("networkidle");
-	});
+    test.beforeEach(async ({ page }) => {
+        await page.goto(`/admin/user/${testUserId}/update`);
+        await page.waitForLoadState("networkidle");
+    });
 
 	test("displays the update user form correctly", async ({ page }) => {
 		await expect(page.getByRole("heading")).toBeVisible();

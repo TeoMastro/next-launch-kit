@@ -1,7 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-// Use the authenticated state for admin tests
-test.use({ storageState: "playwright/.auth/user.json" });
+test.use({ storageState: "playwright/.auth/admin.json" });
 
 test.describe("Admin User Create Form", () => {
 	test.beforeEach(async ({ page }) => {
