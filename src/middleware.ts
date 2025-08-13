@@ -3,6 +3,14 @@ import { NextResponse } from "next/server";
 
 export default withAuth(
 	function middleware(req) {
+		if (!req.nextauth.token || !req.nextauth.token.id) {
+			const response = NextResponse.redirect(
+				new URL("/auth/signin", req.url)
+			);
+			response.cookies.delete("next-auth.session-token");
+			return response;
+		}
+
 		if (
 			req.nextUrl.pathname.startsWith("/admin") &&
 			req.nextauth.token?.role !== "ADMIN" &&
