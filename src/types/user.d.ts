@@ -1,4 +1,4 @@
-import { Role } from "@prisma/client";
+import { Role, Status } from "@prisma/client";
 
 export type UserFormState = {
     success: boolean;
@@ -9,6 +9,7 @@ export type UserFormState = {
         email: string;
         password: string;
         role: Role;
+        status: Status;
     };
     globalError: string | null;
 };
@@ -35,9 +36,9 @@ export type AdminUsersPageProps = {
 };
 
 export type UserFormProps = {
-    user?: Omit<User, 'created_at' | 'updated_at'>;
+    user?: Omit<User, "created_at" | "updated_at" | "password" | "email_verification_token" | "email_verified_at"> | null;
     mode: "create" | "update";
-};
+}
 
 export type UserViewProps = {
     user: User;
@@ -55,6 +56,7 @@ export type User = {
     last_name: string;
     email: string;
     role: Role;
+    status: Status;
     created_at: Date;
     updated_at: Date;
 }

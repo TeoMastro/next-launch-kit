@@ -16,7 +16,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { UserFormProps, UserFormState } from "@/types/user";
-import { Role } from "@prisma/client";
+import { Role, Status } from "@prisma/client";
 
 export function UserForm({ user, mode }: UserFormProps) {
     const tUser = useTranslations("User");
@@ -32,6 +32,7 @@ export function UserForm({ user, mode }: UserFormProps) {
             email: user?.email || "",
             password: "",
             role: user?.role || Role.USER,
+            status: user?.status || Status.ACTIVE, // Add status field
         },
         globalError: null,
     };
@@ -143,22 +144,43 @@ export function UserForm({ user, mode }: UserFormProps) {
                         )}
                     </div>
 
-                    <div className="space-y-2">
-                        <Label htmlFor="role">{tUser("role")}</Label>
-                        <Select name="role" defaultValue={state.formData.role}>
-                            <SelectTrigger>
-                                <SelectValue placeholder={tUser("selectRole")} />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="USER">{tUser("userRole")}</SelectItem>
-                                <SelectItem value="ADMIN">{tUser("adminRole")}</SelectItem>
-                            </SelectContent>
-                        </Select>
-                        {state.errors.role && (
-                            <p className="text-sm text-red-500">
-                                {getErrorMessage("role")}
-                            </p>
-                        )}
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="role">{tUser("role")}</Label>
+                            <Select name="role" defaultValue={state.formData.role}>
+                                <SelectTrigger>
+                                    <SelectValue placeholder={tUser("selectRole")} />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="USER">{tUser("userRole")}</SelectItem>
+                                    <SelectItem value="ADMIN">{tUser("adminRole")}</SelectItem>
+                                </SelectContent>
+                            </Select>
+                            {state.errors.role && (
+                                <p className="text-sm text-red-500">
+                                    {getErrorMessage("role")}
+                                </p>
+                            )}
+                        </div>
+
+                        <div className="space-y-2">
+                            <Label htmlFor="status">{tUser("status")}</Label>
+                            <Select name="status" defaultValue={state.formData.status}>
+                                <SelectTrigger>
+                                    <SelectValue placeholder={tUser("selectStatus")} />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="ACTIVE">{tUser("activeStatus")}</SelectItem>
+                                    <SelectItem value="INACTIVE">{tUser("inactiveStatus")}</SelectItem>
+                                    <SelectItem value="UNVERIFIED">{tUser("unverifiedStatus")}</SelectItem>
+                                </SelectContent>
+                            </Select>
+                            {state.errors.status && (
+                                <p className="text-sm text-red-500">
+                                    {getErrorMessage("status")}
+                                </p>
+                            )}
+                        </div>
                     </div>
 
                     <div className="flex gap-4">

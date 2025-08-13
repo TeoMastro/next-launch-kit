@@ -1,8 +1,16 @@
-import { useTranslations } from "next-intl";
 import LanguageSwitcher from "@/components/language-switcher";
+import { getAuthSession } from "@/lib/auth";
+import { redirect } from "next/navigation";
+import { Status } from "@prisma/client";
+import { getTranslations } from "next-intl/server";
 
-export default function SettingsPage() {
-	const t = useTranslations("Settings");
+export default async function SettingsPage() {
+	const session = await getAuthSession();
+
+	if (!session || session?.user.status !== Status.ACTIVE) {
+		redirect("/auth/signin");
+	}
+	const t = await getTranslations("Settings");
 
 	return (
 		<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

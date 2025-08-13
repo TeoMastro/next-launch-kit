@@ -1,9 +1,14 @@
 import { getAuthSession } from "@/lib/auth";
 import { getTranslations } from "next-intl/server";
+import { redirect } from "next/navigation";
+import { Status } from "@prisma/client";
 
 export default async function ProfilePage() {
 	const session = await getAuthSession();
-    const t = await getTranslations("Profile");
+	if (!session || session?.user.status !== Status.ACTIVE) {
+		redirect("/auth/signin");
+	}
+	const t = await getTranslations("Profile");
 
 	return (
 		<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -33,7 +38,8 @@ export default async function ProfilePage() {
 				</h3>
 				<div className="space-y-2">
 					<p>
-						<strong>{t("accountType")}:</strong> {session?.user.role}
+						<strong>{t("accountType")}:</strong>{" "}
+						{session?.user.role}
 					</p>
 					<p>
 						<strong>{t("status")}:</strong>{" "}

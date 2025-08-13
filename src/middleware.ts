@@ -3,11 +3,10 @@ import { NextResponse } from "next/server";
 
 export default withAuth(
 	function middleware(req) {
-		console.log("Authenticated user:", req.nextauth.token);
 		if (
 			req.nextUrl.pathname.startsWith("/admin") &&
-			req.nextauth.token?.role !== "ADMIN" && 
-      !!req.nextauth.token
+			req.nextauth.token?.role !== "ADMIN" &&
+			!!req.nextauth.token
 		) {
 			return NextResponse.redirect(new URL("/404", req.url));
 		}

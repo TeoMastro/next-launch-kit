@@ -7,8 +7,12 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { GetUsersParams, GetUsersResult, UserFormState } from "@/types/user";
-import { createUserSchema, formatZodErrors, updateUserSchema } from "@/lib/validation-schemas";
-import { Role } from "@prisma/client";
+import {
+	createUserSchema,
+	formatZodErrors,
+	updateUserSchema,
+} from "@/lib/validation-schemas";
+import { Role, Status } from "@prisma/client";
 
 async function checkAdminAuth() {
 	const session = await getServerSession(authOptions);
@@ -32,7 +36,9 @@ export async function createUserAction(
 			last_name: formData.get("last_name")?.toString() ?? "",
 			email: formData.get("email")?.toString() ?? "",
 			password: formData.get("password")?.toString() ?? "",
-			role: formData.get("role")?.toString() as Role ?? ""
+			role: (formData.get("role")?.toString() as Role) ?? Role.USER,
+			status:
+				(formData.get("status")?.toString() as Status) ?? Status.ACTIVE,
 		};
 
 		const parsed = createUserSchema.safeParse(data);
@@ -70,17 +76,12 @@ export async function createUserAction(
 				email: trimmedEmail,
 				password: hashedPassword,
 				role: parsed.data.role,
+				status: parsed.data.status,
 			},
 		});
 
 		revalidatePath("/admin/users");
-
-		redirect("/admin/user?message=userCreatedSuccess");
 	} catch (error) {
-		if (error instanceof Error && error.message === "NEXT_REDIRECT") {
-			throw error;
-		}
-
 		return {
 			success: false,
 			errors: {},
@@ -89,11 +90,15 @@ export async function createUserAction(
 				last_name: formData.get("last_name")?.toString() ?? "",
 				email: formData.get("email")?.toString() ?? "",
 				password: "",
-				role: formData.get("role")?.toString() as Role ?? Role.USER
+				role: (formData.get("role")?.toString() as Role) ?? Role.USER,
+				status:
+					(formData.get("status")?.toString() as Status) ??
+					Status.ACTIVE,
 			},
 			globalError: "unexpectedError",
 		};
 	}
+	redirect("/admin/user?message=userCreatedSuccess");
 }
 
 export async function updateUserAction(
@@ -109,7 +114,9 @@ export async function updateUserAction(
 			last_name: formData.get("last_name")?.toString() ?? "",
 			email: formData.get("email")?.toString() ?? "",
 			password: formData.get("password")?.toString() ?? "",
-			role: formData.get("role")?.toString() as Role ?? ""
+			role: (formData.get("role")?.toString() as Role) ?? Role.USER,
+			status:
+				(formData.get("status")?.toString() as Status) ?? Status.ACTIVE,
 		};
 
 		const parsed = updateUserSchema.safeParse(data);
@@ -159,8 +166,9 @@ export async function updateUserAction(
 			last_name: parsed.data.last_name.trim(),
 			email: trimmedEmail,
 			role: parsed.data.role,
+			status: parsed.data.status,
 		};
-
+		console.log(updateData);
 		if (parsed.data.password && parsed.data.password.trim() !== "") {
 			updateData.password = await bcrypt.hash(parsed.data.password, 12);
 		}
@@ -171,12 +179,7 @@ export async function updateUserAction(
 		});
 
 		revalidatePath("/admin/users");
-		redirect("/admin/user?message=userUpdatedSuccess");
 	} catch (error) {
-		if (error instanceof Error && error.message === "NEXT_REDIRECT") {
-			throw error;
-		}
-
 		return {
 			success: false,
 			errors: {},
@@ -185,11 +188,15 @@ export async function updateUserAction(
 				last_name: formData.get("last_name")?.toString() ?? "",
 				email: formData.get("email")?.toString() ?? "",
 				password: "",
-				role: formData.get("role")?.toString() as Role ?? Role.USER
+				role: (formData.get("role")?.toString() as Role) ?? Role.USER,
+				status:
+					(formData.get("status")?.toString() as Status) ??
+					Status.ACTIVE,
 			},
 			globalError: "unexpectedError",
 		};
 	}
+	redirect("/admin/user?message=userUpdatedSuccess");
 }
 
 export async function deleteUserAction(userId: number) {
@@ -221,34 +228,35 @@ export async function deleteUserAction(userId: number) {
 }
 
 export async function getUserById(userId: number) {
-    try {
-        await checkAdminAuth();
+	try {
+		await checkAdminAuth();
 
-        if (isNaN(userId)) {
-            return false;
-        }
+		if (isNaN(userId)) {
+			return false;
+		}
 
-        const user = await prisma.user.findUnique({
-            where: { id: userId },
-            select: {
-                id: true,
-                first_name: true,
-                last_name: true,
-                email: true,
-                role: true,
-                created_at: true,
-                updated_at: true,
-            },
-        });
+		const user = await prisma.user.findUnique({
+			where: { id: userId },
+			select: {
+				id: true,
+				first_name: true,
+				last_name: true,
+				email: true,
+				role: true,
+				status: true,
+				created_at: true,
+				updated_at: true,
+			},
+		});
 
-        if (!user) {
-            return false;
-        }
+		if (!user) {
+			return false;
+		}
 
-        return user;
-    } catch (error) {
-        throw error;
-    }
+		return user;
+	} catch (error) {
+		throw error;
+	}
 }
 
 export async function getUsersWithPagination(
@@ -293,6 +301,7 @@ export async function getUsersWithPagination(
 				last_name: true,
 				email: true,
 				role: true,
+				status: true,
 				created_at: true,
 				updated_at: true,
 			},

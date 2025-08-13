@@ -17,6 +17,8 @@ model User {
   email      String  @unique
   password   String
   role       Role     @default(USER)
+  status     Status @default(UNVERIFIED)
+  email_verification_token String? @unique
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
@@ -26,4 +28,10 @@ model User {
 enum Role {
   USER
   ADMIN
+}
+
+enum Status {
+  ACTIVE
+  INACTIVE
+  UNVERIFIED
 }

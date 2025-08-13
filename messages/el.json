@@ -25,7 +25,9 @@
 		"passwordPlaceholder": "Τουλάχιστον 8 χαρακτήρες",
 		"confirmPasswordPlaceholder": "Επιβεβαιώστε τον κωδικό σας",
 		"createAccount": "Δημιουργία Λογαριασμού",
-		"alreadyHaveAccount": "Έχετε ήδη λογαριασμό;"
+		"alreadyHaveAccount": "Έχετε ήδη λογαριασμό;",
+		"accountCreatedCheckEmail": "Ο λογαριασμός σας δημιουργήθηκε επιτυχώς. Ελέγξτε το email σας για επαλήθευση!",
+		"accountCreationFailed": "Ο λογαριασμός σας δεν δημιουργήθηκε. Παρακαλώ δοκιμάστε ξανά αργότερα!"
 	},
 	"Dashboard": {
 		"welcomeBack": "Καλώς ήρθατε πίσω, {name}"
@@ -41,7 +43,6 @@
 		"passwordNeedsNumber": "Ο κωδικός πρέπει να περιέχει τουλάχιστον έναν αριθμό",
 		"passwordNeedsSpecialChar": "Ο κωδικός πρέπει να περιέχει τουλάχιστον έναν ειδικό χαρακτήρα",
 		"userAlreadyExists": "Υπάρχει ήδη χρήστης με αυτό το email",
-		"accountCreatedSuccess": "Ο λογαριασμός δημιουργήθηκε επιτυχώς",
 		"firstNameRequired": "Το όνομα είναι υποχρεωτικό",
 		"lastNameRequired": "Το επώνυμο είναι υποχρεωτικό",
 		"passwordMinLength": "Ο κωδικός πρέπει να έχει τουλάχιστον 6 χαρακτήρες",
@@ -122,5 +123,19 @@
 		"settings": "Ρυθμίσεις",
 		"create": "Δημιουργία",
 		"update": "Ενημέρωση"
+	},
+	"VerifyEmail": {
+		"pageTitle": "Επαλήθευση email",
+		"pageSubtitle": "Επαληθεύουμε τη διεύθυνση email σας",
+		"verifying": "Επαληθεύουμε το email σας...",
+		"successTitle": "Το email επαληθεύτηκε!",
+		"errorTitle": "Η επαλήθευση απέτυχε",
+		"verificationSuccess": "Το email σας επαληθεύτηκε επιτυχώς!",
+		"verificationSuccessRedirect": "Το email επαληθεύτηκε επιτυχώς! Μπορείτε τώρα να συνδεθείτε.",
+		"verificationError": "Μη έγκυρο ή ληγμένο token επαλήθευσης.",
+		"verificationFailed": "Προέκυψε σφάλμα κατά την επαλήθευση.",
+		"noTokenError": "Δεν παρείχθη token επαλήθευσης.",
+		"redirectingMessage": "Ανακατεύθυνση στη σελίδα σύνδεσης σε 3 δευτερόλεπτα...",
+		"backToLoginButton": "Επιστροφή στη σύνδεση"
 	}
 }

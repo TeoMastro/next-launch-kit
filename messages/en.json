@@ -25,7 +25,9 @@
 		"passwordPlaceholder": "At least 8 characters",
 		"confirmPasswordPlaceholder": "Confirm your password",
 		"createAccount": "Create Account",
-		"alreadyHaveAccount": "Already have an account?"
+		"alreadyHaveAccount": "Already have an account?",
+		"accountCreatedCheckEmail": "Your account was successfully created. Check your email for verification!",
+		"accountCreationFailed": "Your account was not created. Please try again later!"
 	},
 	"Dashboard": {
 		"welcomeBack": "Welcome back, {name}"
@@ -41,7 +43,6 @@
 		"passwordNeedsNumber": "Password must contain at least one number",
 		"passwordNeedsSpecialChar": "Password must contain at least one special character",
 		"userAlreadyExists": "User already exists with this email",
-		"accountCreatedSuccess": "Account created successfully",
 		"firstNameRequired": "First name is required",
 		"lastNameRequired": "Last name is required",
 		"passwordMinLength": "Password must be at least 6 characters",
@@ -102,7 +103,11 @@
 		"status": "Status",
 		"active": "Active",
 		"createdAt": "Created At",
-		"updatedAt": "Updated At"
+		"updatedAt": "Updated At",
+		"selectStatus": "Select status",
+		"activeStatus": "Active",
+		"inactiveStatus": "Inactive",
+		"unverifiedStatus": "Unverified"
 	},
 	"Layout": {
 		"showing": "Showing",
@@ -122,5 +127,19 @@
 		"settings": "Settings",
 		"create": "Create",
 		"update": "Update"
+	},
+	"VerifyEmail": {
+		"pageTitle": "Email verification",
+		"pageSubtitle": "Verifying your email address",
+		"verifying": "Verifying your email...",
+		"successTitle": "Email verified!",
+		"errorTitle": "Verification failed",
+		"verificationSuccess": "Your email has been verified successfully!",
+		"verificationSuccessRedirect": "Email verified successfully! You can now sign in.",
+		"verificationError": "Invalid or expired verification token.",
+		"verificationFailed": "An error occurred during verification.",
+		"noTokenError": "No verification token provided.",
+		"redirectingMessage": "Redirecting to login in 3 seconds...",
+		"backToLoginButton": "Back to login"
 	}
 }
