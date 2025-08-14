@@ -11,7 +11,8 @@
 		"dontHaveAccount": "Don't have an account?",
 		"signUp": "Sign up",
 		"invalidCredentials": "Invalid email or password",
-		"somethingWentWrong": "Something went wrong"
+		"somethingWentWrong": "Something went wrong",
+		"forgotPassword": "Forgot password?"
 	},
 	"SignUp": {
 		"pageTitle": "Create your account",
@@ -141,5 +142,27 @@
 		"noTokenError": "No verification token provided.",
 		"redirectingMessage": "Redirecting to login in 3 seconds...",
 		"backToLoginButton": "Back to login"
+	},
+	"ForgotPassword": {
+		"forgotPassword": "Forgot password",
+		"enterEmailForReset": "Enter your email address and we'll send you a link to reset your password",
+		"enterEmail": "Enter your email",
+		"sending": "Sending...",
+		"sendResetLink": "Send reset link",
+		"rememberPassword": "Remember your password?",
+		"resetEmailSent": "If an account with that email exists, we've sent you a password reset link.",
+		"somethingWentWrong": "Something went wrong. Please try again."
+	},
+	"ResetPassword": {
+		"resetPassword": "Reset password",
+		"enterNewPassword": "Enter your new password below",
+		"setNewPassword": "Set new password",
+		"newPassword": "New password",
+		"confirmPassword": "Confirm password",
+		"confirmNewPassword": "Confirm your new password",
+		"resetting": "Resetting...",
+		"rememberPassword": "Remember your password?",
+		"invalidOrExpiredToken": "Invalid or expired reset token. Please request a new password reset.",
+		"passwordResetSuccess": "Your password has been reset successfully. You can now sign in with your new password."
 	}
 }

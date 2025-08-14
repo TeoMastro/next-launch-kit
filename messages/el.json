@@ -11,7 +11,8 @@
 		"dontHaveAccount": "Δεν έχετε λογαριασμό;",
 		"signUp": "Εγγραφή",
 		"invalidCredentials": "Λάθος email ή κωδικός",
-		"somethingWentWrong": "Κάτι πήγε στραβά"
+		"somethingWentWrong": "Κάτι πήγε στραβά",
+		"forgotPassword": "Ξεχάσατε τον κωδικό σας;"
 	},
 	"SignUp": {
 		"pageTitle": "Δημιουργήστε τον λογαριασμό σας",
@@ -137,5 +138,27 @@
 		"noTokenError": "Δεν παρείχθη token επαλήθευσης.",
 		"redirectingMessage": "Ανακατεύθυνση στη σελίδα σύνδεσης σε 3 δευτερόλεπτα...",
 		"backToLoginButton": "Επιστροφή στη σύνδεση"
+	},
+	"ForgotPassword": {
+		"forgotPassword": "Ξέχασα τον κωδικό",
+		"enterEmailForReset": "Εισάγετε τη διεύθυνση email σας και θα σας στείλουμε έναν σύνδεσμο για επαναφορά του κωδικού",
+		"enterEmail": "Εισάγετε το email σας",
+		"sending": "Αποστολή...",
+		"sendResetLink": "Αποστολή συνδέσμου επαναφοράς",
+		"rememberPassword": "Θυμάστε τον κωδικό σας;",
+		"resetEmailSent": "Εάν υπάρχει λογαριασμός με αυτό το email, σας έχουμε στείλει έναν σύνδεσμο επαναφοράς κωδικού.",
+		"somethingWentWrong": "Κάτι πήγε στραβά. Παρακαλώ δοκιμάστε ξανά."
+	},
+	"ResetPassword": {
+		"resetPassword": "Επαναφορά κωδικού",
+		"enterNewPassword": "Εισάγετε τον νέο σας κωδικό παρακάτω",
+		"setNewPassword": "Ορισμός νέου κωδικού",
+		"newPassword": "Νέος κωδικός",
+		"confirmPassword": "Επιβεβαίωση κωδικού",
+		"confirmNewPassword": "Επιβεβαιώστε τον νέο σας κωδικό",
+		"resetting": "Επαναφορά...",
+		"rememberPassword": "Θυμάστε τον κωδικό σας;",
+		"invalidOrExpiredToken": "Μη έγκυρος ή ληγμένος σύνδεσμος επαναφοράς. Παρακαλώ ζητήστε νέα επαναφορά κωδικού.",
+		"passwordResetSuccess": "Ο κωδικός σας επαναφέρθηκε με επιτυχία. Μπορείτε τώρα να συνδεθείτε με τον νέο σας κωδικό."
 	}
 }

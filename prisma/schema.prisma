@@ -19,6 +19,8 @@ model User {
   role       Role     @default(USER)
   status     Status @default(UNVERIFIED)
   email_verification_token String? @unique
+  password_reset_token String? @unique
+  password_reset_expires DateTime?
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 

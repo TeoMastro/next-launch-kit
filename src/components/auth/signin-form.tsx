@@ -12,6 +12,7 @@ import { useTranslations } from 'next-intl'
 import { useActionState } from "react"
 import { validateSigninData } from "@/server-actions/auth"
 import { ValidationState } from "@/types/auth"
+import Link from "next/link"
 
 interface LoginFormProps {
   error?: string
@@ -124,6 +125,15 @@ export function SigninForm({ error, message }: LoginFormProps) {
               </p>
             )}
           </div>
+
+          <div className="flex items-center justify-end">
+            <Link 
+              href="/auth/forgot-password" 
+              className="text-sm font-medium text-primary hover:underline"
+            >
+              {t('forgotPassword')}
+            </Link>
+          </div>
         </CardContent>
         
         <CardFooter className="flex flex-col space-y-4">
@@ -133,9 +143,9 @@ export function SigninForm({ error, message }: LoginFormProps) {
           
           <p className="text-center text-sm text-muted-foreground">
             {t('dontHaveAccount')}{" "}
-            <a href="/auth/signup" className="font-medium text-primary hover:underline">
+            <Link href="/auth/signup" className="font-medium text-primary hover:underline">
               {t('signUp')}
-            </a>
+            </Link>
           </p>
         </CardFooter>
       </form>

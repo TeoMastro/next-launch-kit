@@ -53,6 +53,18 @@ export const updateUserSchema = z.object({
 	status: z.enum([Status.ACTIVE, Status.INACTIVE, Status.UNVERIFIED]),
 });
 
+export const forgotPasswordSchema = z.object({
+  email: z.email("invalidEmail").min(1, "emailRequired"),
+});
+
+export const resetPasswordSchema = z.object({
+  password: z.string().min(8, "passwordMinLength"),
+  confirmPassword: z.string().min(1, "confirmPasswordRequired"),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "passwordsDoNotMatch",
+  path: ["confirmPassword"],
+});
+
 export function formatZodErrors(error: z.ZodError) {
 	const fieldErrors: { [key: string]: string[] } = {};
 
