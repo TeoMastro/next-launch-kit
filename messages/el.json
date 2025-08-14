@@ -104,7 +104,13 @@
 		"status": "Κατάσταση",
 		"active": "Ενεργός",
 		"createdAt": "Δημιουργήθηκε στις",
-		"updatedAt": "Ενημερώθηκε στις"
+		"updatedAt": "Ενημερώθηκε στις",
+		"selectStatus": "Επιλέξτε κατάσταση",
+		"activeStatus": "Ενεργός",
+		"inactiveStatus": "Ανενεργός",
+		"unverifiedStatus": "Μη επιβεβαιωμένος",
+		"filterByStatus": "Φιλτράρισμα κατά κατάσταση",
+		"allStatuses": "Όλες οι καταστάσεις"
 	},
 	"Layout": {
 		"showing": "Εμφανίζονται",

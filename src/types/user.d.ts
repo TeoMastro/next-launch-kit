@@ -19,6 +19,7 @@ export type GetUsersParams = {
     limit?: string;
     search?: string;
     roleFilter?: string;
+    statusFilter?: string;
     sortField?: string;
     sortDirection?: string;
 };
@@ -74,4 +75,5 @@ export type UsersTableProps = {
     sortDirection: "asc" | "desc";
     searchTerm: string;
     roleFilter: string;
+    statusFilter: string;
 }

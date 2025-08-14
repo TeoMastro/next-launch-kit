@@ -36,6 +36,7 @@ export default async function AdminUsersPage({ searchParams }: AdminUsersPagePro
                 sortDirection={(params.sortDirection as "asc" | "desc") || "desc"}
                 searchTerm={params.search || ""}
                 roleFilter={params.roleFilter || "all"}
+                statusFilter={params.statusFilter || "all"}
             />
         </div>
     );

@@ -266,6 +266,7 @@ export async function getUsersWithPagination(
 	const limit = parseInt(params.limit || "10");
 	const search = params.search || "";
 	const roleFilter = params.roleFilter || "all";
+	const statusFilter = params.statusFilter || "all";
 	const sortField = params.sortField || "created_at";
 	const sortDirection = (params.sortDirection as "asc" | "desc") || "desc";
 
@@ -283,6 +284,13 @@ export async function getUsersWithPagination(
 
 	if (roleFilter !== "all") {
 		whereClause.role = roleFilter as "USER" | "ADMIN";
+	}
+
+	if (statusFilter !== "all") {
+		whereClause.status = statusFilter as
+			| "ACTIVE"
+			| "INACTIVE"
+			| "UNVERIFIED";
 	}
 
 	const orderBy: any = {};

@@ -108,7 +108,9 @@
 		"selectStatus": "Select status",
 		"activeStatus": "Active",
 		"inactiveStatus": "Inactive",
-		"unverifiedStatus": "Unverified"
+		"unverifiedStatus": "Unverified",
+		"filterByStatus": "Filter by status",
+		"allStatuses": "All Statuses"
 	},
 	"Layout": {
 		"showing": "Showing",

@@ -8,10 +8,13 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { ArrowLeft, Edit, Calendar, Mail, Shield } from "lucide-react";
 import { UserViewProps } from "@/types/user";
+import { getStatusBadge } from "@/components/admin/user-table";
 
 export function UserView({ user }: UserViewProps) {
     const router = useRouter();
     const tUser = useTranslations("User");
+
+    const statusBadge = getStatusBadge(user.status, tUser);
 
     return (
         <div className="max-w-4xl mx-auto space-y-6">
@@ -88,8 +91,11 @@ export function UserView({ user }: UserViewProps) {
                                     {tUser("status")}
                                 </label>
                                 <div className="mt-1">
-                                    <Badge variant="outline" className="text-green-600 border-green-600">
-                                        {tUser("active")}
+                                    <Badge 
+                                        variant={statusBadge.variant}
+                                        className="text-sm"
+                                    >
+                                        {statusBadge.text}
                                     </Badge>
                                 </div>
                             </div>

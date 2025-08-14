@@ -42,8 +42,33 @@ import {
 	SortableTableHeader,
 	SortField,
 } from "../layout/sortable-table-header";
-import { Role } from "@prisma/client";
+import { Role, Status } from "@prisma/client";
 import { UsersTableProps } from "@/types/user";
+
+export const getStatusBadge = (status: Status, tUser: (key: string) => string) => {
+    switch (status) {
+        case Status.ACTIVE:
+            return {
+                variant: "default" as const,
+                text: tUser("activeStatus"),
+            };
+        case Status.INACTIVE:
+            return {
+                variant: "destructive" as const,
+                text: tUser("inactiveStatus"),
+            };
+        case Status.UNVERIFIED:
+            return {
+                variant: "outline" as const,
+                text: tUser("unverifiedStatus"),
+            };
+        default:
+            return {
+                variant: "secondary" as const,
+                text: status,
+            };
+    }
+};
 
 export function UsersTable({
 	users,
@@ -56,6 +81,7 @@ export function UsersTable({
 	sortDirection,
 	searchTerm,
 	roleFilter,
+	statusFilter,
 }: UsersTableProps) {
 	const router = useRouter();
 	const pathname = usePathname();
@@ -67,12 +93,13 @@ export function UsersTable({
 	// Local state for immediate UI feedback
 	const [searchTermLocal, setSearchTermLocal] = useState(searchTerm);
 	const [roleFilterLocal, setRoleFilterLocal] = useState(roleFilter);
+	const [statusFilterLocal, setStatusFilterLocal] = useState(statusFilter);
 	const [isPending, startTransition] = useTransition();
 	const [deletingUserId, setDeletingUserId] = useState<number | null>(null);
 
 	// Show success message if present in URL
 	const message = searchParams.get("message");
-    const [showAlert, setShowAlert] = useState(!!message);
+	const [showAlert, setShowAlert] = useState(!!message);
 
 	// Function to update URL with new params
 	const updateUrl = useCallback(
@@ -138,6 +165,18 @@ export function UsersTable({
 		[updateUrl]
 	);
 
+	// Handle status filter changes
+	const handleStatusFilterChange = useCallback(
+		(value: string) => {
+			setStatusFilterLocal(value);
+			updateUrl({
+				statusFilter: value,
+				page: "1", // Reset to first page when filtering
+			});
+		},
+		[updateUrl]
+	);
+
 	// Handle user deletion
 	const handleDelete = async (userId: number) => {
 		if (userId === currentUserId) {
@@ -177,15 +216,19 @@ export function UsersTable({
 	const handleResetFilters = useCallback(() => {
 		setSearchTermLocal("");
 		setRoleFilterLocal("all");
+		setStatusFilterLocal("all");
 		updateUrl({
 			search: "",
 			roleFilter: "all",
+			statusFilter: "all",
 			page: "1",
 		});
 	}, [updateUrl]);
 
 	const hasActiveFilters =
-		searchTermLocal !== "" || roleFilterLocal !== "all";
+		searchTermLocal !== "" ||
+		roleFilterLocal !== "all" ||
+		statusFilterLocal !== "all";
 
 	return (
 		<div className="space-y-4">
@@ -245,6 +288,28 @@ export function UsersTable({
 						</SelectItem>
 					</SelectContent>
 				</Select>
+				<Select
+					value={statusFilterLocal}
+					onValueChange={handleStatusFilterChange}
+				>
+					<SelectTrigger className="w-[180px]">
+						<SelectValue placeholder={tUser("filterByStatus")} />
+					</SelectTrigger>
+					<SelectContent>
+						<SelectItem value="all">
+							{tUser("allStatuses")}
+						</SelectItem>
+						<SelectItem value="ACTIVE">
+							{tUser("activeStatus")}
+						</SelectItem>
+						<SelectItem value="INACTIVE">
+							{tUser("inactiveStatus")}
+						</SelectItem>
+						<SelectItem value="UNVERIFIED">
+							{tUser("unverifiedStatus")}
+						</SelectItem>
+					</SelectContent>
+				</Select>
 				{hasActiveFilters && (
 					<Button
 						variant="outline"
@@ -287,6 +352,15 @@ export function UsersTable({
 							>
 								{tUser("role")}
 							</SortableTableHeader>
+							{/* Add status column header */}
+							<SortableTableHeader
+								field="status"
+								currentField={sortField}
+								direction={sortDirection}
+								onSort={handleSort}
+							>
+								{tUser("status")}
+							</SortableTableHeader>
 							<SortableTableHeader
 								field="created_at"
 								currentField={sortField}
@@ -301,110 +375,121 @@ export function UsersTable({
 						</TableRow>
 					</TableHeader>
 					<TableBody>
-						{users.map((user) => (
-							<TableRow key={user.id}>
-								<TableCell className="font-medium">
-									{user.first_name} {user.last_name}
-								</TableCell>
-								<TableCell>{user.email}</TableCell>
-								<TableCell>
-									<Badge
-										variant={
-											user.role === Role.ADMIN
-												? "default"
-												: "secondary"
-										}
-									>
-										{user.role === Role.ADMIN
-											? tUser("adminRole")
-											: tUser("userRole")}
-									</Badge>
-								</TableCell>
-								<TableCell>
-									{new Date(
-										user.created_at
-									).toLocaleDateString()}
-								</TableCell>
-								<TableCell className="text-right">
-									<div className="flex justify-end gap-2">
-										<Button
-											variant="outline"
-											size="sm"
-											onClick={() =>
-												router.push(
-													`/admin/user/${user.id}`
-												)
+						{users.map((user) => {
+							const statusBadge = getStatusBadge(user.status, tUser);
+							return (
+								<TableRow key={user.id}>
+									<TableCell className="font-medium">
+										{user.first_name} {user.last_name}
+									</TableCell>
+									<TableCell>{user.email}</TableCell>
+									<TableCell>
+										<Badge
+											variant={
+												user.role === Role.ADMIN
+													? "default"
+													: "secondary"
 											}
-											disabled={isPending}
-											title={tUser("viewUser")}
 										>
-											<Eye className="h-4 w-4" />
-										</Button>
+											{user.role === Role.ADMIN
+												? tUser("adminRole")
+												: tUser("userRole")}
+										</Badge>
+									</TableCell>
+									{/* Add status column */}
+									<TableCell>
+										<Badge variant={statusBadge.variant}>
+											{statusBadge.text}
+										</Badge>
+									</TableCell>
+									<TableCell>
+										{new Date(
+											user.created_at
+										).toLocaleDateString()}
+									</TableCell>
+									<TableCell className="text-right">
+										<div className="flex justify-end gap-2">
+											<Button
+												variant="outline"
+												size="sm"
+												onClick={() =>
+													router.push(
+														`/admin/user/${user.id}`
+													)
+												}
+												disabled={isPending}
+												title={tUser("viewUser")}
+											>
+												<Eye className="h-4 w-4" />
+											</Button>
 
-										<Button
-											variant="outline"
-											size="sm"
-											onClick={() =>
-												router.push(
-													`/admin/user/${user.id}/update`
-												)
-											}
-											disabled={isPending}
-										>
-											<Pencil className="h-4 w-4" />
-										</Button>
+											<Button
+												variant="outline"
+												size="sm"
+												onClick={() =>
+													router.push(
+														`/admin/user/${user.id}/update`
+													)
+												}
+												disabled={isPending}
+											>
+												<Pencil className="h-4 w-4" />
+											</Button>
 
-										<AlertDialog>
-											<AlertDialogTrigger asChild>
-												<Button
-													variant="outline"
-													size="sm"
-													disabled={
-														user.id ===
-															currentUserId ||
-														isPending ||
-														deletingUserId ===
-															user.id
-													}
-												>
-													<Trash2 className="h-4 w-4" />
-												</Button>
-											</AlertDialogTrigger>
-											<AlertDialogContent>
-												<AlertDialogHeader>
-													<AlertDialogTitle>
-														{tUser("confirmDelete")}
-													</AlertDialogTitle>
-													<AlertDialogDescription>
-														{tUser(
-															"deleteUserConfirmation",
-															{
-																name: `${user.first_name} ${user.last_name}`,
-															}
-														)}
-													</AlertDialogDescription>
-												</AlertDialogHeader>
-												<AlertDialogFooter>
-													<AlertDialogCancel>
-														{tUser("cancel")}
-													</AlertDialogCancel>
-													<AlertDialogAction
-														onClick={() =>
-															handleDelete(
+											<AlertDialog>
+												<AlertDialogTrigger asChild>
+													<Button
+														variant="outline"
+														size="sm"
+														disabled={
+															user.id ===
+																currentUserId ||
+															isPending ||
+															deletingUserId ===
 																user.id
-															)
 														}
-														className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
 													>
-														{tUser("delete")}
-													</AlertDialogAction>
-												</AlertDialogFooter>
-											</AlertDialogContent>
-										</AlertDialog>
-									</div>
-								</TableCell>
-							</TableRow>
-						))}
+														<Trash2 className="h-4 w-4" />
+													</Button>
+												</AlertDialogTrigger>
+												<AlertDialogContent>
+													<AlertDialogHeader>
+														<AlertDialogTitle>
+															{tUser(
+																"confirmDelete"
+															)}
+														</AlertDialogTitle>
+														<AlertDialogDescription>
+															{tUser(
+																"deleteUserConfirmation",
+																{
+																	name: `${user.first_name} ${user.last_name}`,
+																}
+															)}
+														</AlertDialogDescription>
+													</AlertDialogHeader>
+													<AlertDialogFooter>
+														<AlertDialogCancel>
+															{tUser("cancel")}
+														</AlertDialogCancel>
+														<AlertDialogAction
+															onClick={() =>
+																handleDelete(
+																	user.id
+																)
+															}
+															className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+														>
+															{tUser("delete")}
+														</AlertDialogAction>
+													</AlertDialogFooter>
+												</AlertDialogContent>
+											</AlertDialog>
+										</div>
+									</TableCell>
+								</TableRow>
+							);
+						})}
 					</TableBody>
 				</Table>
 
