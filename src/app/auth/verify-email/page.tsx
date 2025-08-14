@@ -14,6 +14,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { CheckCircle2, XCircle, Loader2 } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { InfoAlert } from "@/components/info-alert";
 
 export default function VerifyEmailPage() {
 	const router = useRouter();
@@ -122,22 +123,18 @@ export default function VerifyEmailPage() {
 
 					<CardContent>
 						{status === "success" && (
-							<Alert className="border-green-200 dark:border-green-800">
-								<CheckCircle2 className="h-4 w-4 text-green-600 dark:text-green-400" />
-								<AlertDescription className="text-green-600 dark:text-green-400">
-									{t("redirectingMessage")}
-								</AlertDescription>
-							</Alert>
+							<InfoAlert
+								message={t("redirectingMessage")}
+								type="success"
+							/>
 						)}
 
 						{status === "error" && (
 							<div className="space-y-4">
-								<Alert variant="destructive">
-									<XCircle className="h-4 w-4" />
-									<AlertDescription>
-										{t("verificationFailed")}
-									</AlertDescription>
-								</Alert>
+								<InfoAlert
+									message={t("verificationFailed")}
+									type="error"
+								/>
 								<Button
 									onClick={handleBackToLogin}
 									className="w-full"

@@ -14,8 +14,8 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import { SignupFormState } from "@/types/auth";
+import { InfoAlert } from "../info-alert";
 
 export function SignupForm() {
 	const tSignUp = useTranslations("SignUp");
@@ -56,11 +56,7 @@ export function SignupForm() {
 			<form action={formAction} noValidate>
 				<CardContent className="space-y-4 mb-5">
 					{state.globalError && (
-						<Alert variant="destructive" className="mb-4">
-							<AlertDescription>
-								{tValidation(state.globalError)}
-							</AlertDescription>
-						</Alert>
+						<InfoAlert message={tValidation(state.globalError)} type="error" />
 					)}
 					<div className="grid grid-cols-2 gap-4">
 						<div className="space-y-2">

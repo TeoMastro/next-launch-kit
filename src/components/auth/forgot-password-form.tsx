@@ -10,12 +10,12 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { useActionState } from "react";
 import { forgotPasswordAction } from "@/server-actions/auth";
 import { ForgotPasswordState } from "@/types/auth";
+import { InfoAlert } from "../info-alert";
 
 export function ForgotPasswordForm() {
 	const [isSubmitting, setIsSubmitting] = useState(false);
@@ -51,19 +51,11 @@ export function ForgotPasswordForm() {
 			<form action={handleSubmit} noValidate>
 				<CardContent className="space-y-4 mb-5">
 					{state.globalError && (
-						<Alert className="border-red-200 bg-red-50 text-red-800">
-							<AlertDescription className="text-red-800">
-								{t(state.globalError)}
-							</AlertDescription>
-						</Alert>
+						<InfoAlert message={t(state.globalError)} type="error" />
 					)}
 
 					{state.success && state.message && (
-						<Alert className="border-green-200 bg-green-50 text-green-800">
-							<AlertDescription className="text-green-800">
-								{state.message}
-							</AlertDescription>
-						</Alert>
+						<InfoAlert message={state.message} type="success" />
 					)}
 
 					<div className="space-y-2">

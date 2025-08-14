@@ -10,12 +10,12 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { useActionState } from "react";
 import { resetPasswordAction } from "@/server-actions/auth";
 import { ResetPasswordState } from "@/types/auth";
+import { InfoAlert } from "../info-alert";
 
 interface ResetPasswordFormProps {
 	token: string;
@@ -54,11 +54,7 @@ export function ResetPasswordForm({ token }: ResetPasswordFormProps) {
 			<form action={handleSubmit} noValidate>
 				<CardContent className="space-y-4 mb-5">
 					{state.globalError && (
-						<Alert className="border-red-200 bg-red-50 text-red-800">
-							<AlertDescription className="text-red-800">
-								{t(state.globalError)}
-							</AlertDescription>
-						</Alert>
+						<InfoAlert message={t(state.globalError)} type="error" />
 					)}
 
 					<div className="space-y-2">

@@ -17,6 +17,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { UserFormProps, UserFormState } from "@/types/user";
 import { Role, Status } from "@prisma/client";
+import { InfoAlert } from "../info-alert";
 
 export function UserForm({ user, mode }: UserFormProps) {
     const tUser = useTranslations("User");
@@ -63,11 +64,10 @@ export function UserForm({ user, mode }: UserFormProps) {
             <CardContent>
                 <form action={formAction} noValidate className="space-y-4">
                     {state.globalError && (
-                        <Alert variant="destructive">
-                            <AlertDescription>
-                                {tValidation(state.globalError)}
-                            </AlertDescription>
-                        </Alert>
+                        <InfoAlert
+                            message={tValidation(state.globalError)}
+                            type="error"
+                        />
                     )}
 
                     <div className="grid grid-cols-2 gap-4">

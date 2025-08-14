@@ -33,8 +33,7 @@ import {
 	AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Pencil, Trash2, Plus, CheckCircle, Eye, X } from "lucide-react";
+import { Pencil, Trash2, Plus, Eye, X } from "lucide-react";
 import { toast } from "sonner";
 import { useDebouncedCallback } from "use-debounce";
 import { Pagination } from "../layout/pagination";
@@ -44,30 +43,34 @@ import {
 } from "../layout/sortable-table-header";
 import { Role, Status } from "@prisma/client";
 import { UsersTableProps } from "@/types/user";
+import { InfoAlert } from "@/components/info-alert";
 
-export const getStatusBadge = (status: Status, tUser: (key: string) => string) => {
-    switch (status) {
-        case Status.ACTIVE:
-            return {
-                variant: "default" as const,
-                text: tUser("activeStatus"),
-            };
-        case Status.INACTIVE:
-            return {
-                variant: "destructive" as const,
-                text: tUser("inactiveStatus"),
-            };
-        case Status.UNVERIFIED:
-            return {
-                variant: "outline" as const,
-                text: tUser("unverifiedStatus"),
-            };
-        default:
-            return {
-                variant: "secondary" as const,
-                text: status,
-            };
-    }
+export const getStatusBadge = (
+	status: Status,
+	tUser: (key: string) => string
+) => {
+	switch (status) {
+		case Status.ACTIVE:
+			return {
+				variant: "default" as const,
+				text: tUser("activeStatus"),
+			};
+		case Status.INACTIVE:
+			return {
+				variant: "destructive" as const,
+				text: tUser("inactiveStatus"),
+			};
+		case Status.UNVERIFIED:
+			return {
+				variant: "outline" as const,
+				text: tUser("unverifiedStatus"),
+			};
+		default:
+			return {
+				variant: "secondary" as const,
+				text: status,
+			};
+	}
 };
 
 export function UsersTable({
@@ -99,7 +102,6 @@ export function UsersTable({
 
 	// Show success message if present in URL
 	const message = searchParams.get("message");
-	const [showAlert, setShowAlert] = useState(!!message);
 
 	// Function to update URL with new params
 	const updateUrl = useCallback(
@@ -246,21 +248,11 @@ export function UsersTable({
 			</div>
 
 			{/* Success message */}
-			{message && showAlert && (
-				<Alert className="border-green-200 bg-green-50 relative">
-					<CheckCircle className="h-4 w-4 text-green-600" />
-					<AlertDescription className="text-green-800 pr-8">
-						{getSuccessMessage(message)}
-					</AlertDescription>
-					<Button
-						variant="ghost"
-						size="sm"
-						className="absolute top-2 right-2 h-6 w-6 p-0 hover:bg-green-100"
-						onClick={() => setShowAlert(false)}
-					>
-						<X className="h-4 w-4 text-green-600" />
-					</Button>
-				</Alert>
+			{message && (
+				<InfoAlert
+					message={getSuccessMessage(message) as string}
+					type="success"
+				/>
 			)}
 
 			{/* Search and filter controls */}
@@ -376,7 +368,10 @@ export function UsersTable({
 					</TableHeader>
 					<TableBody>
 						{users.map((user) => {
-							const statusBadge = getStatusBadge(user.status, tUser);
+							const statusBadge = getStatusBadge(
+								user.status,
+								tUser
+							);
 							return (
 								<TableRow key={user.id}>
 									<TableCell className="font-medium">
