@@ -76,7 +76,7 @@ export const authOptions: NextAuthOptions = {
 					token.role = dbUser.role;
 					token.name = `${dbUser.first_name} ${dbUser.last_name}`;
 				} else {
-					throw new Error("User is not found.");
+					token.status = Status.INACTIVE;
 				}
 			}
 			return token;

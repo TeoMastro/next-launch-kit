@@ -1,13 +1,15 @@
+import { Status } from "@prisma/client";
 import { withAuth } from "next-auth/middleware";
 import { NextResponse } from "next/server";
 
 export default withAuth(
 	function middleware(req) {
-		if (!req.nextauth.token || !req.nextauth.token.id) {
+		if (req.nextauth.token && req.nextauth.token.status !== Status.ACTIVE) {
 			const response = NextResponse.redirect(
 				new URL("/auth/signin", req.url)
 			);
 			response.cookies.delete("next-auth.session-token");
+			response.cookies.delete("__Secure-next-auth.session-token");
 			return response;
 		}
 
