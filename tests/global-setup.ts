@@ -22,10 +22,11 @@ async function globalSetup() {
                 last_name: "User",
                 email: "admin@nextlaunchkit.com",
                 password: adminPassword,
-                role: "ADMIN"
+                role: "ADMIN",
+                status: "ACTIVE",
             }
         });
-        
+
         // Create regular user
         const userPassword = await bcrypt.hash('demouser!1', 10);
         await prisma.user.create({
@@ -34,7 +35,8 @@ async function globalSetup() {
                 last_name: "User",
                 email: "user@nextlaunchkit.com",
                 password: userPassword,
-                role: "USER"
+                role: "USER",
+                status: "ACTIVE",
             }
         });
         

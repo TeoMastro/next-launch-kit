@@ -35,7 +35,7 @@ NODE_ENV="test"
 
 **4. Apply database schema to test database:**
 ```
-npm run migrate:test
+npm run migrate:test:dev
 ```
 
 ### Available Test Commands

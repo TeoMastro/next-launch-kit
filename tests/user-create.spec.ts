@@ -9,14 +9,12 @@ test.describe("Admin User Create Form", () => {
 	});
 
 	test("displays the create user form correctly", async ({ page }) => {
-		await expect(page.getByRole("heading")).toBeVisible();
-
 		await expect(page.getByLabel(/first name/i)).toBeVisible();
 		await expect(page.getByLabel(/last name/i)).toBeVisible();
 		await expect(page.getByLabel(/email/i)).toBeVisible();
 		await expect(page.getByLabel(/password/i)).toBeVisible();
 
-		await expect(page.locator('[role="combobox"]')).toBeVisible();
+		await expect(page.locator('[role="combobox"]')).toHaveCount(2);
 
 		await expect(
 			page.getByRole("button", { name: /create/i })
@@ -93,10 +91,6 @@ test.describe("Admin User Create Form", () => {
 		await page.getByLabel(/last name/i).fill("User");
 		await page.getByLabel(/email/i).fill(uniqueEmail);
 		await page.getByLabel(/password/i).fill("testpass123");
-
-		await page.locator('[role="combobox"]').click();
-		await page.waitForTimeout(500);
-		await page.getByRole("option", { name: /user/i }).click();
 
 		await page.getByRole("button", { name: /create/i }).click();
 

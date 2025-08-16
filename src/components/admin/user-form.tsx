@@ -14,7 +14,6 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import { UserFormProps, UserFormState } from "@/types/user";
 import { Role, Status } from "@prisma/client";
 import { InfoAlert } from "../info-alert";
@@ -33,7 +32,7 @@ export function UserForm({ user, mode }: UserFormProps) {
             email: user?.email || "",
             password: "",
             role: user?.role || Role.USER,
-            status: user?.status || Status.ACTIVE, // Add status field
+            status: user?.status || Status.ACTIVE,
         },
         globalError: null,
     };

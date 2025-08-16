@@ -1,40 +1,40 @@
 import { test, expect } from "@playwright/test";
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from "@prisma/client";
 
 test.use({ storageState: "playwright/.auth/admin.json" });
 
 async function getUserId(email: string): Promise<number> {
-    const prisma = new PrismaClient({
-        datasources: {
-            db: {
-                url: "postgresql://postgres:password123@localhost:5433/next_launch_kit_test"
-            }
-        }
-    });
-    
-    const user = await prisma.user.findUnique({
-        where: { email }
-    });
-    
-    await prisma.$disconnect();
-    
-    if (!user) {
-        throw new Error(`User with email ${email} not found`);
-    }
-    
-    return user.id;
+	const prisma = new PrismaClient({
+		datasources: {
+			db: {
+				url: "postgresql://postgres:password123@localhost:5433/next_launch_kit_test",
+			},
+		},
+	});
+
+	const user = await prisma.user.findUnique({
+		where: { email },
+	});
+
+	await prisma.$disconnect();
+
+	if (!user) {
+		throw new Error(`User with email ${email} not found`);
+	}
+
+	return user.id;
 }
 
 test.describe("Admin User Update Form", () => {
 	let testUserId: number;
-    test.beforeAll(async () => {
-        testUserId = await getUserId("user@nextlaunchkit.com");
-    });
+	test.beforeAll(async () => {
+		testUserId = await getUserId("user@nextlaunchkit.com");
+	});
 
-    test.beforeEach(async ({ page }) => {
-        await page.goto(`/admin/user/${testUserId}/update`);
-        await page.waitForLoadState("networkidle");
-    });
+	test.beforeEach(async ({ page }) => {
+		await page.goto(`/admin/user/${testUserId}/update`);
+		await page.waitForLoadState("networkidle");
+	});
 
 	test("displays the update user form correctly", async ({ page }) => {
 		await expect(page.getByRole("heading")).toBeVisible();
@@ -44,7 +44,7 @@ test.describe("Admin User Update Form", () => {
 		await expect(page.getByLabel(/email/i)).toBeVisible();
 		await expect(page.getByLabel(/password/i)).toBeVisible();
 
-		await expect(page.locator('[role="combobox"]')).toBeVisible();
+		await expect(page.locator('[role="combobox"]')).toHaveCount(2);
 
 		await expect(
 			page.getByRole("button", { name: /update/i })
@@ -150,13 +150,11 @@ test.describe("Admin User Update Form", () => {
 
 		await page.getByLabel(/first name/i).fill(updatedFirstName);
 		await page.getByLabel(/last name/i).fill(updatedLastName);
-		// Keep existing email or use a unique one
 		await page
 			.getByLabel(/email/i)
 			.fill(`updated${Date.now()}@example.com`);
 
-		// Select role
-		await page.locator('[role="combobox"]').click();
+		await page.locator('[role="combobox"]').first().click();
 		await page.waitForTimeout(500);
 		await page.getByRole("option", { name: /user/i }).click();
 
@@ -215,8 +213,7 @@ test.describe("Admin User Update Form", () => {
 	});
 
 	test("can change user role", async ({ page }) => {
-		// Click role selector
-		await page.locator('[role="combobox"]').click();
+		await page.locator('[role="combobox"]').first().click();
 		await page.waitForTimeout(500);
 
 		// Check both options are available
@@ -228,8 +225,9 @@ test.describe("Admin User Update Form", () => {
 		// Select admin role
 		await page.getByRole("option", { name: /admin/i }).click();
 
-		// Verify selection
-		await expect(page.locator('[role="combobox"]')).toContainText(/admin/i);
+		await expect(page.locator('[role="combobox"]').first()).toContainText(
+			/admin/i
+		);
 	});
 });
 

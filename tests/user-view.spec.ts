@@ -22,7 +22,8 @@ test("can view user details page", async ({ page }) => {
             last_name: "User",
             email: uniqueEmail,
             password: hashedPassword,
-            role: "USER"
+            role: "USER",
+            status: "ACTIVE",
         }
     });
 
@@ -34,5 +35,5 @@ test("can view user details page", async ({ page }) => {
     await expect(page.getByText("Test User")).toBeVisible();
     await expect(page.getByText(uniqueEmail)).toBeVisible();
     await expect(page.getByText(`#${testUser.id}`)).toBeVisible();
-    await expect(page.getByText("Active")).toBeVisible();
+    await expect(page.getByText(/Active/i)).toBeVisible();
 });

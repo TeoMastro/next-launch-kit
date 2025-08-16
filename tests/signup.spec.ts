@@ -117,5 +117,5 @@ test("successful signup redirects with message", async ({ page }) => {
 
   await expect(page).toHaveURL(/\/auth\/signin/);
 
-  await expect(page.getByText(/account created successfully/i)).toBeVisible();
+  await expect(page.getByText(/Your account was successfully created. Check your email for verification!/i)).toBeVisible();
 });
