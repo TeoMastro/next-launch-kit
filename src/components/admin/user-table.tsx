@@ -34,7 +34,6 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Pencil, Trash2, Plus, Eye, X } from "lucide-react";
-import { toast } from "sonner";
 import { useDebouncedCallback } from "use-debounce";
 import { Pagination } from "../layout/pagination";
 import {
@@ -99,6 +98,10 @@ export function UsersTable({
 	const [statusFilterLocal, setStatusFilterLocal] = useState(statusFilter);
 	const [isPending, startTransition] = useTransition();
 	const [deletingUserId, setDeletingUserId] = useState<number | null>(null);
+	const [alert, setAlert] = useState<{
+		message: string;
+		type: "success" | "error" | "warning";
+	} | null>(null);
 
 	// Show success message if present in URL
 	const message = searchParams.get("message");
@@ -182,7 +185,10 @@ export function UsersTable({
 	// Handle user deletion
 	const handleDelete = async (userId: number) => {
 		if (userId === currentUserId) {
-			toast.error(tValidation("cannotDeleteOwnAccount"));
+			setAlert({
+				message: tValidation("cannotDeleteOwnAccount"),
+				type: "error",
+			});
 			return;
 		}
 
@@ -191,28 +197,22 @@ export function UsersTable({
 		startTransition(async () => {
 			try {
 				await deleteUserAction(userId);
-				toast.success(tValidation("userDeletedSuccess"));
+				setAlert({
+					message: tValidation("userDeletedSuccess"),
+					type: "success",
+				});
 			} catch (error) {
-				toast.error(
-					error instanceof Error
-						? tValidation(error.message)
-						: tValidation("unexpectedError")
-				);
+				setAlert({
+					message:
+						error instanceof Error
+							? tValidation(error.message)
+							: tValidation("unexpectedError"),
+					type: "error",
+				});
 			} finally {
 				setDeletingUserId(null);
 			}
 		});
-	};
-
-	const getSuccessMessage = (messageKey: string) => {
-		switch (messageKey) {
-			case "userCreatedSuccess":
-				return tValidation("userCreatedSuccess");
-			case "userUpdatedSuccess":
-				return tValidation("userUpdatedSuccess");
-			default:
-				return null;
-		}
 	};
 
 	const handleResetFilters = useCallback(() => {
@@ -250,8 +250,17 @@ export function UsersTable({
 			{/* Success message */}
 			{message && (
 				<InfoAlert
-					message={getSuccessMessage(message) as string}
+					message={tValidation(message) as string}
 					type="success"
+				/>
+			)}
+
+			{alert && (
+				<InfoAlert
+					message={alert.message}
+					type={alert.type}
+					onClose={() => setAlert(null)}
+					className="mb-4"
 				/>
 			)}
 
@@ -473,7 +482,7 @@ export function UsersTable({
 																	user.id
 																)
 															}
-															className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+															className="bg-destructive text-destructive-foreground hover:bg-destructive/90 text-white"
 														>
 															{tUser("delete")}
 														</AlertDialogAction>
