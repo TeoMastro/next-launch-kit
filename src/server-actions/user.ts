@@ -13,6 +13,7 @@ import {
 	updateUserSchema,
 } from "@/lib/validation-schemas";
 import { Role, Status } from "@prisma/client";
+import logger from "@/lib/logger";
 
 async function checkAdminAuth() {
 	const session = await getServerSession(authOptions);
@@ -29,7 +30,7 @@ export async function createUserAction(
 	formData: FormData
 ): Promise<UserFormState> {
 	try {
-		await checkAdminAuth();
+		const session = await checkAdminAuth();
 
 		const data = {
 			first_name: formData.get("first_name")?.toString() ?? "",
@@ -69,7 +70,7 @@ export async function createUserAction(
 
 		const hashedPassword = await bcrypt.hash(parsed.data.password, 12);
 
-		await prisma.user.create({
+		const newUser = await prisma.user.create({
 			data: {
 				first_name: parsed.data.first_name.trim(),
 				last_name: parsed.data.last_name.trim(),
@@ -80,8 +81,19 @@ export async function createUserAction(
 			},
 		});
 
+		logger.info("User created successfully", {
+			adminId: session.user.id,
+			createdUserId: newUser.id,
+		});
+
 		revalidatePath("/admin/users");
 	} catch (error) {
+		logger.error("Unexpected error during user creation", {
+			error: (error as Error).message,
+			stack: (error as Error).stack,
+			action: "createUser",
+		});
+
 		return {
 			success: false,
 			errors: {},
@@ -107,7 +119,7 @@ export async function updateUserAction(
 	formData: FormData
 ): Promise<UserFormState> {
 	try {
-		await checkAdminAuth();
+		const session = await checkAdminAuth();
 
 		const data = {
 			first_name: formData.get("first_name")?.toString() ?? "",
@@ -168,7 +180,7 @@ export async function updateUserAction(
 			role: parsed.data.role,
 			status: parsed.data.status,
 		};
-		console.log(updateData);
+
 		if (parsed.data.password && parsed.data.password.trim() !== "") {
 			updateData.password = await bcrypt.hash(parsed.data.password, 12);
 		}
@@ -178,8 +190,19 @@ export async function updateUserAction(
 			data: updateData,
 		});
 
+		logger.info("User updated successfully", {
+			adminId: session.user.id,
+			updatedUserId: userId,
+		});
+
 		revalidatePath("/admin/users");
 	} catch (error) {
+		logger.error("Unexpected error during user update", {
+			error: (error as Error).message,
+			stack: (error as Error).stack,
+			action: "updateUser",
+		});
+
 		return {
 			success: false,
 			errors: {},
@@ -219,10 +242,21 @@ export async function deleteUserAction(userId: number) {
 			where: { id: userId },
 		});
 
+		logger.info("User deleted successfully", {
+			adminId: session.user.id,
+			deletedUserId: userId,
+		});
+
 		revalidatePath("/admin/users");
 
 		return { success: true };
 	} catch (error) {
+		logger.error("Unexpected error during user deletion", {
+			error: (error as Error).message,
+			stack: (error as Error).stack,
+			action: "deleteUser",
+		});
+
 		throw error;
 	}
 }
@@ -255,6 +289,11 @@ export async function getUserById(userId: number) {
 
 		return user;
 	} catch (error) {
+		logger.error("Error fetching user by ID", {
+			error: (error as Error).message,
+			stack: (error as Error).stack,
+			action: "getUserById",
+		});
 		throw error;
 	}
 }
@@ -300,35 +339,44 @@ export async function getUsersWithPagination(
 		orderBy[sortField] = sortDirection;
 	}
 
-	const [users, totalCount] = await Promise.all([
-		prisma.user.findMany({
-			where: whereClause,
-			select: {
-				id: true,
-				first_name: true,
-				last_name: true,
-				email: true,
-				role: true,
-				status: true,
-				created_at: true,
-				updated_at: true,
-			},
-			orderBy,
-			skip: offset,
-			take: limit,
-		}),
-		prisma.user.count({
-			where: whereClause,
-		}),
-	]);
+	try {
+		const [users, totalCount] = await Promise.all([
+			prisma.user.findMany({
+				where: whereClause,
+				select: {
+					id: true,
+					first_name: true,
+					last_name: true,
+					email: true,
+					role: true,
+					status: true,
+					created_at: true,
+					updated_at: true,
+				},
+				orderBy,
+				skip: offset,
+				take: limit,
+			}),
+			prisma.user.count({
+				where: whereClause,
+			}),
+		]);
 
-	const totalPages = Math.ceil(totalCount / limit);
+		const totalPages = Math.ceil(totalCount / limit);
 
-	return {
-		users,
-		totalCount,
-		totalPages,
-		currentPage: page,
-		limit,
-	};
+		return {
+			users,
+			totalCount,
+			totalPages,
+			currentPage: page,
+			limit,
+		};
+	} catch (error) {
+		logger.error("Error fetching users with pagination", {
+			error: (error as Error).message,
+			stack: (error as Error).stack,
+			action: "getUsersWithPagination",
+		});
+		throw error;
+	}
 }

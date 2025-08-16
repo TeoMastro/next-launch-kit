@@ -20,6 +20,7 @@ import {
 import { v4 as uuidv4 } from "uuid";
 import nodemailer from "nodemailer";
 import { Status } from "@prisma/client";
+import logger from "@/lib/logger";
 
 export async function validateSigninData(
 	prevState: ValidationState,
@@ -92,7 +93,7 @@ export async function signUpAction(
 	const verificationToken = uuidv4();
 
 	try {
-		await prisma.user.create({
+		const newUser = await prisma.user.create({
 			data: {
 				first_name: parsed.data.first_name.trim(),
 				last_name: parsed.data.last_name.trim(),
@@ -108,7 +109,17 @@ export async function signUpAction(
 			verificationToken,
 			`${parsed.data.first_name} ${parsed.data.last_name}`
 		);
+
+		logger.info("User signed up successfully", {
+			userId: newUser.id,
+		});
 	} catch (error) {
+		logger.error("Error during user signup", {
+			error: (error as Error).message,
+			stack: (error as Error).stack,
+			action: "signUp",
+		});
+
 		return {
 			success: false,
 			errors: {},
@@ -193,6 +204,10 @@ export async function verifyEmailAction(
 			},
 		});
 
+		logger.info("Email verified successfully", {
+			userId: user.id,
+		});
+
 		return {
 			success: true,
 			message: await getServerTranslation(
@@ -201,6 +216,12 @@ export async function verifyEmailAction(
 			),
 		};
 	} catch (error) {
+		logger.error("Error during email verification", {
+			error: (error as Error).message,
+			stack: (error as Error).stack,
+			action: "verifyEmail",
+		});
+
 		return {
 			success: false,
 			message: await getServerTranslation("VerifyEmail", "errorTitle"),
@@ -249,6 +270,10 @@ export async function forgotPasswordAction(
 				resetToken,
 				`${user.first_name} ${user.last_name}`
 			);
+
+			logger.info("Password reset requested", {
+				userId: user.id,
+			});
 		}
 
 		return {
@@ -262,6 +287,12 @@ export async function forgotPasswordAction(
 			),
 		};
 	} catch (error) {
+		logger.error("Error during forgot password", {
+			error: (error as Error).message,
+			stack: (error as Error).stack,
+			action: "forgotPassword",
+		});
+
 		return {
 			success: false,
 			errors: {},
@@ -321,7 +352,17 @@ export async function resetPasswordAction(
 				password_reset_expires: null,
 			},
 		});
+
+		logger.info("Password reset successfully", {
+			userId: user.id,
+		});
 	} catch (error) {
+		logger.error("Error during password reset", {
+			error: (error as Error).message,
+			stack: (error as Error).stack,
+			action: "resetPassword",
+		});
+
 		return {
 			success: false,
 			errors: {},
