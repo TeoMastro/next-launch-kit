@@ -32,6 +32,10 @@ export type GetUsersResult = {
     limit: number;
 };
 
+export type GetUsersResultWithoutPagination = {
+  users: User[];
+};
+
 export type AdminUsersPageProps = {
     searchParams: Promise<GetUsersParams>;
 };

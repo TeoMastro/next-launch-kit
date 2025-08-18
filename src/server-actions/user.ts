@@ -6,7 +6,7 @@ import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
-import { GetUsersParams, GetUsersResult, UserFormState } from "@/types/user";
+import { GetUsersParams, GetUsersResult, GetUsersResultWithoutPagination, User, UserFormState } from "@/types/user";
 import {
 	createUserSchema,
 	formatZodErrors,
@@ -298,9 +298,7 @@ export async function getUserById(userId: number) {
 	}
 }
 
-export async function getUsersWithPagination(
-	params: GetUsersParams
-): Promise<GetUsersResult> {
+async function fetchUsers(params: GetUsersParams & { paginate?: boolean }) {
 	const page = parseInt(params.page || "1");
 	const limit = parseInt(params.limit || "10");
 	const search = params.search || "";
@@ -308,6 +306,7 @@ export async function getUsersWithPagination(
 	const statusFilter = params.statusFilter || "all";
 	const sortField = params.sortField || "created_at";
 	const sortDirection = (params.sortDirection as "asc" | "desc") || "desc";
+	const paginate = params.paginate ?? false;
 
 	const offset = (page - 1) * limit;
 
@@ -339,7 +338,7 @@ export async function getUsersWithPagination(
 		orderBy[sortField] = sortDirection;
 	}
 
-	try {
+	if (paginate) {
 		const [users, totalCount] = await Promise.all([
 			prisma.user.findMany({
 				where: whereClause,
@@ -357,26 +356,41 @@ export async function getUsersWithPagination(
 				skip: offset,
 				take: limit,
 			}),
-			prisma.user.count({
-				where: whereClause,
-			}),
+			prisma.user.count({ where: whereClause }),
 		]);
 
 		const totalPages = Math.ceil(totalCount / limit);
 
-		return {
-			users,
-			totalCount,
-			totalPages,
-			currentPage: page,
-			limit,
-		};
-	} catch (error) {
-		logger.error("Error fetching users with pagination", {
-			error: (error as Error).message,
-			stack: (error as Error).stack,
-			action: "getUsersWithPagination",
+		return { users, totalCount, totalPages, currentPage: page, limit };
+	} else {
+		const users = await prisma.user.findMany({
+			where: whereClause,
+			select: {
+				id: true,
+				first_name: true,
+				last_name: true,
+				email: true,
+				role: true,
+				status: true,
+				created_at: true,
+				updated_at: true,
+			},
+			orderBy,
 		});
-		throw error;
+
+		return { users };
 	}
+}
+
+export async function getUsersWithPagination(
+  params: GetUsersParams
+): Promise<GetUsersResult> {
+  return fetchUsers({ ...params, paginate: true }) as Promise<GetUsersResult>;
+}
+
+export async function getAllUsersForExport(
+  params: Omit<GetUsersParams, "page" | "limit">
+): Promise<User[]> {
+  const result = await fetchUsers({ ...params, paginate: false });
+  return (result as GetUsersResultWithoutPagination).users;
 }

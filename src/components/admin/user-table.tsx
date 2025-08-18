@@ -33,7 +33,7 @@ import {
 	AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
-import { Pencil, Trash2, Plus, Eye, X } from "lucide-react";
+import { Pencil, Trash2, Plus, Eye, X, Download } from "lucide-react";
 import { useDebouncedCallback } from "use-debounce";
 import { Pagination } from "../layout/pagination";
 import {
@@ -215,6 +215,57 @@ export function UsersTable({
 		});
 	};
 
+	const exportFilteredUsers = useCallback(
+		async (format: "csv" | "xlsx") => {
+			try {
+				const params = new URLSearchParams({
+					search: searchTermLocal || "",
+					roleFilter: roleFilterLocal || "all",
+					statusFilter: statusFilterLocal || "all",
+					sortField: sortField || "created_at",
+					sortDirection: sortDirection || "desc",
+					format,
+				});
+
+				const response = await fetch(
+					`/api/users-export?${params.toString()}`,
+					{
+						method: "GET",
+					}
+				);
+
+				if (!response.ok) {
+					throw new Error("Export failed");
+				}
+
+				const blob = await response.blob();
+				const url = window.URL.createObjectURL(blob);
+				const link = document.createElement("a");
+				link.href = url;
+				link.download = `users_export_${new Date()
+					.toISOString()
+					.slice(0, 10)}.${format}`;
+				document.body.appendChild(link);
+				link.click();
+				document.body.removeChild(link);
+				window.URL.revokeObjectURL(url);
+			} catch (error) {
+				setAlert({
+					message: tValidation("exportError"),
+					type: "error",
+				});
+			}
+		},
+		[
+			searchTermLocal,
+			roleFilterLocal,
+			statusFilterLocal,
+			sortField,
+			sortDirection,
+			tValidation,
+		]
+	);
+
 	const handleResetFilters = useCallback(() => {
 		setSearchTermLocal("");
 		setRoleFilterLocal("all");
@@ -234,17 +285,35 @@ export function UsersTable({
 
 	return (
 		<div className="space-y-4">
-			{/* Header with total count */}
+			{/* Header */}
 			<div className="flex justify-between items-center">
 				<div>
 					<h1 className="text-2xl font-bold">
 						{tUser("userManagement")}
 					</h1>
 				</div>
-				<Button onClick={() => router.push("/admin/user/create")}>
-					<Plus className="h-4 w-4" />
-					{tLayout("create")}
-				</Button>
+				<div className="flex gap-2">
+					<Button
+						onClick={() => exportFilteredUsers("csv")}
+						variant="outline"
+						className="flex items-center gap-1"
+					>
+						<Download className="h-4 w-4" />
+						.csv
+					</Button>
+					<Button
+						onClick={() => exportFilteredUsers("xlsx")}
+						variant="outline"
+						className="flex items-center gap-1"
+					>
+						<Download className="h-4 w-4" />
+						.xlsx
+					</Button>
+					<Button onClick={() => router.push("/admin/user/create")}>
+						<Plus className="h-4 w-4" />
+						{tLayout("create")}
+					</Button>
+				</div>
 			</div>
 
 			{/* Success message */}

@@ -44,6 +44,7 @@
     "use-debounce": "^10.0.5",
     "winston": "^3.17.0",
     "winston-daily-rotate-file": "^5.0.0",
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.1/xlsx-0.20.1.tgz",
     "zod": "^4.0.5"
   },
   "devDependencies": {
