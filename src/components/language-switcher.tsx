@@ -15,7 +15,7 @@ export default function LanguageSwitcher() {
   return (
     <div className="flex gap-1">
       <Button
-        variant={locale === 'en' ? "default" : "ghost"}
+        variant={locale === 'en' ? 'default' : 'ghost'}
         size="sm"
         onClick={() => changeLanguage('en')}
         className="px-2 py-1 text-xs"
@@ -23,7 +23,7 @@ export default function LanguageSwitcher() {
         EN
       </Button>
       <Button
-        variant={locale === 'el' ? "default" : "ghost"}
+        variant={locale === 'el' ? 'default' : 'ghost'}
         size="sm"
         onClick={() => changeLanguage('el')}
         className="px-2 py-1 text-xs"

@@ -1,6 +1,6 @@
-"use client"
+'use client';
 
-import { signOut } from "next-auth/react"
+import { signOut } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
 
 export default function LogoutButton() {
@@ -10,11 +10,5 @@ export default function LogoutButton() {
     await signOut({ callbackUrl: '/auth/signin' });
   };
 
-  return (
-    <a 
-      onClick={handleLogout}
-    >
-      {t('signOut')}
-    </a>
-  );
+  return <a onClick={handleLogout}>{t('signOut')}</a>;
 }

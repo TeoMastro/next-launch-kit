@@ -1,4 +1,4 @@
-import { SignupForm } from "@/components/auth/signup-form"
+import { SignupForm } from '@/components/auth/signup-form';
 import { getTranslations } from 'next-intl/server';
 
 export default async function SignUpPage() {
@@ -18,5 +18,5 @@ export default async function SignUpPage() {
         <SignupForm />
       </div>
     </div>
-  )
+  );
 }

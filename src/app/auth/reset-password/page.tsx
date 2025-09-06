@@ -3,17 +3,19 @@ import { getTranslations } from 'next-intl/server';
 import { redirect } from 'next/navigation';
 
 interface ResetPasswordPageProps {
-  searchParams: Promise<{ token?: string }>
+  searchParams: Promise<{ token?: string }>;
 }
 
-export default async function ResetPasswordPage({ searchParams }: ResetPasswordPageProps) {
-  const params = await searchParams
+export default async function ResetPasswordPage({
+  searchParams,
+}: ResetPasswordPageProps) {
+  const params = await searchParams;
   const t = await getTranslations('ResetPassword');
-  
+
   if (!params.token) {
-    redirect('/auth/forgot-password')
+    redirect('/auth/forgot-password');
   }
-  
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
@@ -28,5 +30,5 @@ export default async function ResetPasswordPage({ searchParams }: ResetPasswordP
         <ResetPasswordForm token={params.token} />
       </div>
     </div>
-  )
+  );
 }

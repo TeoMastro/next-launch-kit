@@ -1,14 +1,14 @@
-import { SigninForm } from "@/components/auth/signin-form"
+import { SigninForm } from '@/components/auth/signin-form';
 import { getTranslations } from 'next-intl/server';
 
 interface SignInPageProps {
-  searchParams: Promise<{ error?: string; message?: string }>
+  searchParams: Promise<{ error?: string; message?: string }>;
 }
 
 export default async function SignInPage({ searchParams }: SignInPageProps) {
-  const params = await searchParams
+  const params = await searchParams;
   const t = await getTranslations('SignIn');
-  
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
@@ -23,5 +23,5 @@ export default async function SignInPage({ searchParams }: SignInPageProps) {
         <SigninForm error={params.error} message={params.message} />
       </div>
     </div>
-  )
+  );
 }

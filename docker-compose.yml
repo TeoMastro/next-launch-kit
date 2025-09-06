@@ -10,7 +10,7 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password123
     ports:
-      - "127.0.0.1:5433:5432"
+      - '127.0.0.1:5433:5432'
     volumes:
       - next_launch_kit_postgres_data:/var/lib/postgresql/data
     networks:
@@ -24,7 +24,7 @@ services:
       PGADMIN_DEFAULT_EMAIL: admin@nextlaunchkit.com
       PGADMIN_DEFAULT_PASSWORD: nextlaunchkit123
     ports:
-      - "127.0.0.1:5051:80"
+      - '127.0.0.1:5051:80'
     depends_on:
       - postgres
     networks:
@@ -35,7 +35,7 @@ services:
     container_name: next_launch_kit_app
     restart: always
     ports:
-      - "127.0.0.1:3001:3000"
+      - '127.0.0.1:3001:3000'
     environment:
       - NODE_ENV=development
       - DATABASE_URL=postgresql://postgres:password123@postgres:5432/next_launch_kit

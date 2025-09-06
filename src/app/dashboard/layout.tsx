@@ -1,11 +1,11 @@
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
-import { AppSidebar } from "@/components/layout/sidebar"
-import { DynamicBreadcrumb } from "@/components/layout/dynamic-breadcrumb"
+import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
+import { AppSidebar } from '@/components/layout/sidebar';
+import { DynamicBreadcrumb } from '@/components/layout/dynamic-breadcrumb';
 
 export default function SidebarLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <SidebarProvider>
@@ -17,10 +17,8 @@ export default function SidebarLayout({
             <DynamicBreadcrumb />
           </div>
         </header>
-        <div className="flex flex-1 flex-col gap-4 p-4">
-          {children}
-        </div>
+        <div className="flex flex-1 flex-col gap-4 p-4">{children}</div>
       </main>
     </SidebarProvider>
-  )
+  );
 }

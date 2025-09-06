@@ -1,19 +1,19 @@
-import { getAuthSession } from "@/lib/auth";
-import { redirect } from "next/navigation";
-import { getTranslations } from "next-intl/server";
-import { Status } from "@prisma/client";
+import { getAuthSession } from '@/lib/auth';
+import { redirect } from 'next/navigation';
+import { getTranslations } from 'next-intl/server';
+import { Status } from '@prisma/client';
 
 export default async function DashboardPage() {
-	const session = await getAuthSession();
+  const session = await getAuthSession();
 
-	if (!session || session?.user.status !== Status.ACTIVE) {
-		redirect("/auth/signin");
-	}
+  if (!session || session?.user.status !== Status.ACTIVE) {
+    redirect('/auth/signin');
+  }
 
-	const t = await getTranslations("Dashboard");
-	return (
-		<div className="container mx-auto">
-			<p>{t("welcomeBack", { name: session.user.name })}</p>
-		</div>
-	);
+  const t = await getTranslations('Dashboard');
+  return (
+    <div className="container mx-auto">
+      <p>{t('welcomeBack', { name: session.user.name })}</p>
+    </div>
+  );
 }

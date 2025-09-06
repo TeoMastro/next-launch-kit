@@ -26,6 +26,7 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 ## Prerequisites
 
 Before you begin, ensure you have the following installed:
+
 - [Docker](https://docs.docker.com/get-docker/)
 - [Docker Compose](https://docs.docker.com/compose/install/)
 - [Node.js 22.16+](https://nodejs.org/) (if running locally)
@@ -36,31 +37,34 @@ Before you begin, ensure you have the following installed:
 ### Option 1: Using Docker (Recommended)
 
 1. **Clone the repository**
+
    ```bash
    git clone <your-repo-url>
    cd next-launch-kit
    ```
 
 2. **Create environment file**
+
    ```bash
    cp .env.example .env
    ```
 
 3. **Start the application with Docker**
+
    ```bash
    # Start PostgreSQL and the app
    docker-compose up -d
-   
+
    # Run database migrations
    docker-compose exec app npx prisma migrate dev
-   
+
    # Seed the database (optional)
    docker-compose exec app npm run db:seed
    ```
 
 4. **Open your browser**
    Navigate to [http://localhost:3001](http://localhost:3001) to see the application.
-   
+
    **PgAdmin** (optional): Navigate to [http://localhost:5051](http://localhost:5051) to manage the database.
    - Email: `admin@nextlaunchkit.com`
    - Password: `nextlaunchkit123`
@@ -104,13 +108,13 @@ The application includes a complete authentication system:
 
 After running the seed script, you can log in with these demo accounts:
 
-- **Admin User**: 
+- **Admin User**:
   - Email: `admin@nextlaunchkit.com`
   - Password: `demoadmin!1`
   - Role: ADMIN
 
 - **Regular User**:
-  - Email: `user@nextlaunchkit.com` 
+  - Email: `user@nextlaunchkit.com`
   - Password: `demouser!1`
   - Role: USER
 
@@ -237,11 +241,13 @@ NODE_ENV="development"
 The application is containerized and ready for production deployment:
 
 1. **Build the Docker image**:
+
    ```bash
    docker build -t next-launch-kit .
    ```
 
 2. **Run with docker-compose**:
+
    ```bash
    docker-compose -f docker-compose.yml up -d
    ```
@@ -262,7 +268,6 @@ The application is containerized and ready for production deployment:
 - ✅ Set strong database passwords
 - ✅ Enable SSL/TLS for database connections
 - ✅ Set up proper backup strategies
-
 
 ## 🛠️ Troubleshooting
 
