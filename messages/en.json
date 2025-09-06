@@ -12,7 +12,8 @@
     "signUp": "Sign up",
     "invalidCredentials": "Invalid email or password",
     "somethingWentWrong": "Something went wrong",
-    "forgotPassword": "Forgot password?"
+    "forgotPassword": "Forgot password?",
+    "accountInactive": "Your account is inactive"
   },
   "SignUp": {
     "pageTitle": "Create your account",

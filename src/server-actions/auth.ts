@@ -150,7 +150,7 @@ async function sendVerificationEmail(
     },
   });
 
-  const verificationUrl = `${process.env.NEXTAUTH_URL}/auth/verify-email?token=${token}`;
+  const verificationUrl = `${process.env.AUTH_URL}/auth/verify-email?token=${token}`;
 
   await transporter.sendMail({
     from: process.env.SMTP_FROM,
@@ -388,7 +388,7 @@ async function sendPasswordResetEmail(
     },
   });
 
-  const resetUrl = `${process.env.NEXTAUTH_URL}/auth/reset-password?token=${token}`;
+  const resetUrl = `${process.env.AUTH_URL}/auth/reset-password?token=${token}`;
 
   await transporter.sendMail({
     from: process.env.SMTP_FROM,

@@ -206,7 +206,7 @@ Create a `.env.local` file in the root directory with the following variables:
 DATABASE_URL="postgresql://postgres:password123@localhost:5433/next_launch_kit"
 
 # NextAuth.js
-NEXTAUTH_URL="http://localhost:3000"
+AUTH_URL="http://localhost:3000"
 NEXTAUTH_SECRET="your-secret-key-here-make-it-long-and-random"
 
 # Development
@@ -255,7 +255,7 @@ The application is containerized and ready for production deployment:
 3. **Environment considerations**:
    - Update `DATABASE_URL` for your production database
    - Set a strong `NEXTAUTH_SECRET` (minimum 32 characters)
-   - Update `NEXTAUTH_URL` to your production domain
+   - Update `AUTH_URL` to your production domain
    - Configure proper network security
    - Set strong database passwords
 
@@ -263,7 +263,7 @@ The application is containerized and ready for production deployment:
 
 - ✅ Update `DATABASE_URL` for your production database
 - ✅ Set a strong `NEXTAUTH_SECRET` (minimum 32 characters)
-- ✅ Update `NEXTAUTH_URL` to your production domain
+- ✅ Update `AUTH_URL` to your production domain
 - ✅ Configure proper network security
 - ✅ Set strong database passwords
 - ✅ Enable SSL/TLS for database connections

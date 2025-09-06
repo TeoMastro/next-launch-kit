@@ -13,11 +13,11 @@ import {
 } from '@/components/ui/sidebar';
 
 import { NavUser } from '@/components/layout/nav-user';
-import { getAuthSession } from '@/lib/auth';
+import { auth } from '@/lib/auth';
 import { getTranslations } from 'next-intl/server';
 
 export async function AppSidebar() {
-  const session = await getAuthSession();
+  const session = await auth();
   const t = await getTranslations('Menu');
 
   const userData = {

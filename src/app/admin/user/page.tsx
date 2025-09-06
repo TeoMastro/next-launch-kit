@@ -1,6 +1,5 @@
-import { getServerSession } from 'next-auth';
+import { auth } from '@/lib/auth';
 import { notFound } from 'next/navigation';
-import { authOptions } from '@/lib/auth';
 import { UsersTable } from '@/components/admin/user-table';
 import { getUsersWithPagination } from '@/server-actions/user';
 import { AdminUsersPageProps } from '@/types/user';
@@ -8,7 +7,7 @@ import { AdminUsersPageProps } from '@/types/user';
 export default async function AdminUsersPage({
   searchParams,
 }: AdminUsersPageProps) {
-  const session = await getServerSession(authOptions);
+  const session = await auth();
 
   if (!session || session.user.role !== 'ADMIN') {
     notFound();

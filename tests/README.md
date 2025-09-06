@@ -24,7 +24,7 @@ cp .env.example .env.test
 
 ```
 DATABASE_URL="postgresql://postgres:password123@localhost:5433/next_launch_kit_test"
-NEXTAUTH_URL="http://localhost:3000"
+AUTH_URL="http://localhost:3000"
 NEXTAUTH_SECRET="your-secret-key"
 NODE_ENV="test"
 ```

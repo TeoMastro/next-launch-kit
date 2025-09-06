@@ -1,12 +1,11 @@
-import { getServerSession } from 'next-auth';
+import { auth } from '@/lib/auth';
 import { redirect, notFound } from 'next/navigation';
-import { authOptions } from '@/lib/auth';
 import { UserView } from '@/components/admin/user-view';
 import { getUserById } from '@/server-actions/user';
 import { PageProps } from '@/types/user';
 
 export default async function ViewUserPage({ params }: PageProps) {
-  const session = await getServerSession(authOptions);
+  const session = await auth();
 
   if (!session || session.user.role !== 'ADMIN') {
     redirect('/dashboard');

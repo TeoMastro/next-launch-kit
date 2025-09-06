@@ -20,7 +20,7 @@
     "format:check": "prettier --check ."
   },
   "dependencies": {
-    "@auth/prisma-adapter": "^2.9.1",
+    "@auth/prisma-adapter": "^2.10.0",
     "@prisma/client": "^5.22.0",
     "@radix-ui/react-alert-dialog": "^1.1.14",
     "@radix-ui/react-avatar": "^1.1.10",
@@ -37,7 +37,7 @@
     "clsx": "^2.1.1",
     "lucide-react": "^0.511.0",
     "next": "15.3.2",
-    "next-auth": "^4.24.11",
+    "next-auth": "^5.0.0-beta.29",
     "next-intl": "^4.1.0",
     "nodemailer": "^6.10.1",
     "react": "^19.0.0",
@@ -45,6 +45,7 @@
     "sonner": "^2.0.6",
     "tailwind-merge": "^3.3.0",
     "use-debounce": "^10.0.5",
+    "uuid": "^12.0.0",
     "winston": "^3.17.0",
     "winston-daily-rotate-file": "^5.0.0",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.1/xlsx-0.20.1.tgz",

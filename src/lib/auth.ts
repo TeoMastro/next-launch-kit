@@ -1,11 +1,10 @@
-import { NextAuthOptions } from 'next-auth';
+import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { prisma } from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
-import { getServerSession } from 'next-auth/next';
 import { Status } from '@prisma/client';
 
-export const authOptions: NextAuthOptions = {
+export const { auth, handlers, signIn, signOut } = NextAuth({
   providers: [
     CredentialsProvider({
       name: 'credentials',
@@ -18,18 +17,18 @@ export const authOptions: NextAuthOptions = {
           return null;
         }
 
+        const email = credentials.email as string;
+        const password = credentials.password as string;
+
         const user = await prisma.user.findUnique({
-          where: { email: credentials.email },
+          where: { email: email },
         });
 
         if (!user || !user.password) {
           return null;
         }
 
-        const isPasswordValid = await bcrypt.compare(
-          credentials.password,
-          user.password
-        );
+        const isPasswordValid = await bcrypt.compare(password, user.password);
 
         if (!isPasswordValid) {
           return null;
@@ -59,26 +58,6 @@ export const authOptions: NextAuthOptions = {
         token.id = user.id;
         token.status = user.status;
       }
-
-      if (token.id) {
-        const dbUser = await prisma.user.findUnique({
-          where: { id: parseInt(token.id as string) },
-          select: {
-            status: true,
-            role: true,
-            first_name: true,
-            last_name: true,
-          },
-        });
-
-        if (dbUser) {
-          token.status = dbUser.status;
-          token.role = dbUser.role;
-          token.name = `${dbUser.first_name} ${dbUser.last_name}`;
-        } else {
-          token.status = Status.INACTIVE;
-        }
-      }
       return token;
     },
     async session({ session, token }) {
@@ -93,6 +72,4 @@ export const authOptions: NextAuthOptions = {
   pages: {
     signIn: '/auth/signin',
   },
-};
-
-export const getAuthSession = () => getServerSession(authOptions);
+});

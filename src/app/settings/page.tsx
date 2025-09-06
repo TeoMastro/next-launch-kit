@@ -1,11 +1,11 @@
 import LanguageSwitcher from '@/components/language-switcher';
-import { getAuthSession } from '@/lib/auth';
+import { auth } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 import { Status } from '@prisma/client';
 import { getTranslations } from 'next-intl/server';
 
 export default async function SettingsPage() {
-  const session = await getAuthSession();
+  const session = await auth();
 
   if (!session || session?.user.status !== Status.ACTIVE) {
     redirect('/auth/signin');
