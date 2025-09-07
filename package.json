@@ -16,6 +16,7 @@
     "migrate:test": "dotenv -e .env.test -- prisma migrate deploy",
     "migrate:test:reset": "dotenv -e .env.test -- prisma migrate reset",
     "migrate:test:dev": "dotenv -e .env.test -- prisma migrate dev",
+    "db:push:test": "dotenv -e .env.test -- prisma db push",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },

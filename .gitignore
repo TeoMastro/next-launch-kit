@@ -41,11 +41,7 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# prisma
-/prisma/migrations
-
 # Playwright
-node_modules/
 /test-results/
 /playwright-report/
 /blob-report/
