@@ -1,4 +1,4 @@
-import { PrismaClient, Role } from '@prisma/client';
+import { PrismaClient, Role, Status } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 
 const prisma = new PrismaClient();
@@ -19,6 +19,7 @@ async function main() {
         email: 'admin@nextlaunchkit.com',
         password: adminPassword,
         role: Role.ADMIN,
+        status: Status.ACTIVE,
       },
     }),
     prisma.user.upsert({
@@ -30,6 +31,7 @@ async function main() {
         email: 'user@nextlaunchkit.com',
         password: userPassword,
         role: Role.USER,
+        status: Status.ACTIVE,
       },
     }),
   ]);

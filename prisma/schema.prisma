@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,20 +8,43 @@ datasource db {
 }
 
 model User {
-  id         Int      @id @default(autoincrement())
-  first_name String
-  last_name  String
-  email      String  @unique
-  password   String
-  role       Role     @default(USER)
-  status     Status @default(UNVERIFIED)
-  email_verification_token String? @unique
-  password_reset_token String? @unique
-  password_reset_expires DateTime?
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  id                       Int       @id @default(autoincrement())
+  first_name               String?
+  last_name                String?
+  email                    String    @unique
+  password                 String?
+  image                    String?
+  role                     Role      @default(USER)
+  status                   Status    @default(UNVERIFIED)
+  email_verification_token String?   @unique
+  password_reset_token     String?   @unique
+  password_reset_expires   DateTime?
+  created_at               DateTime  @default(now())
+  updated_at               DateTime  @updatedAt
+
+  accounts Account[]
 
   @@map("users")
+}
+
+model Account {
+  id                Int     @id @default(autoincrement())
+  userId            Int     @map("user_id")
+  type              String
+  provider          String
+  providerAccountId String  @map("provider_account_id")
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
 }
 
 enum Role {

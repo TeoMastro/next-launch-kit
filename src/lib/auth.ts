@@ -1,11 +1,15 @@
 import NextAuth from 'next-auth';
+import Google from 'next-auth/providers/google';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { prisma } from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
 import { Status } from '@prisma/client';
 
-export const { auth, handlers, signIn, signOut } = NextAuth({
+export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
+    Google({
+      allowDangerousEmailAccountLinking: true,
+    }),
     CredentialsProvider({
       name: 'credentials',
       credentials: {
@@ -17,24 +21,20 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
           return null;
         }
 
-        const email = credentials.email as string;
-        const password = credentials.password as string;
-
         const user = await prisma.user.findUnique({
-          where: { email: email },
+          where: { email: credentials.email as string },
         });
 
         if (!user || !user.password) {
           return null;
         }
 
-        const isPasswordValid = await bcrypt.compare(password, user.password);
+        const isPasswordValid = await bcrypt.compare(
+          credentials.password as string,
+          user.password
+        );
 
-        if (!isPasswordValid) {
-          return null;
-        }
-
-        if (user.status !== Status.ACTIVE) {
+        if (!isPasswordValid || user.status !== Status.ACTIVE) {
           return null;
         }
 
@@ -52,8 +52,84 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
     strategy: 'jwt',
   },
   callbacks: {
-    async jwt({ token, user }) {
-      if (user) {
+    async signIn({ user, account, profile }) {
+      if (account?.provider === 'google') {
+        try {
+          let existingUser = await prisma.user.findUnique({
+            where: { email: user.email! },
+          });
+
+          if (!existingUser) {
+            existingUser = await prisma.user.create({
+              data: {
+                email: user.email!,
+                first_name: user.name?.split(' ')[0] || '',
+                last_name: user.name?.split(' ').slice(1).join(' ') || '',
+                image: user.image,
+                status: Status.ACTIVE,
+              },
+            });
+          }
+
+          await prisma.account.upsert({
+            where: {
+              provider_providerAccountId: {
+                provider: account.provider,
+                providerAccountId: account.providerAccountId!,
+              },
+            },
+            update: {
+              access_token: account.access_token || null,
+              expires_at: account.expires_at
+                ? Number(account.expires_at)
+                : null,
+              id_token: account.id_token || null,
+              refresh_token: account.refresh_token || null,
+              scope: account.scope || null,
+              session_state: account.session_state
+                ? String(account.session_state)
+                : null,
+              token_type: account.token_type || null,
+            },
+            create: {
+              userId: existingUser.id,
+              type: account.type!,
+              provider: account.provider,
+              providerAccountId: account.providerAccountId!,
+              access_token: account.access_token || null,
+              expires_at: account.expires_at
+                ? Number(account.expires_at)
+                : null,
+              id_token: account.id_token || null,
+              refresh_token: account.refresh_token || null,
+              scope: account.scope || null,
+              session_state: account.session_state
+                ? String(account.session_state)
+                : null,
+              token_type: account.token_type || null,
+            },
+          });
+
+          return true;
+        } catch (error) {
+          console.error('Error in Google signIn:', error);
+          return false;
+        }
+      }
+      return true;
+    },
+    async jwt({ token, user, account }) {
+      if (account?.provider === 'google') {
+        const dbUser = await prisma.user.findUnique({
+          where: { email: token.email! },
+        });
+
+        if (dbUser) {
+          token.role = dbUser.role;
+          token.id = dbUser.id.toString();
+          token.status = dbUser.status;
+        }
+      } else if (user) {
         token.role = user.role;
         token.id = user.id;
         token.status = user.status;
