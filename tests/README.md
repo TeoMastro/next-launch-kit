@@ -2,9 +2,11 @@
 
 This project includes end-to-end testing with Playwright for comprehensive authentication and user flow testing.
 
-### Prerequisites for Testing
+**Important**: The `playwright/.auth` directory stores sensitive authentication state (cookies, sessions) and should never be committed to version control.
 
-Before running any tests, you need to create the authentication directory:
+### First-Time Test Setup
+
+**1. Create the authentication directory:**
 
 ```bash
 mkdir -p playwright/.auth
@@ -12,24 +14,7 @@ mkdir -p playwright/.auth
 
 **Important**: The `playwright/.auth` directory stores sensitive authentication state (cookies, sessions) and should never be committed to version control.
 
-### First-Time Test Database Setup
-
-**1. Copy the example test environment file:**
-
-```
-cp .env.example .env.test
-```
-
-**2. Update `.env.test` with test database configuration:**
-
-```
-DATABASE_URL="postgresql://postgres:password123@localhost:5433/next_launch_kit_test"
-AUTH_URL="http://localhost:3000"
-NEXTAUTH_SECRET="your-secret-key"
-NODE_ENV="test"
-```
-
-**3. Create the test database:**
+**2. Create the test database:**
 
 1. Open pgAdmin at [http://localhost:5051](http://localhost:5051)
 2. Connect to your PostgreSQL server (see pgAdmin setup above)
@@ -38,13 +23,22 @@ NODE_ENV="test"
 5. Set **Owner**: `postgres`
 6. Click "Save"
 
-**4. Apply database schema to test database:**
+**3. Apply database schema to test database:**
 
 ```
-npm run migrate:test:dev
+npm run db:push:test
 ```
 
-### Available Test Commands
+**4. Install locally**
+Make sure you have a node version installed locally and run:
+
+```
+npm i
+```
+
+The test suite is running on the local webServer - not the one running on Docker (at least for now)
+
+**5. Run the tests**
 
 ```bash
 npx playwright test

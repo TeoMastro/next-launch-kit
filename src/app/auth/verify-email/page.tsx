@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback  } from 'react';
 import { verifyEmailAction } from '@/server-actions/auth';
 import { useTranslations } from 'next-intl';
 import {
@@ -26,16 +26,7 @@ export default function VerifyEmailPage() {
   );
   const [message, setMessage] = useState('');
 
-  useEffect(() => {
-    if (token) {
-      handleVerification(token);
-    } else {
-      setStatus('error');
-      setMessage(t('noTokenError'));
-    }
-  }, [token, t]);
-
-  const handleVerification = async (token: string) => {
+  const handleVerification = useCallback(async (token: string) => {
     try {
       const result = await verifyEmailAction(token);
 
@@ -58,7 +49,16 @@ export default function VerifyEmailPage() {
       setStatus('error');
       setMessage(t('verificationFailed'));
     }
-  };
+  }, [t, router]);
+
+  useEffect(() => {
+    if (token) {
+      handleVerification(token);
+    } else {
+      setStatus('error');
+      setMessage(t('noTokenError'));
+    }
+  }, [token, t, handleVerification]);
 
   const handleBackToLogin = () => {
     router.push('/auth/signin');

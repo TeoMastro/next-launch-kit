@@ -11,7 +11,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { signIn } from 'next-auth/react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useActionState } from 'react';
@@ -41,46 +41,44 @@ export function SigninForm({ error, message }: LoginFormProps) {
   };
 
   const [state, formAction] = useActionState(validateSigninData, initialState);
+  const handleAuthentication = useCallback(async (data: {
+      email: string;
+      password: string;
+    }) => {
+      setIsSigningIn(true);
+      setAuthError('');
+      setShowMessage(false);
 
-  useEffect(() => {
-    if (state.success && state.data) {
-      handleAuthentication(state.data);
-    }
-  }, [state]);
+      try {
+        const result = await signIn('credentials', {
+          email: data.email,
+          password: data.password,
+          redirect: false,
+        });
 
-  const handleAuthentication = async (data: {
-    email: string;
-    password: string;
-  }) => {
-    setIsSigningIn(true);
-    setAuthError('');
-    setShowMessage(false);
-
-    try {
-      const result = await signIn('credentials', {
-        email: data.email,
-        password: data.password,
-        redirect: false,
-      });
-
-      if (result?.error) {
-        setAuthError(t('invalidCredentials'));
-      } else if (result?.ok) {
-        router.push('/dashboard');
-        router.refresh();
+        if (result?.error) {
+          setAuthError(t('invalidCredentials'));
+        } else if (result?.ok) {
+          router.push('/dashboard');
+          router.refresh();
+        }
+      } catch (error) {
+        setAuthError(t('somethingWentWrong'));
+      } finally {
+        setIsSigningIn(false);
       }
-    } catch (error) {
-      setAuthError(t('somethingWentWrong'));
-    } finally {
-      setIsSigningIn(false);
-    }
-  };
+    }, [t, router]);
 
   const handleGoogleSignIn = () => {
     signIn('google', {
       redirectTo: '/dashboard',
     });
   };
+  useEffect(() => {
+    if (state.success && state.data) {
+      handleAuthentication(state.data);
+    }
+  }, [state, handleAuthentication]);
 
   return (
     <Card className="w-full max-w-md mx-auto">

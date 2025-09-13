@@ -34,10 +34,11 @@ export function SignupForm() {
     globalError: null,
   };
 
-  const [state, formAction] = useActionState<SignupFormState>(
-    signUpAction as any,
-    initialState
-  );
+  const actionWrapper = async (prevState: SignupFormState, formData: FormData): Promise<SignupFormState> => {
+    return signUpAction(prevState, formData);
+  };
+
+  const [state, formAction] = useActionState(actionWrapper, initialState);
 
   const getErrorMessage = (field: string) => {
     const errs = state.errors[field];

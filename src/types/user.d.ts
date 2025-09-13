@@ -1,5 +1,21 @@
 import { Role, Status } from '@prisma/client';
 
+export type User = {
+  id: number;
+  first_name: string | null;
+  last_name: string | null;
+  email: string;
+  role: Role;
+  status: Status;
+  created_at: Date;
+  updated_at: Date;
+  password?: string | null;
+  image?: string | null;
+  email_verification_token?: string | null;
+  password_reset_token?: string | null;
+  password_reset_expires?: Date | null;
+};
+
 export type UserFormState = {
   success: boolean;
   errors: Record<string, string[]>;
@@ -56,22 +72,9 @@ export type UserViewProps = {
   user: User;
 };
 
-export type PageProps = {
-  params: {
-    id: string;
-  };
-};
-
-export type User = {
-  id: number;
-  first_name: string;
-  last_name: string;
-  email: string;
-  role: Role;
-  status: Status;
-  created_at: Date;
-  updated_at: Date;
-};
+export interface PageProps {
+  params: Promise<{ id: string }>;
+}
 
 export type UsersTableProps = {
   users: User[];

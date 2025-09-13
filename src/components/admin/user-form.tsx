@@ -27,8 +27,8 @@ export function UserForm({ user, mode }: UserFormProps) {
     success: false,
     errors: {},
     formData: {
-      first_name: user?.first_name || '',
-      last_name: user?.last_name || '',
+      first_name: user?.first_name ?? '',
+      last_name: user?.last_name ?? '',
       email: user?.email || '',
       password: '',
       role: user?.role || Role.USER,
@@ -37,13 +37,15 @@ export function UserForm({ user, mode }: UserFormProps) {
     globalError: null,
   };
 
-  // bound action for update mode
-  const boundUpdateAction = user ? updateUserAction.bind(null, user.id) : null;
+  const actionWrapper = async (prevState: UserFormState, formData: FormData): Promise<UserFormState> => {
+    if (mode === 'create') {
+      return createUserAction(prevState, formData);
+    } else {
+      return updateUserAction(user!.id, prevState, formData);
+    }
+  };
 
-  const [state, formAction] = useActionState<UserFormState>(
-    mode === 'create' ? createUserAction : (boundUpdateAction! as any),
-    initialState
-  );
+  const [state, formAction] = useActionState(actionWrapper, initialState);
 
   const getErrorMessage = (field: string) => {
     const errs = state.errors[field];

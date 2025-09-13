@@ -174,7 +174,14 @@ export async function updateUserAction(
       };
     }
 
-    const updateData: any = {
+    const updateData: {
+      first_name: string;
+      last_name: string;
+      email: string;
+      role: Role;
+      status: Status;
+      password?: string;
+    } = {
       first_name: parsed.data.first_name.trim(),
       last_name: parsed.data.last_name.trim(),
       email: trimmedEmail,
@@ -309,7 +316,15 @@ async function fetchUsers(params: GetUsersParams & { paginate?: boolean }) {
 
   const offset = (page - 1) * limit;
 
-  const whereClause: any = {};
+  const whereClause: {
+      OR?: Array<{
+        first_name?: { contains: string; mode: 'insensitive' };
+        last_name?: { contains: string; mode: 'insensitive' };
+        email?: { contains: string; mode: 'insensitive' };
+      }>;
+      role?: Role;
+      status?: Status;
+    } = {};
 
   if (search) {
     whereClause.OR = [
@@ -327,7 +342,8 @@ async function fetchUsers(params: GetUsersParams & { paginate?: boolean }) {
     whereClause.status = statusFilter as 'ACTIVE' | 'INACTIVE' | 'UNVERIFIED';
   }
 
-  const orderBy: any = {};
+  const orderBy: Record<string, 'asc' | 'desc'> = {};
+
   if (sortField === 'name') {
     orderBy.first_name = sortDirection;
   } else {

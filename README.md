@@ -52,12 +52,15 @@ Before you begin, ensure you have the following installed:
    docker-compose exec app npm run db:seed
    ```
 
-4. **Open your browser**
-   Navigate to [http://localhost:3001](http://localhost:3001) to see the application.
+4. **Make sure to [register your database](https://github.com/TeoMastro/next-launch-kit?tab=readme-ov-file#registering-the-postgresql-server) on pg admin before continuing to step 5**
 
-   **PgAdmin** (optional): Navigate to [http://localhost:5051](http://localhost:5051) to manage the database.
-   - Email: `admin@nextlaunchkit.com`
-   - Password: `nextlaunchkit123`
+5. **To run in dev mode**
+
+   ```bash
+   docker-compose exec app npm run dev
+   ```
+
+   Navigate to [http://localhost:3001/dashboard](http://localhost:3001/dashboard) and login with the admin user to see the application.
 
 ## pgAdmin Server Registration
 
