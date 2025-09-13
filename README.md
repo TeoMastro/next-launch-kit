@@ -21,8 +21,8 @@ Before you begin, ensure you have the following installed:
 
 - [Docker](https://docs.docker.com/get-docker/)
 - [Docker Compose](https://docs.docker.com/compose/install/)
-- [Node.js](https://nodejs.org/) (if running locally)
-- [npm](https://www.npmjs.com/) or your preferred package manager
+- v20.10.0 of [Node.js](https://nodejs.org/) (if running locally)
+- [nvm](https://github.com/nvm-sh/nvm?tab=readme-ov-file#installing-and-updating) if you want to manage node versions by yourself.
 
 ## Quick Start
 
@@ -46,10 +46,10 @@ Before you begin, ensure you have the following installed:
    docker-compose up -d
 
    # Run database migrations
-   docker-compose exec app npx prisma db push
+   npx prisma db push
 
    # Seed the database (optional)
-   docker-compose exec app npm run db:seed
+   npm run db:seed
    ```
 
 4. **Make sure to [register your database](https://github.com/TeoMastro/next-launch-kit?tab=readme-ov-file#registering-the-postgresql-server) on pg admin before continuing to step 5**
@@ -57,10 +57,10 @@ Before you begin, ensure you have the following installed:
 5. **To run in dev mode**
 
    ```bash
-   docker-compose exec app npm run dev
+   npm run dev
    ```
 
-   Navigate to [http://localhost:3001/dashboard](http://localhost:3001/dashboard) and login with the admin user to see the application.
+   Navigate to [http://localhost:3000/dashboard](http://localhost:3000/dashboard) and login with the admin user to see the application.
 
 ## pgAdmin Server Registration
 

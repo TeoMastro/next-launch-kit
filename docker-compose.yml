@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   postgres:
-    image: postgres:latest
+    image: postgres:16-alpine
     container_name: next_launch_kit_postgres
     restart: always
     environment:
@@ -29,24 +29,6 @@ services:
       - postgres
     networks:
       - next_launch_kit_network
-
-  app:
-    build: .
-    container_name: next_launch_kit_app
-    restart: always
-    ports:
-      - '127.0.0.1:3001:3000'
-    environment:
-      - NODE_ENV=development
-      - DATABASE_URL=postgresql://postgres:password123@postgres:5432/next_launch_kit
-    depends_on:
-      - postgres
-    networks:
-      - next_launch_kit_network
-    volumes:
-      - .:/app
-      - /app/node_modules
-    command: npm run dev
 
 volumes:
   next_launch_kit_postgres_data:
