@@ -21,8 +21,8 @@ Before you begin, ensure you have the following installed:
 
 - [Docker](https://docs.docker.com/get-docker/)
 - [Docker Compose](https://docs.docker.com/compose/install/)
-- v20.10.0 of [Node.js](https://nodejs.org/) (if running locally)
-- [nvm](https://github.com/nvm-sh/nvm?tab=readme-ov-file#installing-and-updating) if you want to manage node versions by yourself.
+- v20.10.0 of [Node.js](https://nodejs.org/)
+- [nvm](https://github.com/nvm-sh/nvm?tab=readme-ov-file#installing-and-updating) if you want to manage node versions by yourself (recommended)
 
 ## Quick Start
 
@@ -106,6 +106,19 @@ After running the seed script, you can log in with these demo accounts:
   - Email: `user@nextlaunchkit.com`
   - Password: `demouser!1`
   - Role: USER
+
+## To use Google smpt
+
+1. Make sure 2fa is enabled in your google account.
+2. Go to [app passords](https://myaccount.google.com/apppasswords) and generate an app password. Then use it in the SMTP_PASSWORD of your .env
+
+## To use Google sign in
+
+1. Go to [Google Cloud Console](https://console.cloud.google.com/)
+2. Create a project.
+3. Go to [Credentials](https://console.cloud.google.com/apis/credentials) and generate credentials.
+4. Make sure OAuth consent screen is enabled for your project.
+5. For more information check the [official documentation of auth.js for Google Provider](https://authjs.dev/getting-started/providers/google)
 
 ## package.json scripts
 
