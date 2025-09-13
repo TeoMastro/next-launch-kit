@@ -39,12 +39,22 @@ Before you begin, ensure you have the following installed:
    cp .env.example .env
    ```
 
-3. **Start the application with Docker**
+3. **Start the database with Docker**
 
    ```bash
    # Start PostgreSQL and the app
    docker-compose up -d
+   ```
 
+4. **Install the project locally**
+
+   ```bash
+   npm i
+   ```
+
+5. **Push the database schema and seed the database**
+
+   ```bash
    # Run database migrations
    npx prisma db push
 
@@ -52,9 +62,9 @@ Before you begin, ensure you have the following installed:
    npm run db:seed
    ```
 
-4. **Make sure to [register your database](https://github.com/TeoMastro/next-launch-kit?tab=readme-ov-file#registering-the-postgresql-server) on pg admin before continuing to step 5**
+6. **Make sure to [register your database](https://github.com/TeoMastro/next-launch-kit?tab=readme-ov-file#registering-the-postgresql-server) on pg admin before continuing to step 5**
 
-5. **To run in dev mode**
+7. **To run in dev mode**
 
    ```bash
    npm run dev
