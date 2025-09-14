@@ -27,3 +27,29 @@ npm run db:push:test
 ```bash
 npx playwright test
 ```
+
+### Aditional commands
+
+Opens Playwright's interactive UI mode where you can step through tests visually and see detailed execution.
+
+```bash
+npx playwright test --ui
+```
+
+Opens browser windows so you can see the test execution.
+
+```bash
+npx playwright test --headed
+```
+
+Opens the detailed HTML test report in your browser.
+
+```bash
+npx playwright show-report
+```
+
+Records using a specific browse
+
+```bash
+npx playwright codegen
+```
