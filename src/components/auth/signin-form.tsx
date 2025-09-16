@@ -37,14 +37,12 @@ export function SigninForm({ error, message }: LoginFormProps) {
     errors: {},
     data: null,
     success: false,
-    formData: { email: '', password: '' },
+    formData: { email: 'admin@nextlaunchkit.com', password: 'demoadmin!1' },
   };
 
   const [state, formAction] = useActionState(validateSigninData, initialState);
-  const handleAuthentication = useCallback(async (data: {
-      email: string;
-      password: string;
-    }) => {
+  const handleAuthentication = useCallback(
+    async (data: { email: string; password: string }) => {
       setIsSigningIn(true);
       setAuthError('');
       setShowMessage(false);
@@ -67,7 +65,9 @@ export function SigninForm({ error, message }: LoginFormProps) {
       } finally {
         setIsSigningIn(false);
       }
-    }, [t, router]);
+    },
+    [t, router]
+  );
 
   const handleGoogleSignIn = () => {
     signIn('google', {
@@ -151,9 +151,9 @@ export function SigninForm({ error, message }: LoginFormProps) {
             <div className="absolute inset-0 flex items-center">
               <span className="w-full border-t" />
             </div>
-            <div className="relative flex justify-center text-xs uppercase">
+            <div className="relative flex justify-center text-xs">
               <span className="bg-background px-2 text-muted-foreground">
-                Or continue with
+                {t('orContinueWith')}
               </span>
             </div>
           </div>

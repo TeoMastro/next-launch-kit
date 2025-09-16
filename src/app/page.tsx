@@ -43,6 +43,7 @@ export default function MarketingPage() {
     {
       title: 'Documentation',
       href: 'https://github.com/TeoMastro/next-launch-kit?tab=readme-ov-file#next-launch-kit',
+      external: true,
     },
   ];
 
@@ -80,6 +81,14 @@ export default function MarketingPage() {
                   </NavigationMenuLink>
                 </NavigationMenuItem>
               ))}
+              <NavigationMenuItem>
+                <Button
+                  asChild
+                  className="bg-black text-white hover:bg-black/90 dark:bg-black dark:text-white dark:hover:bg-black/90"
+                >
+                  <Link href="/auth/signin">Demo</Link>
+                </Button>
+              </NavigationMenuItem>
             </NavigationMenuList>
           </NavigationMenu>
 

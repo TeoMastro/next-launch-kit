@@ -54,6 +54,12 @@ export default function MobileNavigation({
               {item.title}
             </Link>
           ))}
+          <Button
+            asChild
+            className="bg-black text-white hover:bg-black/90 dark:bg-black dark:text-white dark:hover:bg-black/90 mx-5"
+          >
+            <Link href="/auth/signin">Demo</Link>
+          </Button>
         </nav>
       </SheetContent>
     </Sheet>

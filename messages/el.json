@@ -13,7 +13,8 @@
     "invalidCredentials": "Λάθος email ή κωδικός",
     "somethingWentWrong": "Κάτι πήγε στραβά",
     "forgotPassword": "Ξεχάσατε τον κωδικό σας;",
-    "accountInactive": "Ο λογαριασμός σας είναι ανενεργός"
+    "accountInactive": "Ο λογαριασμός σας είναι ανενεργός",
+    "orContinueWith": "ή συνεχίστε με"
   },
   "SignUp": {
     "pageTitle": "Δημιουργήστε τον λογαριασμό σας",
