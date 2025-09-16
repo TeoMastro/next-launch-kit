@@ -13,7 +13,6 @@
     "invalidCredentials": "Invalid email or password",
     "somethingWentWrong": "Something went wrong",
     "forgotPassword": "Forgot password?",
-    "accountInactive": "Your account is inactive",
     "orContinueWith": "or continue with"
   },
   "SignUp": {

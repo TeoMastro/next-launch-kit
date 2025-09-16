@@ -104,7 +104,7 @@ export default function MarketingPage() {
           <div className="container mx-auto px-4 max-w-7xl">
             <div className="mx-auto max-w-4xl text-center">
               <h1 className="mb-6 text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
-                <span className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
                   Next Launch Kit
                 </span>
               </h1>
@@ -136,7 +136,7 @@ export default function MarketingPage() {
                 <iframe
                   width="100%"
                   height="100%"
-                  src="https://www.youtube.com/watch?v=M8lhutHNJJQ"
+                  src="https://www.youtube.com/embed/M8lhutHNJJQ"
                   title="Next Launch Kit Demo"
                   frameBorder="0"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

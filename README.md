@@ -117,7 +117,7 @@ After running the seed script, you can log in with these demo accounts:
   - Password: `demouser!1`
   - Role: USER
 
-## To use Google smpt
+## To use Google smtp
 
 1. Make sure 2fa is enabled in your google account.
 2. Go to [app passords](https://myaccount.google.com/apppasswords) and generate an app password. Then use it in the SMTP_PASSWORD of your .env

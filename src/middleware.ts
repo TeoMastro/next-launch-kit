@@ -18,9 +18,7 @@ export default auth(async (req) => {
     const { active } = await response.json();
 
     if (!active) {
-      const response = NextResponse.redirect(
-        new URL('/auth/signin?error=accountInactive', req.url)
-      );
+      const response = NextResponse.redirect(new URL('/auth/signin', req.url));
       response.cookies.delete('authjs.session-token');
       response.cookies.delete('__Secure-authjs.session-token');
       return response;
