@@ -47,10 +47,16 @@ export async function GET(req: NextRequest) {
       type: 'string',
       bookType: 'csv',
     });
-    return new NextResponse(csvString, {
+
+    // Add UTF-8 BOM to the beginning of the CSV string
+    const BOM = '\uFEFF';
+    const csvWithBOM = BOM + csvString;
+    const buffer = Buffer.from(csvWithBOM, 'utf8');
+
+    return new NextResponse(buffer, {
       status: 200,
       headers: {
-        'Content-Type': 'text/csv',
+        'Content-Type': 'text/csv; charset=utf-8',
         'Content-Disposition': `attachment; filename="${filename}.csv"`,
       },
     });
