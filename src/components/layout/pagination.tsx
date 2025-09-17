@@ -27,7 +27,7 @@ export const Pagination = ({
   const endItem = Math.min(currentPage * limit, totalCount);
 
   return (
-    <div className="flex items-center justify-between px-2 py-4">
+    <div className="flex items-center justify-between px-2 py-4 flex-col md:flex-row">
       <div className="text-sm text-muted-foreground">
         {tLayout('showing')} {startItem} {tLayout('to')} {endItem}{' '}
         {tLayout('of')} {totalCount} {tLayout('results')}
@@ -50,11 +50,10 @@ export const Pagination = ({
           disabled={currentPage <= 1}
         >
           <ChevronLeft className="h-4 w-4" />
-          {tLayout('previous')}
         </Button>
 
         <div className="text-sm px-2">
-          {tLayout('page')} {currentPage} {tLayout('of')} {totalPages}
+          {currentPage} {tLayout('of')} {totalPages}
         </div>
 
         <Button
@@ -63,7 +62,6 @@ export const Pagination = ({
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage >= totalPages}
         >
-          {tLayout('next')}
           <ChevronRight className="h-4 w-4" />
         </Button>
 

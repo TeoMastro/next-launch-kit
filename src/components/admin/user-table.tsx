@@ -89,6 +89,7 @@ export function UsersTable({
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const tUser = useTranslations('User');
+  const tMenu = useTranslations('Menu');
   const tLayout = useTranslations('Layout');
   const tValidation = useTranslations('Validation');
 
@@ -285,7 +286,7 @@ export function UsersTable({
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold">{tUser('userManagement')}</h1>
+          <h1 className="text-2xl font-bold">{tMenu('users')}</h1>
         </div>
         <div className="flex gap-2">
           <Button
@@ -306,7 +307,7 @@ export function UsersTable({
           </Button>
           <Button onClick={() => router.push('/admin/user/create')}>
             <Plus className="h-4 w-4" />
-            {tLayout('create')}
+            <div className="hidden md:block">{tLayout('create')}</div>
           </Button>
         </div>
       </div>
@@ -326,15 +327,15 @@ export function UsersTable({
       )}
 
       {/* Search and filter controls */}
-      <div className="flex gap-4">
+      <div className="flex flex-col md:flex-row gap-4">
         <Input
           placeholder={tUser('searchUsers')}
           value={searchTermLocal}
           onChange={(e) => setSearchTermLocal(e.target.value)}
-          className="max-w-sm"
+          className="w-full md:max-w-sm"
         />
         <Select value={roleFilterLocal} onValueChange={handleRoleFilterChange}>
-          <SelectTrigger className="w-[180px]">
+          <SelectTrigger className="w-full md:w-[180px]">
             <SelectValue placeholder={tUser('filterByRole')} />
           </SelectTrigger>
           <SelectContent>
@@ -347,7 +348,7 @@ export function UsersTable({
           value={statusFilterLocal}
           onValueChange={handleStatusFilterChange}
         >
-          <SelectTrigger className="w-[180px]">
+          <SelectTrigger className="w-full md:w-[180px]">
             <SelectValue placeholder={tUser('filterByStatus')} />
           </SelectTrigger>
           <SelectContent>

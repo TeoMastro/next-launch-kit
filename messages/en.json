@@ -76,7 +76,6 @@
     "active": "Active"
   },
   "User": {
-    "userManagement": "User Management",
     "createUser": "Create User",
     "updateUser": "Update User",
     "firstName": "First Name",
@@ -118,9 +117,6 @@
     "to": "to",
     "of": "of",
     "results": "results",
-    "previous": "Previous",
-    "next": "Next",
-    "page": "Page",
     "resetFilters": "Reset filters",
     "create": "Create",
     "update": "Update"
