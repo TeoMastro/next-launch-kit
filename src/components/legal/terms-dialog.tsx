@@ -63,8 +63,8 @@ export function TermsDialog({ title, isInSidebar = true }: TermsDialogProps) {
             <section>
               <h3 className="font-semibold mb-2">Disclaimer</h3>
               <p>
-                The materials on our service are provided on an 'as is' basis.
-                We make no warranties, expressed or implied.
+                The materials on our service are provided on an &apos;as
+                is&apos; basis. We make no warranties, expressed or implied.
               </p>
             </section>
 
