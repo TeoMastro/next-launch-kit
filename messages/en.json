@@ -63,7 +63,9 @@
     "home": "Home",
     "profile": "Profile",
     "settings": "Settings",
-    "users": "Users"
+    "users": "Users",
+    "privacyPolicy": "Privacy policy",
+    "termsOfService": "Terms of service"
   },
   "Profile": {
     "userInformation": "User information",

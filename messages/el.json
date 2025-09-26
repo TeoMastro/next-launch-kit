@@ -63,7 +63,9 @@
     "home": "Αρχική",
     "profile": "Προφίλ",
     "settings": "Ρυθμίσεις",
-    "users": "Χρήστες"
+    "users": "Χρήστες",
+    "privacyPolicy": "Πολιτική απορρήτου",
+    "termsOfService": "Όροι παροχής υπηρεσιών"
   },
   "Profile": {
     "userInformation": "Στοιχεία χρήστη",

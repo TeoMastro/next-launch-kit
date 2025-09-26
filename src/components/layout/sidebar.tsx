@@ -15,6 +15,8 @@ import {
 import { NavUser } from '@/components/layout/nav-user';
 import { auth } from '@/lib/auth';
 import { getTranslations } from 'next-intl/server';
+import { PrivacyPolicyDialog } from '@/components/legal/privacy-policy-dialog';
+import { TermsDialog } from '@/components/legal/terms-dialog';
 
 export async function AppSidebar() {
   const session = await auth();
@@ -78,6 +80,19 @@ export async function AppSidebar() {
       </SidebarContent>
 
       <SidebarFooter>
+        {/* Legal Documents as Dialogs */}
+        <SidebarGroup>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <PrivacyPolicyDialog title={t('privacyPolicy')} />
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <TermsDialog title={t('termsOfService')} />
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
         <NavUser user={userData} />
       </SidebarFooter>
     </Sidebar>

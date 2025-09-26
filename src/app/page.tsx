@@ -35,6 +35,8 @@ import {
 import { cn } from '@/lib/utils';
 import MobileNavigation from '@/components/marketing/mobile-navigation';
 import CopyButton from '@/components/marketing/copy-button';
+import { PrivacyPolicyDialog } from '@/components/legal/privacy-policy-dialog';
+import { TermsDialog } from '@/components/legal/terms-dialog';
 
 export default function MarketingPage() {
   const navigationItems = [
@@ -468,20 +470,17 @@ export default function MarketingPage() {
                 © {new Date().getFullYear()} Next Launch Kit. All rights
                 reserved.
               </p>
+              {/* Legal Links */}
+              <div className="flex flex-wrap justify-center md:justify-start gap-4 mt-2">
+                <PrivacyPolicyDialog
+                  title="Privacy Policy"
+                  isInSidebar={false}
+                />
+                <TermsDialog title="Terms of Service" isInSidebar={false} />
+              </div>
             </div>
 
             <div className="flex space-x-4">
-              {/* <Button variant="ghost" size="sm" asChild>
-                <Link
-                  href="https://twitter.com/nextlaunchkit"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <Twitter className="h-4 w-4" />
-                  <span className="sr-only">Twitter</span>
-                </Link>
-              </Button> */}
-
               <Button variant="ghost" size="sm" asChild>
                 <Link
                   href="https://github.com/TeoMastro/next-launch-kit?tab=readme-ov-file#next-launch-kit"
@@ -492,17 +491,6 @@ export default function MarketingPage() {
                   <span className="sr-only">GitHub</span>
                 </Link>
               </Button>
-
-              {/* <Button variant="ghost" size="sm" asChild>
-                <Link
-                  href="https://linkedin.com/company/nextlaunchkit"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <Linkedin className="h-4 w-4" />
-                  <span className="sr-only">LinkedIn</span>
-                </Link>
-              </Button> */}
 
               <Button variant="ghost" size="sm" asChild>
                 <Link
