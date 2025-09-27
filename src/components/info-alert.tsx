@@ -8,22 +8,10 @@ import { CheckCircle, X, AlertCircle, AlertTriangle } from 'lucide-react';
 interface InfoAlertProps {
   message: string;
   type?: 'success' | 'error' | 'warning';
-  onClose?: () => void;
-  className?: string;
 }
 
-export function InfoAlert({
-  message,
-  type = 'success',
-  onClose,
-  className = '',
-}: InfoAlertProps) {
+export function InfoAlert({ message, type = 'success' }: InfoAlertProps) {
   const [isVisible, setIsVisible] = useState(true);
-
-  const handleClose = () => {
-    setIsVisible(false);
-    onClose?.();
-  };
 
   if (!isVisible) return null;
 
@@ -73,7 +61,7 @@ export function InfoAlert({
   } = getAlertStyles();
 
   return (
-    <Alert className={`${alertClasses} relative ${className}`}>
+    <Alert className={`${alertClasses} relative`}>
       <IconComponent className={`h-4 w-4 ${iconClasses}`} />
       <AlertDescription className={`${textClasses} pr-8`}>
         {message}
@@ -82,7 +70,7 @@ export function InfoAlert({
         variant="ghost"
         size="sm"
         className={`absolute top-2 right-2 h-6 w-6 p-0 ${buttonHoverClasses}`}
-        onClick={handleClose}
+        onClick={() => setIsVisible(false)}
       >
         <X className={`h-4 w-4 ${iconClasses}`} />
       </Button>

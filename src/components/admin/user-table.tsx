@@ -317,14 +317,7 @@ export function UsersTable({
         <InfoAlert message={tValidation(message) as string} type="success" />
       )}
 
-      {alert && (
-        <InfoAlert
-          message={alert.message}
-          type={alert.type}
-          onClose={() => setAlert(null)}
-          className="mb-4"
-        />
-      )}
+      {alert && <InfoAlert message={alert.message} type={alert.type} />}
 
       {/* Search and filter controls */}
       <div className="flex flex-col md:flex-row gap-4">

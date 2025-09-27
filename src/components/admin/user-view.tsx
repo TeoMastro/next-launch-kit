@@ -95,14 +95,7 @@ export function UserView({ user }: UserViewProps) {
       </div>
 
       {/* InfoAlert for delete error */}
-      {deleteError && (
-        <InfoAlert
-          message={deleteError}
-          type="error"
-          onClose={() => setDeleteError(null)}
-          className="mb-4"
-        />
-      )}
+      {deleteError && <InfoAlert message={deleteError} type="error" />}
 
       {/* User Information Card */}
       <Card>
