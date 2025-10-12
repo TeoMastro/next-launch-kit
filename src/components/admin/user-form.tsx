@@ -19,9 +19,7 @@ import { Role, Status } from '@prisma/client';
 import { InfoAlert } from '../info-alert';
 
 export function UserForm({ user, mode }: UserFormProps) {
-  const tUser = useTranslations('User');
-  const tLayout = useTranslations('Layout');
-  const tValidation = useTranslations('Validation');
+  const t = useTranslations('app');
 
   const initialState: UserFormState = {
     success: false,
@@ -37,7 +35,10 @@ export function UserForm({ user, mode }: UserFormProps) {
     globalError: null,
   };
 
-  const actionWrapper = async (prevState: UserFormState, formData: FormData): Promise<UserFormState> => {
+  const actionWrapper = async (
+    prevState: UserFormState,
+    formData: FormData
+  ): Promise<UserFormState> => {
     if (mode === 'create') {
       return createUserAction(prevState, formData);
     } else {
@@ -50,25 +51,25 @@ export function UserForm({ user, mode }: UserFormProps) {
   const getErrorMessage = (field: string) => {
     const errs = state.errors[field];
     if (!errs || errs.length === 0) return null;
-    return tValidation(errs[0]);
+    return t(errs[0]);
   };
 
   return (
     <Card className="max-w-2xl mx-auto">
       <CardHeader>
         <CardTitle>
-          {mode === 'create' ? tUser('createUser') : tUser('updateUser')}
+          {mode === 'create' ? t('createUser') : t('updateUser')}
         </CardTitle>
       </CardHeader>
       <CardContent>
         <form action={formAction} noValidate className="space-y-4">
           {state.globalError && (
-            <InfoAlert message={tValidation(state.globalError)} type="error" />
+            <InfoAlert message={t(state.globalError)} type="error" />
           )}
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="first_name">{tUser('firstName')}</Label>
+              <Label htmlFor="first_name">{t('firstName')}</Label>
               <Input
                 id="first_name"
                 name="first_name"
@@ -84,7 +85,7 @@ export function UserForm({ user, mode }: UserFormProps) {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="last_name">{tUser('lastName')}</Label>
+              <Label htmlFor="last_name">{t('lastName')}</Label>
               <Input
                 id="last_name"
                 name="last_name"
@@ -101,7 +102,7 @@ export function UserForm({ user, mode }: UserFormProps) {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="email">{tUser('email')}</Label>
+            <Label htmlFor="email">{t('email')}</Label>
             <Input
               id="email"
               name="email"
@@ -117,10 +118,10 @@ export function UserForm({ user, mode }: UserFormProps) {
 
           <div className="space-y-2">
             <Label htmlFor="password">
-              {tUser('password')}
+              {t('password')}
               {mode === 'update' && (
                 <span className="text-sm text-muted-foreground ml-2">
-                  ({tUser('leaveEmptyToKeepCurrent')})
+                  ({t('leaveEmptyToKeepCurrent')})
                 </span>
               )}
             </Label>
@@ -140,14 +141,14 @@ export function UserForm({ user, mode }: UserFormProps) {
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="role">{tUser('role')}</Label>
+              <Label htmlFor="role">{t('role')}</Label>
               <Select name="role" defaultValue={state.formData.role}>
                 <SelectTrigger>
-                  <SelectValue placeholder={tUser('selectRole')} />
+                  <SelectValue placeholder={t('selectRole')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="USER">{tUser('userRole')}</SelectItem>
-                  <SelectItem value="ADMIN">{tUser('adminRole')}</SelectItem>
+                  <SelectItem value="USER">{t('userRole')}</SelectItem>
+                  <SelectItem value="ADMIN">{t('adminRole')}</SelectItem>
                 </SelectContent>
               </Select>
               {state.errors.role && (
@@ -158,20 +159,18 @@ export function UserForm({ user, mode }: UserFormProps) {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="status">{tUser('status')}</Label>
+              <Label htmlFor="status">{t('status')}</Label>
               <Select name="status" defaultValue={state.formData.status}>
                 <SelectTrigger>
-                  <SelectValue placeholder={tUser('selectStatus')} />
+                  <SelectValue placeholder={t('selectStatus')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="ACTIVE">
-                    {tUser('activeStatus')}
-                  </SelectItem>
+                  <SelectItem value="ACTIVE">{t('activeStatus')}</SelectItem>
                   <SelectItem value="INACTIVE">
-                    {tUser('inactiveStatus')}
+                    {t('inactiveStatus')}
                   </SelectItem>
                   <SelectItem value="UNVERIFIED">
-                    {tUser('unverifiedStatus')}
+                    {t('unverifiedStatus')}
                   </SelectItem>
                 </SelectContent>
               </Select>
@@ -185,14 +184,14 @@ export function UserForm({ user, mode }: UserFormProps) {
 
           <div className="flex gap-4">
             <Button type="submit">
-              {mode === 'create' ? tLayout('create') : tLayout('update')}
+              {mode === 'create' ? t('create') : t('update')}
             </Button>
             <Button
               type="button"
               variant="outline"
               onClick={() => window.history.back()}
             >
-              {tUser('cancel')}
+              {t('cancel')}
             </Button>
           </div>
         </form>

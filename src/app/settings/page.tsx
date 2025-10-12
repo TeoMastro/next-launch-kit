@@ -10,7 +10,7 @@ export default async function SettingsPage() {
   if (!session || session?.user.status !== Status.ACTIVE) {
     redirect('/auth/signin');
   }
-  const t = await getTranslations('Settings');
+  const t = await getTranslations('app');
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

@@ -10,10 +10,10 @@ export default async function DashboardPage() {
     redirect('/auth/signin');
   }
 
-  const t = await getTranslations('Dashboard');
+  const t = await getTranslations('app');
   return (
     <div className="container mx-auto">
-      <p>{t('welcomeBack', { name: session.user.name })}</p>
+      <p>{t('welcomeBackName', { name: session.user.name })}</p>
     </div>
   );
 }

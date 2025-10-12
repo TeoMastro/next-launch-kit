@@ -19,10 +19,7 @@ import { InfoAlert } from '../info-alert';
 
 export function ForgotPasswordForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const t = useTranslations('ForgotPassword');
-  const tSignIn = useTranslations('SignIn');
-  const tResetPassword = useTranslations('ResetPassword');
-  const tValidation = useTranslations('Validation');
+  const t = useTranslations('app');
 
   const initialState: ForgotPasswordState = {
     errors: {},
@@ -45,7 +42,7 @@ export function ForgotPasswordForm() {
   return (
     <Card className="w-full max-w-md mx-auto">
       <CardHeader>
-        <CardTitle>{tResetPassword('resetPassword')}</CardTitle>
+        <CardTitle>{t('resetPassword')}</CardTitle>
       </CardHeader>
 
       <form action={handleSubmit} noValidate>
@@ -70,9 +67,7 @@ export function ForgotPasswordForm() {
               className={state.errors.email ? 'border-red-500' : ''}
             />
             {state.errors.email && (
-              <p className="text-sm text-red-500">
-                {tValidation(state.errors.email[0])}
-              </p>
+              <p className="text-sm text-red-500">{t(state.errors.email[0])}</p>
             )}
           </div>
         </CardContent>
@@ -92,7 +87,7 @@ export function ForgotPasswordForm() {
               href="/auth/signin"
               className="font-medium text-primary hover:underline"
             >
-              {tSignIn('signIn')}
+              {t('signIn')}
             </a>
           </p>
         </CardFooter>

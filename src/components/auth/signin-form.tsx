@@ -30,8 +30,7 @@ export function SigninForm({ error, message }: LoginFormProps) {
   const [authError, setAuthError] = useState('');
   const [showMessage, setShowMessage] = useState(!!message);
   const router = useRouter();
-  const t = useTranslations('SignIn');
-  const tValidation = useTranslations('Validation');
+  const t = useTranslations('app');
 
   const initialState: ValidationState = {
     errors: {},
@@ -108,9 +107,7 @@ export function SigninForm({ error, message }: LoginFormProps) {
               className={state.errors.email ? 'border-red-500' : ''}
             />
             {state.errors.email && (
-              <p className="text-sm text-red-500">
-                {tValidation(state.errors.email[0])}
-              </p>
+              <p className="text-sm text-red-500">{t(state.errors.email[0])}</p>
             )}
           </div>
 
@@ -127,7 +124,7 @@ export function SigninForm({ error, message }: LoginFormProps) {
             />
             {state.errors.password && (
               <p className="text-sm text-red-500">
-                {tValidation(state.errors.password[0])}
+                {t(state.errors.password[0])}
               </p>
             )}
           </div>

@@ -20,7 +20,7 @@ import { TermsDialog } from '@/components/legal/terms-dialog';
 
 export async function AppSidebar() {
   const session = await auth();
-  const t = await getTranslations('Menu');
+  const t = await getTranslations('app');
 
   const userData = {
     name: session?.user.name || 'User',

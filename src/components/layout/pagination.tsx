@@ -21,7 +21,7 @@ export const Pagination = ({
   totalCount: number;
   limit: number;
 }) => {
-  const tLayout = useTranslations('Layout');
+  const t = useTranslations('app');
 
   const startItem = (currentPage - 1) * limit + 1;
   const endItem = Math.min(currentPage * limit, totalCount);
@@ -29,8 +29,8 @@ export const Pagination = ({
   return (
     <div className="flex items-center justify-between px-2 py-4 flex-col md:flex-row">
       <div className="text-sm text-muted-foreground">
-        {tLayout('showing')} {startItem} {tLayout('to')} {endItem}{' '}
-        {tLayout('of')} {totalCount} {tLayout('results')}
+        {t('showing')} {startItem} {t('to')} {endItem} {t('of')} {totalCount}{' '}
+        {t('results')}
       </div>
 
       <div className="flex items-center space-x-2">
@@ -53,7 +53,7 @@ export const Pagination = ({
         </Button>
 
         <div className="text-sm px-2">
-          {currentPage} {tLayout('of')} {totalPages}
+          {currentPage} {t('of')} {totalPages}
         </div>
 
         <Button

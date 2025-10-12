@@ -4,7 +4,7 @@ import { signOut } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
 
 export default function LogoutButton() {
-  const t = useTranslations('SignIn');
+  const t = useTranslations('app');
 
   const handleLogout = async () => {
     await signOut({ callbackUrl: '/auth/signin' });

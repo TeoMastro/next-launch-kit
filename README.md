@@ -170,6 +170,10 @@ npm run format
 npm run format:check
 ```
 
+## Translations sorting
+
+To alphabetically sort translations copy and paste the contents of your messages json file [here](https://novicelab.org/jsonabc/). Then paste it back in the project file.
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

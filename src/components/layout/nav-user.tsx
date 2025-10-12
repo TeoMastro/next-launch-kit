@@ -30,7 +30,7 @@ export function NavUser({
     avatar: string;
   };
 }) {
-  const t = useTranslations('Menu');
+  const t = useTranslations('app');
   const { isMobile } = useSidebar();
 
   return (

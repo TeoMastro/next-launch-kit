@@ -18,8 +18,7 @@ import { SignupFormState } from '@/types/auth';
 import { InfoAlert } from '../info-alert';
 
 export function SignupForm() {
-  const tSignUp = useTranslations('SignUp');
-  const tValidation = useTranslations('Validation');
+  const t = useTranslations('app');
 
   const initialState: SignupFormState = {
     success: false,
@@ -34,7 +33,10 @@ export function SignupForm() {
     globalError: null,
   };
 
-  const actionWrapper = async (prevState: SignupFormState, formData: FormData): Promise<SignupFormState> => {
+  const actionWrapper = async (
+    prevState: SignupFormState,
+    formData: FormData
+  ): Promise<SignupFormState> => {
     return signUpAction(prevState, formData);
   };
 
@@ -44,24 +46,24 @@ export function SignupForm() {
     const errs = state.errors[field];
     if (!errs || errs.length === 0) return null;
 
-    return tValidation(errs[0]);
+    return t(errs[0]);
   };
 
   return (
     <Card className="w-full max-w-md mx-auto">
       <CardHeader>
-        <CardTitle>{tSignUp('title')}</CardTitle>
-        <CardDescription>{tSignUp('description')}</CardDescription>
+        <CardTitle>{t('title')}</CardTitle>
+        <CardDescription>{t('description')}</CardDescription>
       </CardHeader>
 
       <form action={formAction} noValidate>
         <CardContent className="space-y-4 mb-5">
           {state.globalError && (
-            <InfoAlert message={tValidation(state.globalError)} type="error" />
+            <InfoAlert message={t(state.globalError)} type="error" />
           )}
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="first_name">{tSignUp('firstName')}</Label>
+              <Label htmlFor="first_name">{t('firstName')}</Label>
               <Input
                 id="first_name"
                 name="first_name"
@@ -78,7 +80,7 @@ export function SignupForm() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="last_name">{tSignUp('lastName')}</Label>
+              <Label htmlFor="last_name">{t('lastName')}</Label>
               <Input
                 id="last_name"
                 name="last_name"
@@ -112,12 +114,12 @@ export function SignupForm() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="password">{tSignUp('password')}</Label>
+            <Label htmlFor="password">{t('password')}</Label>
             <Input
               id="password"
               name="password"
               type="password"
-              placeholder={tSignUp('passwordPlaceholder')}
+              placeholder={t('passwordPlaceholder')}
               className={state.errors.password ? 'border-red-500' : ''}
               required
             />
@@ -129,14 +131,12 @@ export function SignupForm() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="confirmPassword">
-              {tSignUp('confirmPassword')}
-            </Label>
+            <Label htmlFor="confirmPassword">{t('confirmPassword')}</Label>
             <Input
               id="confirmPassword"
               name="confirmPassword"
               type="password"
-              placeholder={tSignUp('confirmPasswordPlaceholder')}
+              placeholder={t('confirmPasswordPlaceholder')}
               className={state.errors.confirmPassword ? 'border-red-500' : ''}
               required
             />
@@ -150,11 +150,11 @@ export function SignupForm() {
 
         <CardFooter className="flex flex-col space-y-4">
           <Button type="submit" className="w-full">
-            {tSignUp('createAccount')}
+            {t('createAccount')}
           </Button>
 
           <p className="text-center text-sm text-muted-foreground">
-            {tSignUp('alreadyHaveAccount')}{' '}
+            {t('alreadyHaveAccount')}{' '}
             <a
               href="/auth/signin"
               className="font-medium text-primary hover:underline"

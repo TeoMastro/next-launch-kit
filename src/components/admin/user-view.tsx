@@ -26,10 +26,9 @@ import { InfoAlert } from '@/components/info-alert';
 
 export function UserView({ user }: UserViewProps) {
   const router = useRouter();
-  const tUser = useTranslations('User');
-  const tValidation = useTranslations('Validation');
+  const t = useTranslations('app');
 
-  const statusBadge = getStatusBadge(user.status, tUser);
+  const statusBadge = getStatusBadge(user.status, t);
 
   const [deleteError, setDeleteError] = useState<string | null>(null);
 
@@ -45,7 +44,7 @@ export function UserView({ user }: UserViewProps) {
           >
             <ArrowLeft className="h-4 w-4" />
           </Button>
-          <h1 className="text-2xl font-bold">{tUser('viewUser')}</h1>
+          <h1 className="text-2xl font-bold">{t('viewUser')}</h1>
         </div>
         <div className="flex gap-2">
           <Button
@@ -62,15 +61,15 @@ export function UserView({ user }: UserViewProps) {
             </AlertDialogTrigger>
             <AlertDialogContent>
               <AlertDialogHeader>
-                <AlertDialogTitle>{tUser('confirmDelete')}</AlertDialogTitle>
+                <AlertDialogTitle>{t('confirmDelete')}</AlertDialogTitle>
                 <AlertDialogDescription>
-                  {tUser('deleteUserConfirmation', {
+                  {t('deleteUserConfirmation', {
                     name: `${user.first_name} ${user.last_name}`,
                   })}
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
-                <AlertDialogCancel>{tUser('cancel')}</AlertDialogCancel>
+                <AlertDialogCancel>{t('cancel')}</AlertDialogCancel>
                 <AlertDialogAction
                   className="bg-destructive text-destructive-foreground hover:bg-destructive/90 text-white"
                   onClick={async () => {
@@ -80,13 +79,13 @@ export function UserView({ user }: UserViewProps) {
                     } catch (error) {
                       setDeleteError(
                         error instanceof Error
-                          ? tValidation(error.message)
-                          : tValidation('unexpectedError')
+                          ? t(error.message)
+                          : t('unexpectedError')
                       );
                     }
                   }}
                 >
-                  {tUser('delete')}
+                  {t('delete')}
                 </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
@@ -105,14 +104,14 @@ export function UserView({ user }: UserViewProps) {
             <div className="space-y-4">
               <div>
                 <label className="text-sm font-medium text-muted-foreground">
-                  {tUser('userId')}
+                  {t('userId')}
                 </label>
                 <p className="text-lg font-mono">#{user.id}</p>
               </div>
 
               <div>
                 <label className="text-sm font-medium text-muted-foreground">
-                  {tUser('fullName')}
+                  {t('fullName')}
                 </label>
                 <p className="text-lg">
                   {user.first_name} {user.last_name}
@@ -122,7 +121,7 @@ export function UserView({ user }: UserViewProps) {
               <div>
                 <label className="text-sm font-medium text-muted-foreground flex items-center space-x-1">
                   <Mail className="h-4 w-4" />
-                  <span>{tUser('email')}</span>
+                  <span>{t('email')}</span>
                 </label>
                 <p className="text-lg">{user.email}</p>
               </div>
@@ -132,23 +131,21 @@ export function UserView({ user }: UserViewProps) {
               <div>
                 <label className="text-sm font-medium text-muted-foreground flex items-center space-x-1">
                   <Shield className="h-4 w-4" />
-                  <span>{tUser('role')}</span>
+                  <span>{t('role')}</span>
                 </label>
                 <div className="mt-1">
                   <Badge
                     variant={user.role === 'ADMIN' ? 'default' : 'secondary'}
                     className="text-sm"
                   >
-                    {user.role === 'ADMIN'
-                      ? tUser('adminRole')
-                      : tUser('userRole')}
+                    {user.role === 'ADMIN' ? t('adminRole') : t('userRole')}
                   </Badge>
                 </div>
               </div>
 
               <div>
                 <label className="text-sm font-medium text-muted-foreground">
-                  {tUser('status')}
+                  {t('status')}
                 </label>
                 <div className="mt-1">
                   <Badge variant={statusBadge.variant} className="text-sm">
@@ -166,7 +163,7 @@ export function UserView({ user }: UserViewProps) {
             <div>
               <label className="text-sm font-medium text-muted-foreground flex items-center space-x-1">
                 <Calendar className="h-4 w-4" />
-                <span>{tUser('createdAt')}</span>
+                <span>{t('createdAt')}</span>
               </label>
               <p className="text-sm text-muted-foreground mt-1">
                 {new Date(user.created_at).toLocaleString()}
@@ -176,7 +173,7 @@ export function UserView({ user }: UserViewProps) {
             <div>
               <label className="text-sm font-medium text-muted-foreground flex items-center space-x-1">
                 <Calendar className="h-4 w-4" />
-                <span>{tUser('updatedAt')}</span>
+                <span>{t('updatedAt')}</span>
               </label>
               <p className="text-sm text-muted-foreground mt-1">
                 {new Date(user.updated_at).toLocaleString()}

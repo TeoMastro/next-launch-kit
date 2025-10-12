@@ -128,7 +128,7 @@ export async function signUpAction(
     };
   }
   const successMessage = await getServerTranslation(
-    'SignUp',
+    'app',
     'accountCreatedCheckEmail'
   );
   redirect('/auth/signin?message=' + encodeURIComponent(successMessage));
@@ -189,7 +189,7 @@ export async function verifyEmailAction(
     if (!user) {
       return {
         success: false,
-        message: await getServerTranslation('VerifyEmail', 'verificationError'),
+        message: await getServerTranslation('app', 'verificationError'),
       };
     }
 
@@ -207,10 +207,7 @@ export async function verifyEmailAction(
 
     return {
       success: true,
-      message: await getServerTranslation(
-        'VerifyEmail',
-        'verificationSuccessRedirect'
-      ),
+      message: await getServerTranslation('app', 'verificationSuccessRedirect'),
     };
   } catch (error) {
     logger.error('Error during email verification', {
@@ -221,7 +218,7 @@ export async function verifyEmailAction(
 
     return {
       success: false,
-      message: await getServerTranslation('VerifyEmail', 'errorTitle'),
+      message: await getServerTranslation('app', 'errorTitle'),
     };
   }
 }
@@ -278,7 +275,7 @@ export async function forgotPasswordAction(
       errors: {},
       formData: { email: '' },
       globalError: null,
-      message: await getServerTranslation('ForgotPassword', 'resetEmailSent'),
+      message: await getServerTranslation('app', 'resetEmailSent'),
     };
   } catch (error) {
     logger.error('Error during forgot password', {
@@ -365,7 +362,7 @@ export async function resetPasswordAction(
     };
   }
   const successMessage = await getServerTranslation(
-    'ResetPassword',
+    'app',
     'passwordResetSuccess'
   );
 

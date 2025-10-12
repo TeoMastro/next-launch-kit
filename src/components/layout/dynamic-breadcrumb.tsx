@@ -17,8 +17,7 @@ import { Fragment } from 'react';
 export function DynamicBreadcrumb() {
   const [isHydrated, setIsHydrated] = useState(false);
   const pathname = usePathname();
-  const tMenu = useTranslations('Menu');
-  const tBreadcrumbs = useTranslations('Breadcrumbs');
+  const t = useTranslations('app');
 
   useEffect(() => {
     setIsHydrated(true);
@@ -47,7 +46,7 @@ export function DynamicBreadcrumb() {
     if (!isHydrated) return formatted;
 
     try {
-      return tBreadcrumbs(segment) || formatted;
+      return t(segment) || formatted;
     } catch {
       return formatted;
     }
@@ -70,7 +69,7 @@ export function DynamicBreadcrumb() {
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
-            <BreadcrumbPage>{tMenu('home')}</BreadcrumbPage>
+            <BreadcrumbPage>{t('home')}</BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
@@ -82,7 +81,7 @@ export function DynamicBreadcrumb() {
       <BreadcrumbList>
         <BreadcrumbItem>
           <BreadcrumbLink asChild>
-            <Link href="/dashboard">{tMenu('home')}</Link>
+            <Link href="/dashboard">{t('home')}</Link>
           </BreadcrumbLink>
         </BreadcrumbItem>
 

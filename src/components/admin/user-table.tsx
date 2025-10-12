@@ -44,25 +44,22 @@ import { Role, Status } from '@prisma/client';
 import { UsersTableProps } from '@/types/user';
 import { InfoAlert } from '@/components/info-alert';
 
-export const getStatusBadge = (
-  status: Status,
-  tUser: (key: string) => string
-) => {
+export const getStatusBadge = (status: Status, t: (key: string) => string) => {
   switch (status) {
     case Status.ACTIVE:
       return {
         variant: 'default' as const,
-        text: tUser('activeStatus'),
+        text: t('activeStatus'),
       };
     case Status.INACTIVE:
       return {
         variant: 'destructive' as const,
-        text: tUser('inactiveStatus'),
+        text: t('inactiveStatus'),
       };
     case Status.UNVERIFIED:
       return {
         variant: 'outline' as const,
-        text: tUser('unverifiedStatus'),
+        text: t('unverifiedStatus'),
       };
     default:
       return {
@@ -88,10 +85,7 @@ export function UsersTable({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const tUser = useTranslations('User');
-  const tMenu = useTranslations('Menu');
-  const tLayout = useTranslations('Layout');
-  const tValidation = useTranslations('Validation');
+  const t = useTranslations('app');
 
   // Local state for immediate UI feedback
   const [searchTermLocal, setSearchTermLocal] = useState(searchTerm);
@@ -187,7 +181,7 @@ export function UsersTable({
   const handleDelete = async (userId: number) => {
     if (userId === currentUserId) {
       setAlert({
-        message: tValidation('cannotDeleteOwnAccount'),
+        message: t('cannotDeleteOwnAccount'),
         type: 'error',
       });
       return;
@@ -199,15 +193,13 @@ export function UsersTable({
       try {
         await deleteUserAction(userId);
         setAlert({
-          message: tValidation('userDeletedSuccess'),
+          message: t('userDeletedSuccess'),
           type: 'success',
         });
       } catch (error) {
         setAlert({
           message:
-            error instanceof Error
-              ? tValidation(error.message)
-              : tValidation('unexpectedError'),
+            error instanceof Error ? t(error.message) : t('unexpectedError'),
           type: 'error',
         });
       } finally {
@@ -249,7 +241,7 @@ export function UsersTable({
         window.URL.revokeObjectURL(url);
       } catch (error) {
         setAlert({
-          message: tValidation('exportError'),
+          message: t('exportError'),
           type: 'error',
         });
       }
@@ -260,7 +252,7 @@ export function UsersTable({
       statusFilterLocal,
       sortField,
       sortDirection,
-      tValidation,
+      t,
     ]
   );
 
@@ -286,7 +278,7 @@ export function UsersTable({
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold">{tMenu('users')}</h1>
+          <h1 className="text-2xl font-bold">{t('users')}</h1>
         </div>
         <div className="flex gap-2">
           <Button
@@ -307,34 +299,32 @@ export function UsersTable({
           </Button>
           <Button onClick={() => router.push('/admin/user/create')}>
             <Plus className="h-4 w-4" />
-            <div className="hidden md:block">{tLayout('create')}</div>
+            <div className="hidden md:block">{t('create')}</div>
           </Button>
         </div>
       </div>
 
       {/* Success message */}
-      {message && (
-        <InfoAlert message={tValidation(message) as string} type="success" />
-      )}
+      {message && <InfoAlert message={t(message) as string} type="success" />}
 
       {alert && <InfoAlert message={alert.message} type={alert.type} />}
 
       {/* Search and filter controls */}
       <div className="flex flex-col md:flex-row gap-4">
         <Input
-          placeholder={tUser('searchUsers')}
+          placeholder={t('searchUsers')}
           value={searchTermLocal}
           onChange={(e) => setSearchTermLocal(e.target.value)}
           className="w-full md:max-w-sm"
         />
         <Select value={roleFilterLocal} onValueChange={handleRoleFilterChange}>
           <SelectTrigger className="w-full md:w-[180px]">
-            <SelectValue placeholder={tUser('filterByRole')} />
+            <SelectValue placeholder={t('filterByRole')} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">{tUser('allRoles')}</SelectItem>
-            <SelectItem value="USER">{tUser('userRole')}</SelectItem>
-            <SelectItem value="ADMIN">{tUser('adminRole')}</SelectItem>
+            <SelectItem value="all">{t('allRoles')}</SelectItem>
+            <SelectItem value="USER">{t('userRole')}</SelectItem>
+            <SelectItem value="ADMIN">{t('adminRole')}</SelectItem>
           </SelectContent>
         </Select>
         <Select
@@ -342,15 +332,13 @@ export function UsersTable({
           onValueChange={handleStatusFilterChange}
         >
           <SelectTrigger className="w-full md:w-[180px]">
-            <SelectValue placeholder={tUser('filterByStatus')} />
+            <SelectValue placeholder={t('filterByStatus')} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">{tUser('allStatuses')}</SelectItem>
-            <SelectItem value="ACTIVE">{tUser('activeStatus')}</SelectItem>
-            <SelectItem value="INACTIVE">{tUser('inactiveStatus')}</SelectItem>
-            <SelectItem value="UNVERIFIED">
-              {tUser('unverifiedStatus')}
-            </SelectItem>
+            <SelectItem value="all">{t('allStatuses')}</SelectItem>
+            <SelectItem value="ACTIVE">{t('activeStatus')}</SelectItem>
+            <SelectItem value="INACTIVE">{t('inactiveStatus')}</SelectItem>
+            <SelectItem value="UNVERIFIED">{t('unverifiedStatus')}</SelectItem>
           </SelectContent>
         </Select>
         {hasActiveFilters && (
@@ -361,7 +349,7 @@ export function UsersTable({
             className="whitespace-nowrap"
           >
             <X className="mr-2 h-4 w-4" />
-            {tLayout('resetFilters')}
+            {t('resetFilters')}
           </Button>
         )}
       </div>
@@ -377,7 +365,7 @@ export function UsersTable({
                 direction={sortDirection}
                 onSort={handleSort}
               >
-                {tUser('name')}
+                {t('name')}
               </SortableTableHeader>
               <SortableTableHeader
                 field="email"
@@ -385,7 +373,7 @@ export function UsersTable({
                 direction={sortDirection}
                 onSort={handleSort}
               >
-                {tUser('email')}
+                {t('email')}
               </SortableTableHeader>
               <SortableTableHeader
                 field="role"
@@ -393,7 +381,7 @@ export function UsersTable({
                 direction={sortDirection}
                 onSort={handleSort}
               >
-                {tUser('role')}
+                {t('role')}
               </SortableTableHeader>
               {/* Add status column header */}
               <SortableTableHeader
@@ -402,7 +390,7 @@ export function UsersTable({
                 direction={sortDirection}
                 onSort={handleSort}
               >
-                {tUser('status')}
+                {t('status')}
               </SortableTableHeader>
               <SortableTableHeader
                 field="created_at"
@@ -410,14 +398,14 @@ export function UsersTable({
                 direction={sortDirection}
                 onSort={handleSort}
               >
-                {tUser('created')}
+                {t('created')}
               </SortableTableHeader>
-              <TableHead className="text-right">{tUser('actions')}</TableHead>
+              <TableHead className="text-right">{t('actions')}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {users.map((user) => {
-              const statusBadge = getStatusBadge(user.status, tUser);
+              const statusBadge = getStatusBadge(user.status, t);
               return (
                 <TableRow key={user.id}>
                   <TableCell className="font-medium">
@@ -431,8 +419,8 @@ export function UsersTable({
                       }
                     >
                       {user.role === Role.ADMIN
-                        ? tUser('adminRole')
-                        : tUser('userRole')}
+                        ? t('adminRole')
+                        : t('userRole')}
                     </Badge>
                   </TableCell>
                   {/* Add status column */}
@@ -455,7 +443,7 @@ export function UsersTable({
                         size="sm"
                         onClick={() => router.push(`/admin/user/${user.id}`)}
                         disabled={isPending}
-                        title={tUser('viewUser')}
+                        title={t('viewUser')}
                       >
                         <Eye className="h-4 w-4" />
                       </Button>
@@ -488,23 +476,21 @@ export function UsersTable({
                         <AlertDialogContent>
                           <AlertDialogHeader>
                             <AlertDialogTitle>
-                              {tUser('confirmDelete')}
+                              {t('confirmDelete')}
                             </AlertDialogTitle>
                             <AlertDialogDescription>
-                              {tUser('deleteUserConfirmation', {
+                              {t('deleteUserConfirmation', {
                                 name: `${user.first_name} ${user.last_name}`,
                               })}
                             </AlertDialogDescription>
                           </AlertDialogHeader>
                           <AlertDialogFooter>
-                            <AlertDialogCancel>
-                              {tUser('cancel')}
-                            </AlertDialogCancel>
+                            <AlertDialogCancel>{t('cancel')}</AlertDialogCancel>
                             <AlertDialogAction
                               onClick={() => handleDelete(user.id)}
                               className="bg-destructive text-destructive-foreground hover:bg-destructive/90 text-white"
                             >
-                              {tUser('delete')}
+                              {t('delete')}
                             </AlertDialogAction>
                           </AlertDialogFooter>
                         </AlertDialogContent>
@@ -519,7 +505,7 @@ export function UsersTable({
 
         {users.length === 0 && (
           <div className="text-center py-8 text-muted-foreground">
-            {tUser('noUsersFound')}
+            {t('noUsersFound')}
           </div>
         )}
       </div>

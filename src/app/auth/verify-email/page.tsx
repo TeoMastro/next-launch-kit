@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useState, useCallback  } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { verifyEmailAction } from '@/server-actions/auth';
 import { useTranslations } from 'next-intl';
 import {
@@ -19,37 +19,40 @@ export default function VerifyEmailPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const token = searchParams.get('token');
-  const t = useTranslations('VerifyEmail');
+  const t = useTranslations('app');
 
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>(
     'loading'
   );
   const [message, setMessage] = useState('');
 
-  const handleVerification = useCallback(async (token: string) => {
-    try {
-      const result = await verifyEmailAction(token);
+  const handleVerification = useCallback(
+    async (token: string) => {
+      try {
+        const result = await verifyEmailAction(token);
 
-      if (result.success) {
-        setStatus('success');
-        setMessage(t('verificationSuccess'));
-        setTimeout(
-          () =>
-            router.push(
-              '/auth/signin?message=' +
-                encodeURIComponent(t('verificationSuccessRedirect'))
-            ),
-          3000
-        );
-      } else {
+        if (result.success) {
+          setStatus('success');
+          setMessage(t('verificationSuccess'));
+          setTimeout(
+            () =>
+              router.push(
+                '/auth/signin?message=' +
+                  encodeURIComponent(t('verificationSuccessRedirect'))
+              ),
+            3000
+          );
+        } else {
+          setStatus('error');
+          setMessage(t('verificationError'));
+        }
+      } catch (error) {
         setStatus('error');
-        setMessage(t('verificationError'));
+        setMessage(t('verificationFailed'));
       }
-    } catch (error) {
-      setStatus('error');
-      setMessage(t('verificationFailed'));
-    }
-  }, [t, router]);
+    },
+    [t, router]
+  );
 
   useEffect(() => {
     if (token) {

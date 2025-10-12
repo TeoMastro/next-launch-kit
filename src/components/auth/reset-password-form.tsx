@@ -23,9 +23,7 @@ interface ResetPasswordFormProps {
 
 export function ResetPasswordForm({ token }: ResetPasswordFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const t = useTranslations('ResetPassword');
-  const tSignIn = useTranslations('SignIn');
-  const tValidation = useTranslations('Validation');
+  const t = useTranslations('app');
 
   const initialState: ResetPasswordState = {
     errors: {},
@@ -70,7 +68,7 @@ export function ResetPasswordForm({ token }: ResetPasswordFormProps) {
             />
             {state.errors.password && (
               <p className="text-sm text-red-500">
-                {tValidation(state.errors.password[0])}
+                {t(state.errors.password[0])}
               </p>
             )}
           </div>
@@ -88,7 +86,7 @@ export function ResetPasswordForm({ token }: ResetPasswordFormProps) {
             />
             {state.errors.confirmPassword && (
               <p className="text-sm text-red-500">
-                {tValidation(state.errors.confirmPassword[0])}
+                {t(state.errors.confirmPassword[0])}
               </p>
             )}
           </div>
@@ -105,7 +103,7 @@ export function ResetPasswordForm({ token }: ResetPasswordFormProps) {
               href="/auth/signin"
               className="font-medium text-primary hover:underline"
             >
-              {tSignIn('signIn')}
+              {t('signIn')}
             </a>
           </p>
         </CardFooter>
