@@ -10,10 +10,10 @@ export async function GET(req: NextRequest) {
 
   const users = await getAllUsersForExport(exportParams);
 
-  const nameLabel = await getServerTranslation('User', 'name');
-  const roleLabel = await getServerTranslation('User', 'role');
-  const statusLabel = await getServerTranslation('User', 'status');
-  const createdAtLabel = await getServerTranslation('User', 'createdAt');
+  const nameLabel = await getServerTranslation('app', 'name');
+  const roleLabel = await getServerTranslation('app', 'role');
+  const statusLabel = await getServerTranslation('app', 'status');
+  const createdAtLabel = await getServerTranslation('app', 'createdAt');
 
   const records = users.map((user) => ({
     [nameLabel]: `${user.first_name} ${user.last_name}`,
