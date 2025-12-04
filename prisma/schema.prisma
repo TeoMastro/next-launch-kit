@@ -8,19 +8,23 @@ datasource db {
 }
 
 model User {
-  id                       Int       @id @default(autoincrement())
+  id                       Int                 @id @default(autoincrement())
   first_name               String?
   last_name                String?
-  email                    String    @unique
+  email                    String              @unique
   password                 String?
   image                    String?
-  role                     Role      @default(USER)
-  status                   Status    @default(UNVERIFIED)
-  email_verification_token String?   @unique
-  password_reset_token     String?   @unique
+  role                     Role                @default(USER)
+  status                   Status              @default(UNVERIFIED)
+  email_verification_token String?             @unique
+  password_reset_token     String?             @unique
   password_reset_expires   DateTime?
-  created_at               DateTime  @default(now())
-  updated_at               DateTime  @updatedAt
+  stripe_customer_id       String?             @unique @map("stripe_customer_id")
+  stripe_subscription_id   String?             @unique @map("stripe_subscription_id")
+  subscription_status      SubscriptionStatus? @map("subscription_status")
+  subscription_end_date    DateTime?           @map("subscription_end_date")
+  created_at               DateTime            @default(now())
+  updated_at               DateTime            @updatedAt
 
   accounts Account[]
 
@@ -56,4 +60,14 @@ enum Status {
   ACTIVE
   INACTIVE
   UNVERIFIED
+}
+
+enum SubscriptionStatus {
+  active
+  canceled
+  incomplete
+  incomplete_expired
+  past_due
+  trialing
+  unpaid
 }

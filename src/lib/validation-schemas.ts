@@ -67,6 +67,13 @@ export const resetPasswordSchema = z
     path: ['confirmPassword'],
   });
 
+export const createCheckoutSessionSchema = z.object({
+  priceId: z.string().min(1, 'priceIdRequired'),
+  planType: z.enum(['monthly', 'yearly'], {
+    errorMap: () => ({ message: 'invalidPlanType' }),
+  }),
+});
+
 export function formatZodErrors(error: z.ZodError) {
   const fieldErrors: { [key: string]: string[] } = {};
 
