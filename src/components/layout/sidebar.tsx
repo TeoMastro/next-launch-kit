@@ -13,13 +13,13 @@ import {
 } from '@/components/ui/sidebar';
 
 import { NavUser } from '@/components/layout/nav-user';
-import { auth } from '@/lib/auth';
+import { getSession } from '@/lib/auth-session';
 import { getTranslations } from 'next-intl/server';
 import { PrivacyPolicyDialog } from '@/components/legal/privacy-policy-dialog';
 import { TermsDialog } from '@/components/legal/terms-dialog';
 
 export async function AppSidebar() {
-  const session = await auth();
+  const session = await getSession();
   const t = await getTranslations('app');
 
   const userData = {

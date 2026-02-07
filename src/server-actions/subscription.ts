@@ -1,6 +1,6 @@
 'use server';
 
-import { auth } from '@/lib/auth';
+import { getSession } from '@/lib/auth-session';
 import { prisma } from '@/lib/prisma';
 import {
   stripe,
@@ -13,7 +13,7 @@ import logger from '@/lib/logger';
 import { Role, Status } from '@prisma/client';
 
 async function checkUserAuth() {
-  const session = await auth();
+  const session = await getSession();
 
   if (!session || !session.user) {
     throw new Error('Unauthorized');
@@ -35,7 +35,7 @@ export async function createCheckoutSession(planType: PlanType) {
     const session = await checkUserAuth();
 
     const user = await prisma.user.findUnique({
-      where: { id: parseInt(session.user.id) },
+      where: { id: Number(session.user.id) },
       select: {
         email: true,
         stripe_customer_id: true,
@@ -75,7 +75,7 @@ export async function createCheckoutSession(planType: PlanType) {
       customerId = customer.id;
 
       await prisma.user.update({
-        where: { id: parseInt(session.user.id) },
+        where: { id: Number(session.user.id) },
         data: { stripe_customer_id: customerId },
       });
 
@@ -141,7 +141,7 @@ export async function createPortalSession() {
     const session = await checkUserAuth();
 
     const user = await prisma.user.findUnique({
-      where: { id: parseInt(session.user.id) },
+      where: { id: Number(session.user.id) },
       select: { stripe_customer_id: true },
     });
 
@@ -171,14 +171,14 @@ export async function createPortalSession() {
 
 export async function getUserSubscriptionAction() {
   try {
-    const session = await auth();
+    const session = await getSession();
 
     if (!session || !session.user) {
       return null;
     }
 
     const user = await prisma.user.findUnique({
-      where: { id: parseInt(session.user.id) },
+      where: { id: Number(session.user.id) },
       select: {
         stripe_customer_id: true,
         stripe_subscription_id: true,
@@ -226,7 +226,7 @@ export async function syncSubscriptionAction() {
     const session = await checkUserAuth();
 
     const user = await prisma.user.findUnique({
-      where: { id: parseInt(session.user.id) },
+      where: { id: Number(session.user.id) },
       select: {
         stripe_subscription_id: true,
         stripe_customer_id: true,
@@ -244,10 +244,12 @@ export async function syncSubscriptionAction() {
       user.stripe_subscription_id
     );
 
-    const endDate = new Date(subscription.current_period_end * 1000);
+    const endDate = new Date(
+      (subscription as any).current_period_end * 1000
+    );
 
     await prisma.user.update({
-      where: { id: parseInt(session.user.id) },
+      where: { id: Number(session.user.id) },
       data: {
         subscription_status: subscription.status as any,
         subscription_end_date: endDate,

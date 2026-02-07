@@ -4,7 +4,9 @@ import { prisma } from '@/lib/prisma';
 import { Status } from '@prisma/client';
 
 export async function GET(request: NextRequest) {
-  const session = await auth();
+  const session = (await auth.api.getSession({
+    headers: request.headers,
+  })) as { user: { id: string; email: string } } | null;
 
   if (!session?.user?.id) {
     return NextResponse.json({ active: false });

@@ -10,7 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { signIn } from 'next-auth/react';
+import { authClient } from '@/lib/auth-client';
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
@@ -47,15 +47,18 @@ export function SigninForm({ error, message }: LoginFormProps) {
       setShowMessage(false);
 
       try {
-        const result = await signIn('credentials', {
+        const result = await authClient.signIn.email({
           email: data.email,
           password: data.password,
-          redirect: false,
         });
 
-        if (result?.error) {
-          setAuthError(t('invalidCredentials'));
-        } else if (result?.ok) {
+        if (result.error) {
+          if (result.error.status === 403) {
+            setAuthError(t('emailNotVerified'));
+          } else {
+            setAuthError(t('invalidCredentials'));
+          }
+        } else {
           router.push('/dashboard');
           router.refresh();
         }
@@ -69,8 +72,9 @@ export function SigninForm({ error, message }: LoginFormProps) {
   );
 
   const handleGoogleSignIn = () => {
-    signIn('google', {
-      redirectTo: '/dashboard',
+    authClient.signIn.social({
+      provider: 'google',
+      callbackURL: '/dashboard',
     });
   };
   useEffect(() => {

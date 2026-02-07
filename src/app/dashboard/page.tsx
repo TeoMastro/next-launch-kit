@@ -1,4 +1,4 @@
-import { auth } from '@/lib/auth';
+import { getSession } from '@/lib/auth-session';
 import { redirect } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
 import { Role, Status } from '@prisma/client';
@@ -9,7 +9,7 @@ import { hasValidSubscription } from '@/lib/subscription-helpers';
 import { getSimulationTime } from '@/lib/stripe';
 
 export default async function DashboardPage() {
-  const session = await auth();
+  const session = await getSession();
 
   if (!session || session?.user.status !== Status.ACTIVE) {
     redirect('/auth/signin');
@@ -28,7 +28,7 @@ export default async function DashboardPage() {
     <div className="container mx-auto space-y-6">
       <div>
         <h1 className="text-3xl font-bold">
-          {t('welcomeBackName', { name: session.user.name })}
+          {t('welcomeBackName', { name: session.user.name || '' })}
         </h1>
       </div>
 

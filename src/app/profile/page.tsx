@@ -1,10 +1,10 @@
-import { auth } from '@/lib/auth';
+import { getSession } from '@/lib/auth-session';
 import { getTranslations } from 'next-intl/server';
 import { redirect } from 'next/navigation';
 import { Status } from '@prisma/client';
 
 export default async function ProfilePage() {
-  const session = await auth();
+  const session = await getSession();
   if (!session || session?.user.status !== Status.ACTIVE) {
     redirect('/auth/signin');
   }

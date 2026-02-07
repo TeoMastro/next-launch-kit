@@ -7,11 +7,9 @@ export type User = {
   email: string;
   role: Role;
   status: Status;
-  created_at: Date;
-  updated_at: Date;
-  password?: string | null;
+  createdAt: Date;
+  updatedAt: Date;
   image?: string | null;
-  email_verification_token?: string | null;
   password_reset_token?: string | null;
   password_reset_expires?: Date | null;
 };
@@ -59,11 +57,10 @@ export type AdminUsersPageProps = {
 export type UserFormProps = {
   user?: Omit<
     User,
-    | 'created_at'
-    | 'updated_at'
-    | 'password'
-    | 'email_verification_token'
-    | 'email_verified_at'
+    | 'createdAt'
+    | 'updatedAt'
+    | 'password_reset_token'
+    | 'password_reset_expires'
   > | null;
   mode: 'create' | 'update';
 };

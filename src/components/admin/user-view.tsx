@@ -166,7 +166,7 @@ export function UserView({ user }: UserViewProps) {
                 <span>{t('createdAt')}</span>
               </label>
               <p className="text-sm text-muted-foreground mt-1">
-                {new Date(user.created_at).toLocaleString()}
+                {new Date(user.createdAt).toLocaleString()}
               </p>
             </div>
 
@@ -176,7 +176,7 @@ export function UserView({ user }: UserViewProps) {
                 <span>{t('updatedAt')}</span>
               </label>
               <p className="text-sm text-muted-foreground mt-1">
-                {new Date(user.updated_at).toLocaleString()}
+                {new Date(user.updatedAt).toLocaleString()}
               </p>
             </div>
           </div>

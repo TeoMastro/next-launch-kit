@@ -215,7 +215,7 @@ export function UsersTable({
           search: searchTermLocal || '',
           roleFilter: roleFilterLocal || 'all',
           statusFilter: statusFilterLocal || 'all',
-          sortField: sortField || 'created_at',
+          sortField: sortField || 'createdAt',
           sortDirection: sortDirection || 'desc',
           format,
         });
@@ -393,7 +393,7 @@ export function UsersTable({
                 {t('status')}
               </SortableTableHeader>
               <SortableTableHeader
-                field="created_at"
+                field="createdAt"
                 currentField={sortField}
                 direction={sortDirection}
                 onSort={handleSort}
@@ -430,7 +430,7 @@ export function UsersTable({
                     </Badge>
                   </TableCell>
                   <TableCell>
-                    {new Date(user.created_at).toLocaleDateString('en-US', {
+                    {new Date(user.createdAt).toLocaleDateString('en-US', {
                       year: 'numeric',
                       month: '2-digit',
                       day: '2-digit',

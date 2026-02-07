@@ -55,6 +55,7 @@
     "id": "ID",
     "inactiveStatus": "Inactive",
     "invalidCredentials": "Invalid email or password",
+    "emailNotVerified": "Please verify your email address before signing in. Check your inbox for the verification link.",
     "invalidEmail": "Please enter a valid email address",
     "invalidOrExpiredToken": "Invalid or expired reset token. Please request a new password reset.",
     "invalidPlanType": "Invalid plan type selected",

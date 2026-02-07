@@ -1,9 +1,9 @@
 'use server';
 
 import { prisma } from '@/lib/prisma';
-import bcrypt from 'bcryptjs';
+import { hashPassword } from 'better-auth/crypto';
 import { redirect } from 'next/navigation';
-import { auth } from '@/lib/auth';
+import { getSession } from '@/lib/auth-session';
 import { revalidatePath } from 'next/cache';
 import {
   GetUsersParams,
@@ -21,7 +21,7 @@ import { Role, Status } from '@prisma/client';
 import logger from '@/lib/logger';
 
 async function checkAdminAuth() {
-  const session = await auth();
+  const session = await getSession();
 
   if (!session || session.user.role !== 'ADMIN') {
     throw new Error('Unauthorized');
@@ -72,16 +72,26 @@ export async function createUserAction(
       };
     }
 
-    const hashedPassword = await bcrypt.hash(parsed.data.password, 12);
+    const hashedPassword = await hashPassword(parsed.data.password);
 
     const newUser = await prisma.user.create({
       data: {
+        name: `${parsed.data.first_name.trim()} ${parsed.data.last_name.trim()}`,
         first_name: parsed.data.first_name.trim(),
         last_name: parsed.data.last_name.trim(),
         email: trimmedEmail,
-        password: hashedPassword,
+        emailVerified: true,
         role: parsed.data.role,
         status: parsed.data.status,
+      },
+    });
+
+    await prisma.account.create({
+      data: {
+        userId: newUser.id,
+        providerId: 'credential',
+        accountId: newUser.id.toString(),
+        password: hashedPassword,
       },
     });
 
@@ -174,14 +184,7 @@ export async function updateUserAction(
       };
     }
 
-    const updateData: {
-      first_name: string;
-      last_name: string;
-      email: string;
-      role: Role;
-      status: Status;
-      password?: string;
-    } = {
+    const updateData = {
       first_name: parsed.data.first_name.trim(),
       last_name: parsed.data.last_name.trim(),
       email: trimmedEmail,
@@ -189,14 +192,18 @@ export async function updateUserAction(
       status: parsed.data.status,
     };
 
-    if (parsed.data.password && parsed.data.password.trim() !== '') {
-      updateData.password = await bcrypt.hash(parsed.data.password, 12);
-    }
-
     await prisma.user.update({
       where: { id: userId },
       data: updateData,
     });
+
+    if (parsed.data.password && parsed.data.password.trim() !== '') {
+      const hashedPassword = await hashPassword(parsed.data.password);
+      await prisma.account.updateMany({
+        where: { userId, providerId: 'credential' },
+        data: { password: hashedPassword },
+      });
+    }
 
     logger.info('User updated successfully', {
       adminId: session.user.id,
@@ -284,8 +291,8 @@ export async function getUserById(userId: number) {
         email: true,
         role: true,
         status: true,
-        created_at: true,
-        updated_at: true,
+        createdAt: true,
+        updatedAt: true,
       },
     });
 
@@ -310,7 +317,7 @@ async function fetchUsers(params: GetUsersParams & { paginate?: boolean }) {
   const search = params.search || '';
   const roleFilter = params.roleFilter || 'all';
   const statusFilter = params.statusFilter || 'all';
-  const sortField = params.sortField || 'created_at';
+  const sortField = params.sortField || 'createdAt';
   const sortDirection = (params.sortDirection as 'asc' | 'desc') || 'desc';
   const paginate = params.paginate ?? false;
 
@@ -361,8 +368,8 @@ async function fetchUsers(params: GetUsersParams & { paginate?: boolean }) {
           email: true,
           role: true,
           status: true,
-          created_at: true,
-          updated_at: true,
+          createdAt: true,
+          updatedAt: true,
         },
         orderBy,
         skip: offset,
@@ -384,8 +391,8 @@ async function fetchUsers(params: GetUsersParams & { paginate?: boolean }) {
         email: true,
         role: true,
         status: true,
-        created_at: true,
-        updated_at: true,
+        createdAt: true,
+        updatedAt: true,
       },
       orderBy,
     });

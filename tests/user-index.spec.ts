@@ -1,6 +1,5 @@
 import { test, expect } from '@playwright/test';
 import { PrismaClient } from '@prisma/client';
-import bcrypt from 'bcryptjs';
 
 test.use({ storageState: 'playwright/.auth/admin.json' });
 
@@ -29,13 +28,12 @@ test('shows admin and user accounts in the users table', async ({ page }) => {
 test('can delete a user from the users table', async ({ page }) => {
   const prisma = new PrismaClient({ datasources: { db: { url: dbUrl } } });
   const uniqueEmail = `delete${Date.now()}@example.com`;
-  const hashedPassword = await bcrypt.hash('deletepass123', 10);
   await prisma.user.create({
     data: {
       first_name: 'Delete',
       last_name: 'Me',
       email: uniqueEmail,
-      password: hashedPassword,
+      emailVerified: true,
       role: 'USER',
       status: 'ACTIVE',
     },

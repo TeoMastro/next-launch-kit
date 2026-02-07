@@ -1,151 +1,153 @@
-import NextAuth from 'next-auth';
-import Google from 'next-auth/providers/google';
-import CredentialsProvider from 'next-auth/providers/credentials';
+import { betterAuth } from 'better-auth';
+import { prismaAdapter } from 'better-auth/adapters/prisma';
 import { prisma } from '@/lib/prisma';
-import bcrypt from 'bcryptjs';
+import { nextCookies } from 'better-auth/next-js';
+import nodemailer from 'nodemailer';
 import { Status } from '@prisma/client';
 
-export const { handlers, signIn, signOut, auth } = NextAuth({
-  providers: [
-    Google({
-      allowDangerousEmailAccountLinking: true,
-    }),
-    CredentialsProvider({
-      name: 'credentials',
-      credentials: {
-        email: { label: 'Email', type: 'email' },
-        password: { label: 'Password', type: 'password' },
-      },
-      async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
-          return null;
-        }
-
-        const user = await prisma.user.findUnique({
-          where: { email: credentials.email as string },
-        });
-
-        if (!user || !user.password) {
-          return null;
-        }
-
-        const isPasswordValid = await bcrypt.compare(
-          credentials.password as string,
-          user.password
-        );
-
-        if (!isPasswordValid || user.status !== Status.ACTIVE) {
-          return null;
-        }
-
-        return {
-          id: user.id.toString(),
-          email: user.email,
-          name: `${user.first_name} ${user.last_name}`,
-          role: user.role,
-          status: user.status,
-        };
-      },
-    }),
-  ],
-  session: {
-    strategy: 'jwt',
-  },
-  callbacks: {
-    async signIn({ user, account, profile }) {
-      if (account?.provider === 'google') {
-        try {
-          let existingUser = await prisma.user.findUnique({
-            where: { email: user.email! },
-          });
-
-          if (!existingUser) {
-            existingUser = await prisma.user.create({
-              data: {
-                email: user.email!,
-                first_name: user.name?.split(' ')[0] || '',
-                last_name: user.name?.split(' ').slice(1).join(' ') || '',
-                image: user.image,
-                status: Status.ACTIVE,
-              },
-            });
-          }
-
-          await prisma.account.upsert({
-            where: {
-              provider_providerAccountId: {
-                provider: account.provider,
-                providerAccountId: account.providerAccountId!,
-              },
-            },
-            update: {
-              access_token: account.access_token || null,
-              expires_at: account.expires_at
-                ? Number(account.expires_at)
-                : null,
-              id_token: account.id_token || null,
-              refresh_token: account.refresh_token || null,
-              scope: account.scope || null,
-              session_state: account.session_state
-                ? String(account.session_state)
-                : null,
-              token_type: account.token_type || null,
-            },
-            create: {
-              userId: existingUser.id,
-              type: account.type!,
-              provider: account.provider,
-              providerAccountId: account.providerAccountId!,
-              access_token: account.access_token || null,
-              expires_at: account.expires_at
-                ? Number(account.expires_at)
-                : null,
-              id_token: account.id_token || null,
-              refresh_token: account.refresh_token || null,
-              scope: account.scope || null,
-              session_state: account.session_state
-                ? String(account.session_state)
-                : null,
-              token_type: account.token_type || null,
-            },
-          });
-
-          return true;
-        } catch (error) {
-          console.error('Error in Google signIn:', error);
-          return false;
-        }
-      }
-      return true;
-    },
-    async jwt({ token, user, account }) {
-      if (account?.provider === 'google') {
-        const dbUser = await prisma.user.findUnique({
-          where: { email: token.email! },
-        });
-
-        if (dbUser) {
-          token.role = dbUser.role;
-          token.id = dbUser.id.toString();
-          token.status = dbUser.status;
-        }
-      } else if (user) {
-        token.role = user.role;
-        token.id = user.id;
-        token.status = user.status;
-      }
-      return token;
-    },
-    async session({ session, token }) {
-      if (token && session.user) {
-        session.user.id = token.id;
-        session.user.role = token.role;
-        session.user.status = token.status;
-      }
-      return session;
-    },
-  },
-  pages: {
-    signIn: '/auth/signin',
+const smtpTransporter = nodemailer.createTransport({
+  host: process.env.SMTP_HOST,
+  port: parseInt(process.env.SMTP_PORT || '587'),
+  secure: process.env.SMTP_SECURE === 'true',
+  requireTLS: true,
+  auth: {
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASSWORD,
   },
 });
+
+export const auth = betterAuth({
+  baseURL: process.env.BETTER_AUTH_URL || process.env.AUTH_URL,
+  secret: process.env.BETTER_AUTH_SECRET || process.env.AUTH_SECRET,
+  database: prismaAdapter(prisma, {
+    provider: 'postgresql',
+  }),
+  emailAndPassword: {
+    enabled: true,
+    requireEmailVerification: true,
+  },
+  emailVerification: {
+    sendOnSignUp: true,
+    autoSignInAfterVerification: true,
+    expiresIn: 60 * 60 * 24, // 24 hours
+    sendVerificationEmail: async ({ user, url }) => {
+      void smtpTransporter.sendMail({
+        from: process.env.SMTP_FROM,
+        to: user.email,
+        subject: 'Welcome! Please verify your email address',
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+            <h1 style="color: #333;">Welcome ${user.name || ''}!</h1>
+            <p>Thank you for signing up. Please verify your email address to activate your account.</p>
+            <div style="text-align: center; margin: 30px 0;">
+              <a href="${url}"
+                 style="display: inline-block; padding: 12px 24px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;">
+                Verify Email Address
+              </a>
+            </div>
+            <p>Or copy and paste this link in your browser:</p>
+            <p style="word-break: break-all; color: #666;">${url}</p>
+            <p style="color: #888; font-size: 14px;">This link will expire in 24 hours.</p>
+            <hr style="margin: 30px 0; border: none; border-top: 1px solid #eee;">
+            <p style="color: #888; font-size: 12px;">
+              If you didn't create an account, please ignore this email.
+            </p>
+          </div>
+        `,
+      });
+    },
+    afterEmailVerification: async (user) => {
+      await prisma.user.update({
+        where: { id: Number(user.id) },
+        data: { status: Status.ACTIVE },
+      });
+    },
+  },
+  socialProviders: {
+    google: {
+      clientId: process.env.AUTH_GOOGLE_ID!,
+      clientSecret: process.env.AUTH_GOOGLE_SECRET!,
+    },
+  },
+  user: {
+    modelName: 'User',
+    additionalFields: {
+      first_name: {
+        type: 'string',
+        required: false,
+      },
+      last_name: {
+        type: 'string',
+        required: false,
+      },
+      role: {
+        type: 'string',
+        required: false,
+        defaultValue: 'USER',
+      },
+      status: {
+        type: 'string',
+        required: false,
+        defaultValue: 'UNVERIFIED',
+      },
+      password_reset_token: {
+        type: 'string',
+        required: false,
+      },
+      password_reset_expires: {
+        type: 'date',
+        required: false,
+      },
+      stripe_customer_id: {
+        type: 'string',
+        required: false,
+      },
+      stripe_subscription_id: {
+        type: 'string',
+        required: false,
+      },
+      subscription_status: {
+        type: 'string',
+        required: false,
+      },
+      subscription_end_date: {
+        type: 'date',
+        required: false,
+      },
+    },
+  },
+  account: {
+    modelName: 'Account',
+  },
+  session: {
+    modelName: 'Session',
+    expiresIn: 60 * 60 * 24 * 7, // 7 days
+    cookieCache: {
+      enabled: true,
+      maxAge: 5 * 60, // 5 minutes
+    },
+  },
+  databaseHooks: {
+    user: {
+      create: {
+        after: async (user) => {
+          // Social sign-in users have emailVerified=true, set status to ACTIVE
+          if (user.emailVerified) {
+            await prisma.user.update({
+              where: { id: Number(user.id) },
+              data: { status: Status.ACTIVE },
+            });
+          }
+        },
+      },
+    },
+  },
+  advanced: {
+    database: {
+      useNumberId: true,
+    },
+  },
+  plugins: [nextCookies()],
+});
+
+export type Session = typeof auth.$Infer.Session;

@@ -20,7 +20,7 @@ export async function GET(req: NextRequest) {
     email: user.email,
     [roleLabel]: user.role,
     [statusLabel]: user.status,
-    [createdAtLabel]: user.created_at,
+    [createdAtLabel]: user.createdAt,
   }));
 
   const filename = `users_${new Date().toISOString().slice(0, 10)}`;

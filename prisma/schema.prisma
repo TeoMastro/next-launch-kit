@@ -9,46 +9,73 @@ datasource db {
 
 model User {
   id                       Int                 @id @default(autoincrement())
+  name                     String?
   first_name               String?
   last_name                String?
   email                    String              @unique
-  password                 String?
+  emailVerified            Boolean             @default(false)
   image                    String?
   role                     Role                @default(USER)
   status                   Status              @default(UNVERIFIED)
-  email_verification_token String?             @unique
   password_reset_token     String?             @unique
   password_reset_expires   DateTime?
   stripe_customer_id       String?             @unique @map("stripe_customer_id")
   stripe_subscription_id   String?             @unique @map("stripe_subscription_id")
   subscription_status      SubscriptionStatus? @map("subscription_status")
   subscription_end_date    DateTime?           @map("subscription_end_date")
-  created_at               DateTime            @default(now())
-  updated_at               DateTime            @updatedAt
+  createdAt                DateTime            @default(now()) @map("created_at")
+  updatedAt                DateTime            @updatedAt @map("updated_at")
 
   accounts Account[]
+  sessions Session[]
 
   @@map("users")
 }
 
 model Account {
-  id                Int     @id @default(autoincrement())
-  userId            Int     @map("user_id")
-  type              String
-  provider          String
-  providerAccountId String  @map("provider_account_id")
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
-  expires_at        Int?
-  token_type        String?
-  scope             String?
-  id_token          String? @db.Text
-  session_state     String?
+  id                    Int       @id @default(autoincrement())
+  userId                Int       @map("user_id")
+  accountId             String    @map("account_id")
+  providerId            String    @map("provider_id")
+  accessToken           String?   @map("access_token") @db.Text
+  refreshToken          String?   @map("refresh_token") @db.Text
+  accessTokenExpiresAt  DateTime? @map("access_token_expires_at")
+  refreshTokenExpiresAt DateTime? @map("refresh_token_expires_at")
+  scope                 String?
+  idToken               String?   @map("id_token") @db.Text
+  password              String?
+  createdAt             DateTime  @default(now()) @map("created_at")
+  updatedAt             DateTime  @updatedAt @map("updated_at")
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@unique([provider, providerAccountId])
   @@map("accounts")
+}
+
+model Session {
+  id        Int      @id @default(autoincrement())
+  expiresAt DateTime @map("expires_at")
+  token     String   @unique
+  ipAddress String?  @map("ip_address")
+  userAgent String?  @map("user_agent")
+  userId    Int      @map("user_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model Verification {
+  id         Int      @id @default(autoincrement())
+  identifier String
+  value      String
+  expiresAt  DateTime @map("expires_at")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  @@map("verifications")
 }
 
 enum Role {

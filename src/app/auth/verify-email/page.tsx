@@ -2,7 +2,7 @@
 
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState, useCallback } from 'react';
-import { verifyEmailAction } from '@/server-actions/auth';
+import { authClient } from '@/lib/auth-client';
 import { useTranslations } from 'next-intl';
 import {
   Card,
@@ -29,9 +29,14 @@ export default function VerifyEmailPage() {
   const handleVerification = useCallback(
     async (token: string) => {
       try {
-        const result = await verifyEmailAction(token);
+        const result = await authClient.verifyEmail({
+          query: { token },
+        });
 
-        if (result.success) {
+        if (result.error) {
+          setStatus('error');
+          setMessage(t('verificationError'));
+        } else {
           setStatus('success');
           setMessage(t('verificationSuccess'));
           setTimeout(
@@ -42,9 +47,6 @@ export default function VerifyEmailPage() {
               ),
             3000
           );
-        } else {
-          setStatus('error');
-          setMessage(t('verificationError'));
         }
       } catch (error) {
         setStatus('error');

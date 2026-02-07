@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import bcrypt from 'bcryptjs';
+import { hashPassword } from 'better-auth/crypto';
 
 async function globalSetup() {
   const prisma = new PrismaClient({
@@ -11,32 +11,54 @@ async function globalSetup() {
   });
 
   try {
-    // Clear existing users
+    // Clear existing data
+    await prisma.account.deleteMany();
+    await prisma.session.deleteMany();
     await prisma.user.deleteMany();
 
     // Create admin user
-    const adminPassword = await bcrypt.hash('demoadmin!1', 10);
-    await prisma.user.create({
+    const adminPassword = await hashPassword('demoadmin!1');
+    const admin = await prisma.user.create({
       data: {
+        name: 'Admin User',
         first_name: 'Admin',
         last_name: 'User',
         email: 'admin@nextlaunchkit.com',
-        password: adminPassword,
+        emailVerified: true,
         role: 'ADMIN',
         status: 'ACTIVE',
       },
     });
 
-    // Create regular user
-    const userPassword = await bcrypt.hash('demouser!1', 10);
-    await prisma.user.create({
+    await prisma.account.create({
       data: {
+        userId: admin.id,
+        providerId: 'credential',
+        accountId: admin.id.toString(),
+        password: adminPassword,
+      },
+    });
+
+    // Create regular user
+    const userPassword = await hashPassword('demouser!1');
+    const user = await prisma.user.create({
+      data: {
+        name: 'Demo User',
         first_name: 'Demo',
         last_name: 'User',
         email: 'user@nextlaunchkit.com',
-        password: userPassword,
+        emailVerified: true,
         role: 'USER',
         status: 'ACTIVE',
+      },
+    });
+
+    await prisma.account.create({
+      data: {
+        userId: user.id,
+        providerId: 'credential',
+        accountId: user.id.toString(),
+        password: userPassword,
       },
     });
 

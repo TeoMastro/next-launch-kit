@@ -1,10 +1,12 @@
+import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
-import { NextResponse } from 'next/server';
 
-export default auth(async (req) => {
-  const session = req.auth;
+export default async function middleware(req: NextRequest) {
+  const session = (await auth.api.getSession({
+    headers: req.headers,
+  })) as { user: { id: string; role: string; status: string }; session: { id: string } } | null;
 
-  // trigger an api call internally to check the user's status.
+  // Check user status for authenticated users
   if (session?.user?.id) {
     const response = await fetch(
       `${req.nextUrl.origin}/api/check-user-status`,
@@ -18,9 +20,11 @@ export default auth(async (req) => {
     const { active } = await response.json();
 
     if (!active) {
-      const response = NextResponse.redirect(new URL('/auth/signin', req.url));
-      response.cookies.delete('authjs.session-token');
-      response.cookies.delete('__Secure-authjs.session-token');
+      const response = NextResponse.redirect(
+        new URL('/auth/signin', req.url)
+      );
+      response.cookies.delete('better-auth.session_token');
+      response.cookies.delete('__Secure-better-auth.session_token');
       return response;
     }
   }
@@ -54,7 +58,7 @@ export default auth(async (req) => {
   }
 
   return NextResponse.next();
-});
+}
 
 export const config = {
   matcher: [

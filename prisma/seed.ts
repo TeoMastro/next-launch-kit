@@ -1,48 +1,69 @@
 import { PrismaClient, Role, Status } from '@prisma/client';
-import bcrypt from 'bcryptjs';
+import { hashPassword } from 'better-auth/crypto';
 
 const prisma = new PrismaClient();
 
 async function main() {
   console.log('Seeding database...');
 
-  const userPassword = await bcrypt.hash('demouser!1', 12);
-  const adminPassword = await bcrypt.hash('demoadmin!1', 12);
+  const userPassword = await hashPassword('demouser!1');
+  const adminPassword = await hashPassword('demoadmin!1');
 
-  const users = await Promise.all([
-    prisma.user.upsert({
-      where: { email: 'admin@nextlaunchkit.com' },
-      update: {},
-      create: {
-        first_name: 'Demo',
-        last_name: 'Admin',
-        email: 'admin@nextlaunchkit.com',
-        password: adminPassword,
-        role: Role.ADMIN,
-        status: Status.ACTIVE,
+  const admin = await prisma.user.upsert({
+    where: { email: 'admin@nextlaunchkit.com' },
+    update: {},
+    create: {
+      name: 'Demo Admin',
+      first_name: 'Demo',
+      last_name: 'Admin',
+      email: 'admin@nextlaunchkit.com',
+      emailVerified: true,
+      role: Role.ADMIN,
+      status: Status.ACTIVE,
+    },
+  });
+
+  const user = await prisma.user.upsert({
+    where: { email: 'user@nextlaunchkit.com' },
+    update: {},
+    create: {
+      name: 'Demo User',
+      first_name: 'Demo',
+      last_name: 'User',
+      email: 'user@nextlaunchkit.com',
+      emailVerified: true,
+      role: Role.USER,
+      status: Status.ACTIVE,
+    },
+  });
+
+  // Create better-auth credential accounts for each user
+  for (const u of [
+    { user: admin, password: adminPassword },
+    { user: user, password: userPassword },
+  ]) {
+    // Delete existing credential account if any, then create fresh
+    await prisma.account.deleteMany({
+      where: { userId: u.user.id, providerId: 'credential' },
+    });
+    await prisma.account.create({
+      data: {
+        userId: u.user.id,
+        providerId: 'credential',
+        accountId: u.user.id.toString(),
+        password: u.password,
       },
-    }),
-    prisma.user.upsert({
-      where: { email: 'user@nextlaunchkit.com' },
-      update: {},
-      create: {
-        first_name: 'Demo',
-        last_name: 'User',
-        email: 'user@nextlaunchkit.com',
-        password: userPassword,
-        role: Role.USER,
-        status: Status.ACTIVE,
-      },
-    }),
-  ]);
+    });
+  }
 
   console.log('Database seeded successfully!');
-  console.log(`Created ${users.length} users:`);
-  users.forEach((user) => {
-    console.log(
-      `  - ${user.first_name} ${user.last_name} (${user.email}) - ${user.role}`
-    );
-  });
+  console.log(`Created 2 users with credential accounts:`);
+  console.log(
+    `  - ${admin.first_name} ${admin.last_name} (${admin.email}) - ${admin.role}`
+  );
+  console.log(
+    `  - ${user.first_name} ${user.last_name} (${user.email}) - ${user.role}`
+  );
 
   console.log('\nLogin credentials:');
   console.log('Admin: admin@nextlaunchkit.com / demoadmin!1');

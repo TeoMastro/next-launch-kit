@@ -1,6 +1,5 @@
 import { test, expect } from '@playwright/test';
 import { PrismaClient } from '@prisma/client';
-import bcrypt from 'bcryptjs';
 
 const dbUrl =
   'postgresql://postgres:password123@localhost:5433/next_launch_kit_test';
@@ -16,7 +15,7 @@ async function createUserWithToken(
       first_name: 'Test',
       last_name: 'Reset',
       email,
-      password: await bcrypt.hash('oldpassword123', 10),
+      emailVerified: true,
       status: 'ACTIVE',
       password_reset_token: token,
       password_reset_expires: expires,

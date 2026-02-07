@@ -1,7 +1,7 @@
 'use server';
 
 import { prisma } from '@/lib/prisma';
-import bcrypt from 'bcryptjs';
+import { hashPassword } from 'better-auth/crypto';
 import { redirect } from 'next/navigation';
 import { getServerTranslation } from '@/lib/server-translations';
 import {
@@ -19,8 +19,8 @@ import {
 } from '@/lib/validation-schemas';
 import { v4 as uuidv4 } from 'uuid';
 import nodemailer from 'nodemailer';
-import { Status } from '@prisma/client';
 import logger from '@/lib/logger';
+import { auth } from '@/lib/auth';
 
 export async function validateSigninData(
   prevState: ValidationState,
@@ -75,45 +75,43 @@ export async function signUpAction(
   }
 
   const trimmedEmail = parsed.data.email.trim().toLowerCase();
-
-  const existingUser = await prisma.user.findUnique({
-    where: { email: trimmedEmail },
-  });
-
-  if (existingUser) {
-    return {
-      success: false,
-      errors: {},
-      formData: { ...parsed.data, password: '', confirmPassword: '' },
-      globalError: 'userAlreadyExists',
-    };
-  }
-
-  const hashedPassword = await bcrypt.hash(parsed.data.password, 12);
-  const verificationToken = uuidv4();
+  const firstName = parsed.data.first_name.trim();
+  const lastName = parsed.data.last_name.trim();
 
   try {
-    const newUser = await prisma.user.create({
-      data: {
-        first_name: parsed.data.first_name.trim(),
-        last_name: parsed.data.last_name.trim(),
+    const result = await auth.api.signUpEmail({
+      body: {
         email: trimmedEmail,
-        password: hashedPassword,
-        status: Status.UNVERIFIED,
-        email_verification_token: verificationToken,
-      },
+        password: parsed.data.password,
+        name: `${firstName} ${lastName}`,
+        first_name: firstName,
+        last_name: lastName,
+      } as any,
     });
 
-    await sendVerificationEmail(
-      trimmedEmail,
-      verificationToken,
-      `${parsed.data.first_name} ${parsed.data.last_name}`
-    );
+    if (!result?.user) {
+      return {
+        success: false,
+        errors: {},
+        formData: { ...parsed.data, password: '', confirmPassword: '' },
+        globalError: 'userAlreadyExists',
+      };
+    }
 
     logger.info('User signed up successfully', {
-      userId: newUser.id,
+      userId: result.user.id,
     });
   } catch (error) {
+    const errorMessage = (error as Error).message || '';
+    if (errorMessage.includes('already exists') || errorMessage.includes('UNIQUE')) {
+      return {
+        success: false,
+        errors: {},
+        formData: { ...parsed.data, password: '', confirmPassword: '' },
+        globalError: 'userAlreadyExists',
+      };
+    }
+
     logger.error('Error during user signup', {
       error: (error as Error).message,
       stack: (error as Error).stack,
@@ -132,95 +130,6 @@ export async function signUpAction(
     'accountCreatedCheckEmail'
   );
   redirect('/auth/signin?message=' + encodeURIComponent(successMessage));
-}
-
-async function sendVerificationEmail(
-  email: string,
-  token: string,
-  userName: string
-) {
-  const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
-    port: parseInt(process.env.SMTP_PORT || '587'),
-    secure: process.env.SMTP_SECURE === 'true',
-    requireTLS: true,
-    auth: {
-      user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASSWORD,
-    },
-  });
-
-  const verificationUrl = `${process.env.AUTH_URL}/auth/verify-email?token=${token}`;
-
-  await transporter.sendMail({
-    from: process.env.SMTP_FROM,
-    to: email,
-    subject: 'Welcome! Please verify your email address',
-    html: `
-            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-                <h1 style="color: #333;">Welcome ${userName}!</h1>
-                <p>Thank you for signing up. Please verify your email address to activate your account.</p>
-                <div style="text-align: center; margin: 30px 0;">
-                    <a href="${verificationUrl}" 
-                       style="display: inline-block; padding: 12px 24px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;">
-                        Verify Email Address
-                    </a>
-                </div>
-                <p>Or copy and paste this link in your browser:</p>
-                <p style="word-break: break-all; color: #666;">${verificationUrl}</p>
-                <p style="color: #888; font-size: 14px;">This link will expire in 24 hours.</p>
-                <hr style="margin: 30px 0; border: none; border-top: 1px solid #eee;">
-                <p style="color: #888; font-size: 12px;">
-                    If you didn't create an account, please ignore this email.
-                </p>
-            </div>
-        `,
-  });
-}
-
-export async function verifyEmailAction(
-  token: string
-): Promise<{ success: boolean; message: string }> {
-  try {
-    const user = await prisma.user.findUnique({
-      where: { email_verification_token: token },
-    });
-
-    if (!user) {
-      return {
-        success: false,
-        message: await getServerTranslation('app', 'verificationError'),
-      };
-    }
-
-    await prisma.user.update({
-      where: { id: user.id },
-      data: {
-        status: Status.ACTIVE,
-        email_verification_token: null,
-      },
-    });
-
-    logger.info('Email verified successfully', {
-      userId: user.id,
-    });
-
-    return {
-      success: true,
-      message: await getServerTranslation('app', 'verificationSuccessRedirect'),
-    };
-  } catch (error) {
-    logger.error('Error during email verification', {
-      error: (error as Error).message,
-      stack: (error as Error).stack,
-      action: 'verifyEmail',
-    });
-
-    return {
-      success: false,
-      message: await getServerTranslation('app', 'errorTitle'),
-    };
-  }
 }
 
 export async function forgotPasswordAction(
@@ -333,15 +242,19 @@ export async function resetPasswordAction(
       };
     }
 
-    const hashedPassword = await bcrypt.hash(parsed.data.password, 12);
+    const hashedPassword = await hashPassword(parsed.data.password);
 
     await prisma.user.update({
       where: { id: user.id },
       data: {
-        password: hashedPassword,
         password_reset_token: null,
         password_reset_expires: null,
       },
+    });
+
+    await prisma.account.updateMany({
+      where: { userId: user.id, providerId: 'credential' },
+      data: { password: hashedPassword },
     });
 
     logger.info('Password reset successfully', {
@@ -385,7 +298,7 @@ async function sendPasswordResetEmail(
     },
   });
 
-  const resetUrl = `${process.env.AUTH_URL}/auth/reset-password?token=${token}`;
+  const resetUrl = `${process.env.BETTER_AUTH_URL || process.env.AUTH_URL}/auth/reset-password?token=${token}`;
 
   await transporter.sendMail({
     from: process.env.SMTP_FROM,

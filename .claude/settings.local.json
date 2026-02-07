@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install:*)",
+      "Bash(node -e:*)",
+      "Bash(npx tsc:*)",
+      "Bash(git stash:*)",
+      "Bash(npm run build:*)",
+      "Bash(npx next build:*)",
+      "Bash(npx prisma db push:*)",
+      "Bash(set \"PRISMA_USER_CONSENT_FOR_DANGEROUS_AI_ACTION=yes go on with the reset\")"
+    ]
+  }
+}
