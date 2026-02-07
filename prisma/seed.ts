@@ -11,7 +11,11 @@ async function main() {
 
   const admin = await prisma.user.upsert({
     where: { email: 'admin@nextlaunchkit.com' },
-    update: {},
+    update: {
+      emailVerified: true,
+      status: Status.ACTIVE,
+      role: Role.ADMIN,
+    },
     create: {
       name: 'Demo Admin',
       first_name: 'Demo',
@@ -25,7 +29,10 @@ async function main() {
 
   const user = await prisma.user.upsert({
     where: { email: 'user@nextlaunchkit.com' },
-    update: {},
+    update: {
+      emailVerified: true,
+      status: Status.ACTIVE,
+    },
     create: {
       name: 'Demo User',
       first_name: 'Demo',
